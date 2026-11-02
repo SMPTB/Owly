@@ -360,8 +360,10 @@
     }
 
     host.addEventListener('input', e => {
-      if (!e.target.dataset.t) return;
-      st.t = parseFloat(e.target.value) / 100;
+      /* data-t tidak punya nilai, jadi dataset.t = "" (falsy) —
+         cek keberadaan atributnya, bukan isinya. */
+      if (e.target !== range) return;
+      st.t = parseFloat(range.value) / 100;
       update();
     });
 
