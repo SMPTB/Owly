@@ -525,11 +525,17 @@ const MATERI = [
         `P(6) = 1/6.`,
         `Frekuensi harapan = 1/6 × 60 = 10.`
       ], `10 kali`],
+      ['dadu', { mata: 6 }],
       ['ex', `Dari kantong berisi 4 kelereng merah dan 2 putih, diambil satu kelereng tanpa dikembalikan, lalu diambil satu lagi. Berapa peluang keduanya merah?`, [
         `Pengambilan pertama: 4/6.`,
         `Setelah satu merah terambil, tersisa 3 merah dari 5 kelereng: 3/5.`,
         `Peluang keduanya merah = 4/6 × 3/5 = 12/30 = 2/5.`
       ], `2/5`],
+      ['p', `Kotak mesin capit di bawah berisi 6 bola dengan perbandingan yang sama, 2 bola emas dan 4 bola kaca. Ambil beberapa bola, lalu perhatikan peluang tiap warna setelah setiap ambilan.`],
+      ['capit', {
+        isi: [['emas', 2], ['kaca', 4]],
+        label: { emas: 'bola emas', kaca: 'bola kaca' }
+      }],
       ['task', `Coba sendiri`, [
         `Berapa peluang muncul angka lebih dari 4 pada pelemparan satu dadu?`,
         `Peluang hujan besok 0,3. Berapa peluang tidak hujan?`,
@@ -675,16 +681,35 @@ const MATERI = [
         ['Induktif', `Di akhir paragraf`],
         ['Campuran', `Di awal dan di akhir paragraf`]
       ]],
-      ['text', `Paragraf deduktif`, `Membaca setiap hari memberi banyak manfaat. Membaca menambah kosakata. Membaca melatih kita untuk fokus. Membaca juga membuat kita lebih mudah menulis.`],
-      ['ex', `Tentukan ide pokok paragraf di atas.`, [
-        `Kalimat pertama paling umum dan mencakup isi paragraf.`,
-        `Kalimat berikutnya memberi rincian manfaat, jadi berfungsi sebagai gagasan pendukung.`
-      ], `Membaca setiap hari memberi banyak manfaat.`],
-      ['text', `Paragraf induktif`, `Kantin sekolah menjual gorengan, kerupuk, dan minuman manis. Jajanan di luar pagar pun tidak jauh berbeda. Ternyata, makanan di sekitar sekolah kurang sehat.`],
-      ['ex', `Tentukan ide pokok paragraf induktif di atas.`, [
-        `Dua kalimat awal berisi contoh.`,
-        `Kalimat terakhir merangkum semuanya.`
-      ], `Makanan di sekitar sekolah kurang sehat.`],
+      ['h', `Latihan 1 · paragraf deduktif`],
+      ['sorot', {
+        kalimat: [
+          [`Membaca setiap hari memberi banyak manfaat.`, `utama`, `Kalimat paling umum; kalimat sesudahnya hanya merinci manfaat itu.`],
+          [`Membaca menambah kosakata.`, `penjelas`, `Satu contoh manfaat — rincian, bukan inti paragraf.`],
+          [`Membaca melatih kita untuk fokus.`, `penjelas`, `Contoh manfaat lain, cakupannya lebih sempit dari kalimat 1.`],
+          [`Membaca juga membuat kita lebih mudah menulis.`, `penjelas`, `Masih tambahan contoh; tidak mencakup seluruh paragraf.`]
+        ],
+        simpulan: `Membaca setiap hari memberi banyak manfaat.`
+      }],
+      ['h', `Latihan 2 · paragraf induktif`],
+      ['sorot', {
+        kalimat: [
+          [`Kantin sekolah menjual gorengan, kerupuk, dan minuman manis.`, `penjelas`, `Daftar contoh makanan, bukan kesimpulan.`],
+          [`Jajanan di luar pagar pun tidak jauh berbeda.`, `penjelas`, `Menambah contoh lain di tempat berbeda.`],
+          [`Ternyata, makanan di sekitar sekolah kurang sehat.`, `utama`, `Kalimat penutup yang merangkum kedua contoh di atasnya.`]
+        ],
+        simpulan: `Makanan di sekitar sekolah kurang sehat.`
+      }],
+      ['h', `Latihan 3 · paragraf campuran`],
+      ['sorot', {
+        kalimat: [
+          [`Sarapan membuat siswa lebih siap belajar.`, `utama`, `Pernyataan umum yang dibuka di awal paragraf.`],
+          [`Siswa yang sarapan tidak mudah mengantuk di kelas.`, `penjelas`, `Akibat yang lebih khusus, hanya satu rincian.`],
+          [`Konsentrasi mereka juga bertahan lebih lama.`, `penjelas`, `Rincian lain dari manfaat yang sama.`],
+          [`Jadi, sarapan memang penting untuk belajar.`, `utama`, `Mengulang inti paragraf di akhir, ditandai kata “jadi”.`]
+        ],
+        simpulan: `Sarapan penting agar siswa siap dan fokus belajar.`
+      }],
       ['note', `Tips`, `Ide pokok bersifat umum, sedangkan gagasan pendukung berisi contoh, data, atau alasan. Hindari pilihan jawaban yang hanya membahas satu contoh.`],
       ['task', `Coba sendiri`, [
         `Tulis satu paragraf induktif tentang kebiasaan sarapan.`,

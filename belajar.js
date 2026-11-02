@@ -41,6 +41,18 @@
         const c = b[1] || {};
         return '<figure class="inter" data-widget="net" data-shape="' + (c.shape || 'kubus') + '"></figure>';
       }
+      /* Paragraf untuk widget ide pokok: dikirim sebagai JSON di dalam figure,
+         jadi tanda kutip dan tag di dalam kalimat tidak perlu di-escape. */
+      case 'sorot':
+        return '<figure class="inter" data-widget="sorot"><script type="application/json">' +
+          JSON.stringify(b[1] || {}).replace(/</g, '\\u003c') + '</script></figure>';
+      /* Dua widget peluang: dadu (percobaan vs teoretis) dan mesin capit
+         (peluang berubah karena tanpa pengembalian). */
+      case 'dadu':
+        return '<figure class="inter" data-widget="dadu" data-mata="' + ((b[1] && b[1].mata) || 6) + '"></figure>';
+      case 'capit':
+        return '<figure class="inter" data-widget="capit"><script type="application/json">' +
+          JSON.stringify(b[1] || {}).replace(/</g, '\\u003c') + '</script></figure>';
       case 'ex':
         return '<div class="example"><span class="example__label">Contoh soal</span><p class="example__q">' + b[1] + '</p>' +
           '<details><summary>Lihat langkah penyelesaian</summary><ol>' + b[2].map(s => '<li>' + s + '</li>').join('') + '</ol>' +

@@ -1,10 +1,16 @@
 /* =========================================================
    interaktif.js — widget belajar interaktif (belajar.html)
-   Dua widget, dipanggil lewat atribut data-widget:
+   Widget dipanggil lewat atribut data-widget:
      · "graph" — grafik fungsi linear f(x) = ax + b, dengan
                  penggeser a, b, dan x. Nilai f(x) tampil di grafik.
-     · "net"   — bangun ruang (kubus, balok, prisma segitiga)
-                 yang bisa dilipat dan dibentangkan jadi jaring-jaring.
+     · "net"   — bangun ruang (kubus, balok, prisma segitiga, tabung,
+                 limas) yang bisa dilipat jadi jaring-jaring.
+     · "sorot" — paragraf yang kalimat utamanya harus ditandai murid,
+                 lalu pola paragraf dan simpulannya dibuka.
+     · "dadu"  — lempar dadu berkali-kali, bandingkan peluang teoretis
+                 1/6 dengan frekuensi hasil percobaan.
+     · "capit" — mesin capit bola: peluang tiap warna berubah karena
+                 bola yang terambil tidak dikembalikan.
    Semua gambar dibuat langsung sebagai SVG, jadi tidak butuh library.
    ========================================================= */
 (function () {
@@ -467,7 +473,433 @@
     update();
   }
 
-  const WIDGETS = { graph: mountGraph, net: mountNet };
+  /* ---------- Widget tanda ide pokok (paragraf interaktif) ----------
+     Paragrafnya dikirim dari materi.js sebagai JSON di dalam <figure>,
+     jadi kalimat tidak perlu di-escape satu per satu. */
+  function mountSorot(host) {
+    const data = host.querySelector('script[type="application/json"]');
+    let cfg = null;
+    try { cfg = JSON.parse(data ? data.textContent : ''); } catch (e) { cfg = null; }
+    if (!cfg || !cfg.kalimat || !cfg.kalimat.length) return;
+    if (data) data.remove();
+
+    const kal = cfg.kalimat;
+    const utama = kal.map(k => k[1] === 'utama');
+    const pilih = new Set();
+    let beres = false;
+
+    host.classList.add('inter', 'inter--sorot');
+    host.innerHTML =
+      '<figcaption class="inter__cap">Coba sendiri · temukan ide pokok</figcaption>' +
+      '<p class="sorot__ask">Baca paragraf di bawah, lalu klik kalimat yang memuat <b>ide pokok</b>. Ide pokok bisa lebih dari satu.</p>' +
+      '<div class="sorot__text" data-text>' +
+        kal.map((k, i) =>
+          '<button type="button" class="sorot__s" data-i="' + i + '" aria-pressed="false">' +
+            '<span class="sorot__n">' + (i + 1) + '</span>' +
+            '<span class="sorot__w">' + k[0] + '</span>' +
+            '<span class="sorot__why">' + (k[2] || '') + '</span>' +
+          '</button>').join('') +
+      '</div>' +
+      '<div class="sorot__foot">' +
+        '<button type="button" class="inter__tab sorot__cek" data-cek>Cek jawaban</button>' +
+        '<span class="sorot__fb" data-fb role="status" aria-live="polite"></span>' +
+      '</div>' +
+      '<div class="sorot__out" data-out hidden></div>';
+
+    const text = host.querySelector('[data-text]');
+    const fb = host.querySelector('[data-fb]');
+    const cekBtn = host.querySelector('[data-cek]');
+    const out = host.querySelector('[data-out]');
+    const cards = Array.prototype.slice.call(host.querySelectorAll('.sorot__s'));
+
+    /* Nama pola paragraf ditentukan dari letak kalimat utamanya */
+    function pola() {
+      const idx = utama.map((v, i) => v ? i : -1).filter(i => i >= 0);
+      const awal = idx.indexOf(0) >= 0, akhir = idx.indexOf(kal.length - 1) >= 0;
+      if (awal && akhir && idx.length > 1) return ['campuran', 'kalimat utama ada di awal dan di akhir paragraf'];
+      if (awal) return ['deduktif', 'kalimat utama ada di awal paragraf'];
+      if (akhir) return ['induktif', 'kalimat utama ada di akhir paragraf'];
+      return ['berpola bebas', 'kalimat utama ada di tengah paragraf'];
+    }
+
+    function ulang() {
+      beres = false;
+      pilih.clear();
+      fb.textContent = '';
+      text.classList.remove('is-revealed');
+      out.hidden = true;
+      out.innerHTML = '';
+      cekBtn.textContent = 'Cek jawaban';
+      cards.forEach(c => {
+        c.disabled = false;
+        c.classList.remove('is-utama', 'is-penjelas', 'is-wrong');
+        c.setAttribute('aria-pressed', 'false');
+      });
+    }
+
+    function buka() {
+      beres = true;
+      fb.textContent = 'Benar. Kalimat lain hanya penjelas — perhatikan alasannya.';
+      text.classList.add('is-revealed');
+      cards.forEach((c, i) => {
+        c.disabled = true;
+        c.classList.remove('is-wrong');
+        c.setAttribute('aria-pressed', utama[i] ? 'true' : 'false');
+        c.classList.add(utama[i] ? 'is-utama' : 'is-penjelas');
+      });
+      const p = pola();
+      out.innerHTML =
+        '<p class="sorot__verdict">Paragraf <b>' + p[0] + '</b><small>' + p[1] + '</small></p>' +
+        (cfg.simpulan ? '<p class="sorot__simpul"><span>Simpulan paragraf</span>' + cfg.simpulan + '</p>' : '');
+      out.hidden = false;
+      cekBtn.textContent = 'Ulangi';
+    }
+
+    function cek() {
+      if (beres) { ulang(); return; }
+      if (!pilih.size) { fb.textContent = 'Klik dulu satu kalimat, baru tekan Cek jawaban.'; return; }
+      const salah = Array.from(pilih).filter(i => !utama[i]);
+      if (salah.length) {
+        const i = salah[0];
+        fb.textContent = 'Kalimat ' + (i + 1) + ' belum bisa jadi ide pokok: ' + (kal[i][2] || 'isinya masih rincian.');
+        cards[i].classList.remove('is-wrong');
+        void cards[i].offsetWidth;   /* supaya animasinya bisa diputar ulang */
+        cards[i].classList.add('is-wrong');
+        return;
+      }
+      if (utama.some((v, i) => v && !pilih.has(i))) {
+        fb.textContent = 'Tepat sebagian: kalimat yang kamu pilih memang kalimat utama, tapi paragraf ini masih punya kalimat utama lain.';
+        return;
+      }
+      buka();
+    }
+
+    host.addEventListener('click', e => {
+      if (e.target.closest('[data-cek]')) { cek(); return; }
+      const b = e.target.closest('.sorot__s');
+      if (!b || beres) return;
+      const i = Number(b.dataset.i);
+      b.classList.remove('is-wrong');
+      if (pilih.has(i)) { pilih.delete(i); b.setAttribute('aria-pressed', 'false'); }
+      else { pilih.add(i); b.setAttribute('aria-pressed', 'true'); }
+      fb.textContent = '';
+    });
+  }
+
+  /* ---------- Widget lempar dadu (peluang) ----------
+     Peluang teoretis 1/6 dibandingkan dengan hasil lemparan murid sendiri,
+     supaya terlihat bahwa percobaan makin dekat ke 1/6 saat lemparan bertambah. */
+  const PIPS = [[4], [0, 8], [0, 4, 8], [0, 2, 6, 8], [0, 2, 4, 6, 8], [0, 2, 3, 5, 6, 8]];
+
+  function mukaDadu(n) {
+    const isi = n ? PIPS[n - 1] : [];
+    let out = '';
+    for (let i = 0; i < 9; i++) out += '<span class="dadu__pip' + (isi.indexOf(i) >= 0 ? ' is-on' : '') + '"></span>';
+    return out;
+  }
+
+  function mountDadu(host) {
+    const MATA = clamp(parseInt(host.dataset.mata, 10) || 6, 1, 6);
+    const hitung = [0, 0, 0, 0, 0, 0];
+    let n = 0, sibuk = false, timer = null;
+
+    host.classList.add('inter', 'inter--dadu');
+    host.innerHTML =
+      '<figcaption class="inter__cap">Coba sendiri · lempar dadu</figcaption>' +
+      '<div class="dadu">' +
+        '<div class="dadu__die" data-die aria-hidden="true">' + mukaDadu(0) + '</div>' +
+        '<div class="dadu__side">' +
+          '<div class="dadu__ctl">' +
+            '<button type="button" class="inter__tab dadu__btn" data-lempar="1">Lempar sekali</button>' +
+            '<button type="button" class="inter__tab dadu__btn" data-lempar="10">Lempar 10×</button>' +
+            '<button type="button" class="inter__tab dadu__btn dadu__ulang" data-ulang>Ulangi</button>' +
+          '</div>' +
+          '<p class="dadu__prob" data-prob role="status" aria-live="polite"></p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="dadu__tally">' +
+        hitung.map((_, i) =>
+          '<div class="dadu__col" data-kolom="' + (i + 1) + '">' +
+            '<span class="dadu__c" data-c>0</span>' +
+            '<span class="dadu__track"><i data-bar></i><em class="dadu__line" title="peluang teoretis 1/6"></em></span>' +
+            '<b class="dadu__f">' + (i + 1) + '</b>' +
+          '</div>').join('') +
+      '</div>' +
+      '<p class="inter__hint">Garis putus-putus adalah peluang teoretis tiap mata, 1/6 ≈ 16,7%. Makin banyak lemparan, makin dekat batang hasil percobaan ke garis itu.</p>';
+
+    const die = host.querySelector('[data-die]');
+    const prob = host.querySelector('[data-prob]');
+    const kolom = Array.prototype.slice.call(host.querySelectorAll('[data-kolom]'));
+    const bar = kolom.map(k => k.querySelector('[data-bar]'));
+    const angka = kolom.map(k => k.querySelector('[data-c]'));
+
+    /* Tinggi batang: frekuensi relatif 0–50% dipetakan ke 0–100% tinggi kotak. */
+    const SKALA = 50;
+
+    function render() {
+      hitung.forEach((v, i) => {
+        const rel = n ? v / n * 100 : 0;
+        angka[i].textContent = v;
+        bar[i].style.height = clamp(rel / SKALA * 100, 0, 100) + '%';
+        kolom[i].classList.toggle('is-target', i === MATA - 1);
+      });
+      if (!n) {
+        prob.innerHTML = 'Tekan <b>Lempar sekali</b>. Sebelum itu, coba tebak dulu: mata berapa yang akan muncul?';
+      } else {
+        const kali = hitung[MATA - 1];
+        prob.innerHTML =
+          'Mata ' + MATA + ' keluar <b>' + kali + '</b> dari ' + n + ' lemparan = <b>' + fmt(kali / n * 100) + '%</b>' +
+          '<small>peluang teoretis 1/6 ≈ 16,7% · frekuensi harapan dalam ' + n +
+          ' lemparan ≈ ' + fmt(n / 6) + ' kali</small>';
+      }
+    }
+
+    const acak = () => 1 + Math.floor(Math.random() * 6);
+
+    function lempar(k) {
+      if (sibuk) return;
+      sibuk = true;
+      host.classList.add('is-roll');
+      const hasil = [];
+      for (let i = 0; i < k; i++) hasil.push(acak());
+      let putar = 0;
+      const batas = k === 1 ? 7 : 5;
+      timer = setInterval(() => {
+        putar++;
+        die.innerHTML = mukaDadu(acak());
+        if (putar < batas) return;
+        clearInterval(timer);
+        timer = null;
+        hasil.forEach(h => { hitung[h - 1]++; });
+        n += hasil.length;
+        die.innerHTML = mukaDadu(hasil[hasil.length - 1]);
+        host.classList.remove('is-roll');
+        sibuk = false;
+        render();
+      }, 60);
+    }
+
+    function ulang() {
+      if (timer) { clearInterval(timer); timer = null; }
+      sibuk = false;
+      host.classList.remove('is-roll');
+      hitung.fill(0);
+      n = 0;
+      die.innerHTML = mukaDadu(0);
+      render();
+    }
+
+    host.addEventListener('click', e => {
+      const l = e.target.closest('[data-lempar]');
+      if (l) { lempar(Number(l.dataset.lempar) || 1); return; }
+      if (e.target.closest('[data-ulang]')) ulang();
+    });
+
+    render();
+  }
+
+  /* ---------- Widget mesin capit bola (peluang tanpa pengembalian) ----------
+     Bola yang terambil tidak dikembalikan, jadi peluang tiap warna berubah
+     setelah setiap ambilan — hal yang paling sering terlewat oleh murid. */
+  const WARNA_BOLA = { emas: '#C9B46A', kaca: '#A8B278' };
+  /* Kotak mesin memuat 6 bola: 3 kolom × 2 baris. */
+  const SLOT_BOLA = [[88, 110], [88, 170], [160, 110], [160, 170], [232, 110], [232, 170]];
+
+  function mountCapit(host) {
+    const data = host.querySelector('script[type="application/json"]');
+    let cfg = null;
+    try { cfg = JSON.parse(data ? data.textContent : ''); } catch (e) { cfg = null; }
+    if (data) data.remove();
+    if (!cfg || !Array.isArray(cfg.isi) || !cfg.isi.length) return;
+
+    const kunci = cfg.isi.map(p => p[0]);
+    const warna = k => WARNA_BOLA[k] || '#9AA45F';
+    const nama = k => (cfg.label && cfg.label[k]) || k;
+
+    const awal = [];
+    cfg.isi.forEach(p => {
+      for (let i = 0; i < (Number(p[1]) || 0) && awal.length < SLOT_BOLA.length; i++) awal.push(p[0]);
+    });
+    if (!awal.length) return;
+
+    let sisa = [], keranjang = [], tebak = null, sibuk = false, waktu = [];
+
+    host.classList.add('inter', 'inter--capit');
+    host.innerHTML =
+      '<figcaption class="inter__cap">Coba sendiri · mesin capit bola</figcaption>' +
+      '<svg class="inter__svg capit__stage" viewBox="0 0 320 268" role="img" aria-label="Mesin capit berisi bola">' +
+        '<line class="capit__rail" x1="46" y1="14" x2="274" y2="14"/>' +
+        '<rect class="capit__glass" x="30" y="34" width="260" height="182" rx="14"/>' +
+        '<g data-balls></g>' +
+        '<g class="capit__car" data-car style="transform:translate(160px,0px)">' +
+          '<rect class="capit__box" x="-15" y="4" width="30" height="12" rx="4"/>' +
+          '<g class="capit__claw" data-claw style="transform:translate(0px,0px)">' +
+            '<line class="capit__rod" x1="0" y1="0" x2="0" y2="44"/>' +
+            '<path class="capit__prong" d="M0 44 L-13 64 M0 44 L13 64"/>' +
+            '<circle class="capit__hold" data-hold cx="0" cy="72" r="15"/>' +
+          '</g>' +
+        '</g>' +
+        '<rect class="capit__tray" x="30" y="222" width="260" height="30" rx="9"/>' +
+        '<g data-tray></g>' +
+      '</svg>' +
+      '<div class="capit__panel">' +
+        '<div class="capit__probs" data-probs></div>' +
+        '<div class="capit__play">' +
+          '<p class="capit__ask">Bola mana yang <b>paling mungkin</b> terambil?</p>' +
+          '<div class="capit__tebakan" data-tebakan>' +
+            kunci.map(k => '<button type="button" class="inter__tab capit__tebak" data-tebak="' + k +
+              '" aria-pressed="false" style="--c:' + warna(k) + '">' + nama(k) + '</button>').join('') +
+          '</div>' +
+          '<button type="button" class="inter__tab capit__go" data-ambil>Tekan capit</button>' +
+          '<button type="button" class="inter__tab capit__ulang" data-ulang>Isi ulang</button>' +
+        '</div>' +
+      '</div>' +
+      '<p class="capit__fb" data-fb role="status" aria-live="polite"></p>' +
+      '<p class="inter__hint">Bola yang sudah terambil tidak dikembalikan, jadi peluang warna yang tersisa berubah setelah setiap ambilan.</p>';
+
+    const balls = host.querySelector('[data-balls]');
+    const tray = host.querySelector('[data-tray]');
+    const car = host.querySelector('[data-car]');
+    const claw = host.querySelector('[data-claw]');
+    const hold = host.querySelector('[data-hold]');
+    const probs = host.querySelector('[data-probs]');
+    const fb = host.querySelector('[data-fb]');
+    const go = host.querySelector('[data-ambil]');
+    const tebakBtn = Array.prototype.slice.call(host.querySelectorAll('[data-tebak]'));
+
+    function render() {
+      balls.innerHTML = sisa.map(b =>
+        '<circle class="capit__ball" cx="' + b.x + '" cy="' + b.y + '" r="15" fill="' + warna(b.key) + '"/>').join('');
+      tray.innerHTML = keranjang.map((k, i) =>
+        '<circle class="capit__ball" cx="' + (58 + i * 34) + '" cy="237" r="11" fill="' + warna(k) + '"/>').join('');
+
+      const n = sisa.length;
+      probs.innerHTML = kunci.map(k => {
+        const c = sisa.filter(b => b.key === k).length;
+        const p = n ? c / n * 100 : 0;
+        return '<div class="capit__row' + (c ? '' : ' is-empty') + '">' +
+          '<span class="capit__dot" style="background:' + warna(k) + '"></span>' +
+          '<span class="capit__nm">' + nama(k) + '</span>' +
+          '<b class="capit__frac">' + (n ? c + '/' + n : '—') + '</b>' +
+          '<span class="capit__pct">' + (n ? fmt(p) + '%' : '—') + '</span>' +
+          '<span class="capit__meter"><i style="width:' + p + '%;background:' + warna(k) + '"></i></span>' +
+        '</div>';
+      }).join('');
+    }
+
+    function langkah(ms, fn) { waktu.push(setTimeout(fn, ms)); }
+
+    function ulang() {
+      waktu.forEach(t => clearTimeout(t));
+      waktu = [];
+      sibuk = false;
+      tebak = null;
+      keranjang = [];
+      const urut = awal.slice();
+      for (let i = urut.length - 1; i > 0; i--) {   /* acak letak bola di dalam kotak */
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = urut[i]; urut[i] = urut[j]; urut[j] = t;
+      }
+      sisa = urut.map((k, i) => ({ key: k, x: SLOT_BOLA[i][0], y: SLOT_BOLA[i][1] }));
+      go.disabled = false;
+      car.style.transform = 'translate(160px,0px)';
+      claw.style.transform = 'translate(0px,0px)';
+      claw.classList.remove('is-holding');
+      tebakBtn.forEach(b => { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
+      fb.textContent = '';
+      render();
+    }
+
+    function kabar(key, dugaan, sebelum) {
+      const jumlah = k => sebelum.filter(b => b.key === k).length;
+      const terbanyak = Math.max.apply(null, kunci.map(jumlah));
+      const kandidat = kunci.filter(k => jumlah(k) === terbanyak);
+      const p = Math.round(jumlah(key) / sebelum.length * 100);
+      let pesan = 'Yang terambil <b>' + nama(key) + '</b>. Sebelum ambilan itu peluangnya <b>' +
+        jumlah(key) + '/' + sebelum.length + ' ≈ ' + p + '%</b>. ';
+
+      if (dugaan === key) {
+        pesan += 'Tebakanmu tepat.';
+      } else if (kandidat.indexOf(dugaan) >= 0) {
+        pesan += 'Tebakanmu ' + nama(dugaan) + ' memang yang peluangnya terbesar (' + terbanyak + '/' +
+          sebelum.length + '), tetapi yang keluar ' + nama(key) + '. Peluang terbesar berarti paling sering terjadi, bukan pasti terjadi.';
+      } else {
+        pesan += 'Tebakanmu ' + nama(dugaan) + ', padahal ' + nama(kandidat[0]) + ' yang peluangnya lebih besar (' +
+          terbanyak + '/' + sebelum.length + '). Bandingkan lagi angkanya sebelum menebak.';
+      }
+
+      if (!sisa.length) {
+        pesan += '<small>Kotak sudah kosong — semua bola terambil. Tekan Isi ulang untuk mengulang percobaan.</small>';
+      } else {
+        const rinci = kunci.map(k => jumlah(k) - (k === key ? 1 : 0) + ' ' + nama(k)).join(', ');
+        const sisaJumlah = sisa.filter(b => b.key === key).length;
+        pesan += '<small>Karena tidak dikembalikan, isi kotak sekarang berubah: ' + rinci +
+          '. Peluang ' + nama(key) + ' pada ambilan berikutnya ' + sisaJumlah + '/' + sisa.length +
+          ' ≈ ' + fmt(sisaJumlah / sisa.length * 100) + '%.</small>';
+      }
+      fb.innerHTML = pesan;
+    }
+
+    function ambil() {
+      if (sibuk) return;
+      if (!sisa.length) {
+        fb.innerHTML = 'Kotak sudah kosong. Tekan <b>Isi ulang</b> untuk mencoba lagi.';
+        return;
+      }
+      if (!tebak) {
+        fb.textContent = 'Pilih dulu warna yang menurutmu paling mungkin keluar, lalu tekan capit.';
+        return;
+      }
+      sibuk = true;
+      go.disabled = true;
+      fb.textContent = '';
+
+      const i = Math.floor(Math.random() * sisa.length);
+      const dapat = sisa[i];
+      const dugaan = tebak;
+      const sebelum = sisa.slice();
+
+      car.style.transform = 'translate(' + dapat.x + 'px,0px)';
+      langkah(380, () => { claw.style.transform = 'translate(0px,' + (dapat.y - 72) + 'px)'; });
+      langkah(720, () => {
+        sisa.splice(i, 1);
+        hold.setAttribute('fill', warna(dapat.key));
+        claw.classList.add('is-holding');
+        render();
+        claw.style.transform = 'translate(0px,0px)';
+      });
+      langkah(1100, () => {
+        claw.classList.remove('is-holding');
+        keranjang.push(dapat.key);
+        render();
+        kabar(dapat.key, dugaan, sebelum);
+        sibuk = false;
+        tebak = null;
+        go.disabled = false;
+        tebakBtn.forEach(b => { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
+      });
+    }
+
+    host.addEventListener('click', e => {
+      const t = e.target.closest('[data-tebak]');
+      if (t) {
+        if (sibuk || !sisa.length) return;
+        tebak = t.dataset.tebak;
+        tebakBtn.forEach(b => {
+          b.classList.toggle('is-active', b === t);
+          b.setAttribute('aria-pressed', b === t ? 'true' : 'false');
+        });
+        fb.textContent = '';
+        return;
+      }
+      if (e.target.closest('[data-ambil]')) { ambil(); return; }
+      if (e.target.closest('[data-ulang]')) ulang();
+    });
+
+    ulang();
+  }
+
+  const WIDGETS = { graph: mountGraph, net: mountNet, sorot: mountSorot, dadu: mountDadu, capit: mountCapit };
   document.querySelectorAll('[data-widget]').forEach(host => {
     const mount = WIDGETS[host.dataset.widget];
     if (mount) mount(host);
