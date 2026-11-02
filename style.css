@@ -986,3 +986,20 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
   .lesson { padding: 20px; }
   .lesson h2 { font-size: 20px; }
 }
+
+/* =========================================================
+   LAYAR PEMBUKA (opening screen)
+   Hexagon bergetar lalu melebur menjadi logo. Logikanya di opening.js
+   ========================================================= */
+.splash {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--text);            /* krem, seperti kertas */
+  color: var(--red);
+}
+.splash__stage { width: 132px; height: 132px; display: block; overflow: visible; }
+.splash__shape { color: var(--red); }
+.splash__logo { opacity: 0; }
+
+/* Tanpa animasi (prefers-reduced-motion): jangan pernah menahan halaman */
+@media (prefers-reduced-motion: reduce) { .splash { display: none; } }
