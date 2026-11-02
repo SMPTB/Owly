@@ -238,6 +238,8 @@ const MATERI = [
       ]],
       ['h', `Rumus fungsi`],
       ['p', `Fungsi linear ditulis f(x) = ax + b. Nilai fungsi di x = 3 ditulis f(3) dan dihitung dengan mengganti x dengan 3.`],
+      ['graph', { a: 2, b: 1, x: 1 }],
+      ['p', `Geser <b>a</b> untuk membuat garis makin tegak atau makin landai, <b>b</b> untuk menggeser garis naik-turun, dan <b>x</b> untuk melihat bahwa satu nilai x selalu memberi tepat satu nilai f(x). Itulah ciri fungsi.`],
       ['ex', `Diketahui f(x) = 2x + 1. Hitung f(3), lalu cari x jika f(x) = 11.`, [
         `f(3) = 2(3) + 1 = 7.`,
         `f(x) = 11 → 2x + 1 = 11 → 2x = 10 → x = 5.`
@@ -429,6 +431,8 @@ const MATERI = [
         `V = 24 × 10 = 240 cm<sup>3</sup>.`
       ], `240 cm<sup>3</sup>`],
       ['p', `<b>Jaring-jaring</b> adalah bangun ruang yang dibuka menjadi bidang datar. Jaring-jaring prisma segitiga terdiri atas 2 segitiga (alas dan tutup) dan 3 persegi panjang (sisi tegak).`],
+      ['net', { shape: 'kubus' }],
+      ['p', `Coba lipat dan bentangkan bangun di atas. Saat masih berupa jaring-jaring, hitung dulu banyak sisinya; saat sudah terlipat, kamu bisa melihat sisi mana yang tadinya berimpit menjadi rusuk.`],
       ['task', `Coba sendiri`, [
         `Hitung volume tabung berjari-jari 7 cm dan tinggi 10 cm (π = 22/7).`,
         `Ada berapa persegi panjang pada jaring-jaring prisma segitiga?`,

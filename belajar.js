@@ -31,6 +31,16 @@
       case 'table':
         return '<div class="ltable"><table><thead><tr>' + b[1].map(h => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' +
           b[2].map(r => '<tr>' + r.map(c => '<td>' + c + '</td>').join('') + '</tr>').join('') + '</tbody></table></div>';
+      /* Widget interaktif: gambar & logikanya dipasang oleh interaktif.js */
+      case 'graph': {
+        const c = b[1] || {};
+        return '<figure class="inter" data-widget="graph" data-a="' + (c.a != null ? c.a : 2) +
+          '" data-b="' + (c.b != null ? c.b : 1) + '" data-x="' + (c.x != null ? c.x : 1) + '"></figure>';
+      }
+      case 'net': {
+        const c = b[1] || {};
+        return '<figure class="inter" data-widget="net" data-shape="' + (c.shape || 'kubus') + '"></figure>';
+      }
       case 'ex':
         return '<div class="example"><span class="example__label">Contoh soal</span><p class="example__q">' + b[1] + '</p>' +
           '<details><summary>Lihat langkah penyelesaian</summary><ol>' + b[2].map(s => '<li>' + s + '</li>').join('') + '</ol>' +

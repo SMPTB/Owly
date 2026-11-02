@@ -1003,3 +1003,62 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 
 /* Tanpa animasi (prefers-reduced-motion): jangan pernah menahan halaman */
 @media (prefers-reduced-motion: reduce) { .splash { display: none; } }
+
+/* =========================================================
+   WIDGET INTERAKTIF (materi di belajar.html)
+   Struktur & gambarnya dibuat oleh interaktif.js
+   ========================================================= */
+.inter {
+  margin: 0; background: var(--bg); border: 1px solid var(--border-2); border-radius: 12px;
+  padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px;
+}
+.inter__cap {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--olive);
+}
+.inter__cap::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex: none; }
+.inter__body { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.inter__plot { flex: 1 1 300px; min-width: 0; }
+.inter__svg { display: block; width: 100%; height: auto; }
+.inter__side { flex: 0 1 196px; min-width: 170px; display: flex; flex-direction: column; gap: 10px; }
+.inter__eq { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.inter__val { font-size: 19px; font-weight: 700; line-height: 1.25; color: var(--gold); font-variant-numeric: tabular-nums; }
+.inter__val small { display: block; margin-top: 3px; font-size: 11px; font-weight: 400; color: var(--muted); }
+.inter__ctl { display: flex; flex-direction: column; gap: 9px; }
+.inter__hint { font-size: 11px; line-height: 1.6; color: var(--muted); }
+
+/* Satu penggeser: label + angka di atas, batangnya selebar kolom */
+.ctl { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 8px; font-size: 11px; color: var(--muted); }
+.ctl b { color: var(--text); font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ctl input[type="range"] { grid-column: 1 / -1; width: 100%; margin: 0; }
+
+/* Penggeser versi gelap */
+.inter input[type="range"] { -webkit-appearance: none; appearance: none; height: 16px; background: none; cursor: pointer; }
+.inter input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 100px; background: var(--border-2); }
+.inter input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 13px; height: 13px; margin-top: -4.5px;
+  border: 2px solid var(--bg); border-radius: 50%; background: var(--gold);
+}
+.inter input[type="range"]::-moz-range-track { height: 4px; border-radius: 100px; background: var(--border-2); }
+.inter input[type="range"]::-moz-range-thumb { width: 11px; height: 11px; border: 2px solid var(--bg); border-radius: 50%; background: var(--gold); }
+
+/* Tab pilihan bangun ruang */
+.inter__tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.inter__tab {
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 100px;
+  padding: 6px 11px; font-size: 11px; color: var(--muted);
+  transition: border-color .15s, color .15s, background .15s;
+}
+.inter__tab:hover { border-color: var(--olive); color: var(--text); }
+.inter__tab.is-active { background: var(--red); border-color: var(--red); color: var(--text); font-weight: 600; }
+
+/* Jaring-jaring bisa diputar dengan menarik gambar */
+.inter--net .inter__svg { cursor: grab; touch-action: none; }
+.inter--net .inter__svg:active { cursor: grabbing; }
+.inter__ends { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); }
+.inter__info { font-size: 12px; line-height: 1.6; color: var(--muted); }
+.inter__info b { color: var(--text); }
+
+@media (max-width: 680px) {
+  .inter__side { flex: 1 1 100%; }
+}
