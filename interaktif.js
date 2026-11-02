@@ -86,13 +86,66 @@
     ];
   }
 
+  /* Tabung: selimut yang datar dilengkungkan, bukan dilipat pada engsel.
+     Titik (x, y, 0) dipetakan ke busur berjari-jari r; kelengkungannya
+     κ = t / r, jadi saat t = 0 hasilnya tetap titik asal (datar). */
+  function bendPoint(p, r, t) {
+    const k = t / r;
+    const a = k * p[0];
+    if (Math.abs(a) < 1e-6) return p;
+    return [Math.sin(a) / k, p[1], (1 - Math.cos(a)) / k];
+  }
+
+  /* Lingkaran datar berjari-jari r, pusatnya di (0, cy) */
+  function disc(r, cy, n) {
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const a = i / n * Math.PI * 2;
+      pts.push([Math.sin(a) * r, cy + Math.cos(a) * r, 0]);
+    }
+    return pts;
+  }
+
+  /* Tabung: jari-jari r, tinggi h.
+     Selimut datar 2πr × h dipecah jadi banyak pita supaya bisa dilengkungkan;
+     alas dan tutup berupa lingkaran yang berengsel di titik singgungnya. */
+  function cylinderFaces(r, h) {
+    const N = 36, C = 2 * Math.PI * r, faces = [], v = { fill: '#3F4823', stroke: 0.14 };
+    for (let i = 0; i < N; i++) {
+      /* Semua pita bagian dari satu selimut, jadi warnanya disamakan:
+         yang terlihat hanya garis sambung yang tipis. */
+      faces.push({ poly: rect(C * i / N, 0, C * (i + 1) / N, h), bend: r, fill: v.fill, stroke: v.stroke });
+    }
+    faces.push({ poly: disc(r, h + r, 48), hinge: { o: [0, h, 0], k: KX }, ang: t => Q * t, fill: '#4C5729' });   /* tutup */
+    faces.push({ poly: disc(r, -r, 48), hinge: { o: [0, 0, 0], k: KX }, ang: t => -Q * t, fill: '#333B1C' });     /* alas */
+    return faces;
+  }
+
+  /* Limas: alas persegi s × s, tinggi h.
+     Empat segitiga berengsel di rusuk alas; sudut lipatnya lebih dari 90°
+     supaya puncaknya bertemu di atas pusat alas. */
+  function pyramidFaces(s, h) {
+    const l = Math.hypot(s / 2, h);
+    const a = Math.PI - Math.atan2(h, s / 2);
+    return [
+      { poly: rect(0, 0, s, s) },                                                                  /* alas */
+      { poly: [[0, 0, 0], [s, 0, 0], [s / 2, -l, 0]], parent: 0, hinge: { o: [0, 0, 0], k: KX }, ang: t => -a * t },   /* depan */
+      { poly: [[s, s, 0], [0, s, 0], [s / 2, s + l, 0]], parent: 0, hinge: { o: [0, s, 0], k: KX }, ang: t => a * t },  /* belakang */
+      { poly: [[0, s, 0], [0, 0, 0], [-l, s / 2, 0]], parent: 0, hinge: { o: [0, 0, 0], k: KY }, ang: t => a * t },      /* kiri */
+      { poly: [[s, 0, 0], [s, s, 0], [s + l, s / 2, 0]], parent: 0, hinge: { o: [s, 0, 0], k: KY }, ang: t => -a * t }   /* kanan */
+    ];
+  }
+
   /* Lipat semua sisi pada waktu t (0 = jaring-jaring datar, 1 = bangun ruang) */
   function foldFaces(faces, t) {
     const xf = [];
     return faces.map((f, i) => {
       const parent = f.parent == null ? [] : xf[f.parent];
       xf[i] = (f.hinge ? [{ o: f.hinge.o, k: f.hinge.k, a: f.ang(t) }] : []).concat(parent);
-      return f.poly.map(p => xf[i].reduce((q, s) => rot(q, s.o, s.k, s.a), p));
+      return f.poly.map(p => {
+        const q = f.bend ? bendPoint(p, f.bend, t) : p;   /* lengkung dulu, lalu engsel */
+        return xf[i].reduce((r, s) => rot(r, s.o, s.k, s.a), q);
+      });
     });
   }
 
@@ -117,6 +170,21 @@
       pivot: [2, 3, 1.5],
       flat: 'Jaring-jaring prisma segitiga — 2 segitiga + 3 persegi panjang.',
       space: 'Prisma segitiga · alas 4 cm, tinggi 3 cm · volume 36 cm³'
+    },
+    tabung: {
+      label: 'Tabung',
+      faces: () => cylinderFaces(2, 4),
+      pivot: [0, 2, 2],
+      flat: 'Jaring-jaring tabung — 1 persegi panjang (selimut) + 2 lingkaran.',
+      space: 'Tabung · jari-jari 2 cm, tinggi 4 cm · volume 50,3 cm³'
+    },
+    limas: {
+      label: 'Limas',
+      faces: () => pyramidFaces(6, 4),
+      pivot: [3, 3, 4 / 3],
+      elev: 16,   /* kamera sedikit lebih tinggi supaya alas limas terlihat */
+      flat: 'Jaring-jaring limas — 1 persegi + 4 segitiga.',
+      space: 'Limas · alas 6 cm, tinggi 4 cm · volume 48 cm³'
     }
   };
 
@@ -126,13 +194,14 @@
   /* Gambar satu keadaan bangun ruang. yaw & tilt dalam derajat. */
   function netSvg(key, t, yawDeg, tiltDeg) {
     const shape = SHAPES[key] || SHAPES.kubus;
+    const src = shape.faces();
     const pv = shape.pivot;
     const yaw = yawDeg * R;
-    const elev = clamp(90 - 62 * t + tiltDeg, 8, 88) * R;
+    const elev = clamp(90 - 62 * t + tiltDeg + (shape.elev || 0), 8, 88) * R;
     const cy = Math.cos(yaw), sy = Math.sin(yaw);
     const ce = Math.cos(elev), se = Math.sin(elev);
 
-    const polys = foldFaces(shape.faces(), t).map(poly => poly.map(p => {
+    const polys = foldFaces(src, t).map(poly => poly.map(p => {
       const x = p[0] - pv[0], y = p[1] - pv[1], z = p[2] - pv[2];
       const x1 = x * cy - y * sy;
       const y1 = x * sy + y * cy;
@@ -158,9 +227,12 @@
       .sort((a, b) => a.d - b.d);
 
     const body = order.map(o => {
+      const face = src[o.i];
+      const fill = face.fill || FILLS[o.i % FILLS.length];
+      const so = face.stroke != null ? face.stroke : 0.55;
       const pts = polys[o.i].map(p => r1(p.x * sc + ox) + ',' + r1(p.y * sc + oy)).join(' ');
-      return '<polygon points="' + pts + '" fill="' + FILLS[o.i % FILLS.length] +
-        '" stroke="#C9B46A" stroke-opacity=".55" stroke-width="1.2" stroke-linejoin="round"/>';
+      return '<polygon points="' + pts + '" fill="' + fill +
+        '" stroke="#C9B46A" stroke-opacity="' + so + '" stroke-width="1.2" stroke-linejoin="round"/>';
     }).join('');
 
     const info = t < 0.05 ? shape.flat : t > 0.95 ? shape.space : 'Sedang dilipat — ' + Math.round(t * 100) + '%';
