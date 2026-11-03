@@ -236,10 +236,18 @@ const MATERI = [
         [`{(1,a), (1,b), (2,c), (3,d)}`, `Bukan`, `Angka 1 punya dua pasangan`],
         [`{(1,c), (2,d)}`, `Bukan`, `Angka 3 tidak punya pasangan`]
       ]],
+      ['h', `Diagram panah`],
+      ['p', `Fungsi paling mudah dilihat lewat <b>diagram panah</b>: anggota A di kiri, anggota B di kanan, dan setiap anggota A diberi satu panah menuju pasangannya di B. Di bawah ini kamu yang memasang panahnya.`],
+      ['panah', { fungsi: 'tambah' }],
+      ['p', `Sudah ketemu polanya? Dua anggota A boleh menunjuk ke anggota B yang sama, dan anggota B yang tidak dituju panah pun tidak masalah. Yang membuat relasi gagal menjadi fungsi hanya satu hal: ada anggota A yang tidak punya panah, atau punya dua panah sekaligus.`],
       ['h', `Rumus fungsi`],
       ['p', `Fungsi linear ditulis f(x) = ax + b. Nilai fungsi di x = 3 ditulis f(3) dan dihitung dengan mengganti x dengan 3.`],
       ['graph', { a: 2, b: 1, x: 1 }],
       ['p', `Geser <b>a</b> untuk membuat garis makin tegak atau makin landai, <b>b</b> untuk menggeser garis naik-turun, dan <b>x</b> untuk melihat bahwa satu nilai x selalu memberi tepat satu nilai f(x). Itulah ciri fungsi.`],
+      ['h', `Translasi grafik`],
+      ['p', `Grafik fungsi juga bisa <b>digeser</b> tanpa mengubah bentuknya. Naikkan <b>p</b> dan <b>q</b> pada penggeser di atas: setiap titik (x; y) berpindah ke (x + p; y + q), persis seperti translasi pada geometri. Garis putus-putus adalah grafik f(x) sebelum digeser, garis penuh adalah bayangannya.`],
+      ['p', `Aturan bayangannya ditulis g(x) = f(x − p) + q. Tanda di dalam kurung berlawanan dengan arah geser: digeser <b>ke kanan</b> 2 satuan berarti x diganti (x − 2). Untuk f(x) = 2x + 1 yang digeser (2; 3), bayangannya g(x) = 2(x − 2) + 1 + 3 = 2x.`],
+      ['note', `Kemiringan tidak berubah`, `Translasi hanya memindahkan grafik, tidak memutar atau meregangkannya. Karena itu grafik f dan bayangannya selalu <b>sejajar</b>, dengan kemiringan a yang sama.`],
       ['ex', `Diketahui f(x) = 2x + 1. Hitung f(3), lalu cari x jika f(x) = 11.`, [
         `f(3) = 2(3) + 1 = 7.`,
         `f(x) = 11 → 2x + 1 = 11 → 2x = 10 → x = 5.`
@@ -273,6 +281,9 @@ const MATERI = [
         `a = 2 dan r = 6 ÷ 2 = 3.`,
         `U<sub>5</sub> = 2 × 3<sup>4</sup> = 2 × 81 = 162.`
       ], `162`],
+      /* Penggeser barisan: aritmetika jadi nilai awalnya, tapi tab Geometri
+         dan Fibonacci bisa dicoba langsung tanpa pindah halaman. */
+      ['barisan', { jenis: 'aritmetika', a: 3, b: 4, n: 6 }],
       ['note', `Pola dalam kehidupan`, `Susunan kursi pada gedung pertunjukan, tumpukan batu bata, atau tabungan yang bertambah tetap tiap bulan dapat dimodelkan dengan barisan aritmetika.`],
       ['task', `Coba sendiri`, [
         `Tentukan suku ke-12 dari barisan 5, 8, 11, …`,
@@ -309,6 +320,10 @@ const MATERI = [
         ['Bertolak belakang', `Besarnya sama`],
         ['Tiga sudut dalam segitiga', `Jumlahnya 180°`]
       ]],
+      ['h', `Dua sudut berpelurus`],
+      ['p', `Kalau dua sudut menempel pada satu garis lurus, keduanya disebut <b>berpelurus</b>. Geser sudut kiri di bawah: sudut kanan ikut berubah supaya jumlahnya selalu 180°.`],
+      ['sudut', { a: 55 }],
+      ['p', `Sudut kiri 55° berarti sudut kanan 180° − 55° = 125°. Perhatikan juga jenisnya: kalau satu sudut lancip (kurang dari 90°), pasangannya tumpul, dan sebaliknya.`],
       ['h', `Dua garis sejajar dipotong garis lain`],
       ['ul', [
         `Sudut sehadap besarnya sama.`,
@@ -525,7 +540,10 @@ const MATERI = [
         `P(6) = 1/6.`,
         `Frekuensi harapan = 1/6 × 60 = 10.`
       ], `10 kali`],
-      ['dadu', { mata: 6 }],
+      ['dadu', {
+        mata: 6,
+        note: `Grafiknya menampilkan frekuensi relatif mata dadu yang dituju dari semua lemparan: makin banyak lemparan, makin condong ke 16,7% (1/6).`
+      }],
       ['ex', `Dari kantong berisi 4 kelereng merah dan 2 putih, diambil satu kelereng tanpa dikembalikan, lalu diambil satu lagi. Berapa peluang keduanya merah?`, [
         `Pengambilan pertama: 4/6.`,
         `Setelah satu merah terambil, tersisa 3 merah dari 5 kelereng: 3/5.`,

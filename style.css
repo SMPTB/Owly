@@ -1130,8 +1130,8 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .dadu__pip.is-on { background: var(--gold); }
 .inter--dadu.is-roll .dadu__die { transform: rotate(-7deg) scale(.96); }
 .dadu__side { flex: 1 1 190px; display: flex; flex-direction: column; gap: 10px; }
-.dadu__ctl { display: flex; flex-wrap: wrap; gap: 6px; }
-.dadu__ulang { color: var(--muted); }
+.dadu__ctl { display: flex; flex-wrap: wrap; gap: 6px; }  .dadu__ulang { color: var(--muted); }
+  .dadu__note { font-size: 11px; line-height: 1.5; color: var(--muted); }
 .dadu__prob { font-size: 13px; line-height: 1.5; }
 .dadu__prob b { color: var(--gold); font-variant-numeric: tabular-nums; }
 .dadu__prob small { display: block; margin-top: 4px; font-size: 11px; line-height: 1.6; color: var(--muted); }
@@ -1144,6 +1144,83 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
   background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px;
 }
 .dadu__track i { display: block; width: 100%; height: 0; background: var(--olive); transition: height .3s ease; }
+.dadu__grafik { display: none; margin-top: 10px; }
+.inter--dadu.is-done .dadu__grafik { display: block; }
+.dadu__leg { font-size: 11px; color: var(--text); margin-bottom: 6px; }
+.dadu__leg i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.dadu__svg { display: block; width: 100%; height: auto; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border); }
+.dadu__line { fill: none; stroke: var(--olive); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.dadu__dot { fill: var(--olive); stroke: var(--bg); stroke-width: 2; }
+.dadu__guide { stroke: var(--gold); stroke-dasharray: 3 2; stroke-width: 1.5; opacity: .75; }
+.dadu__pct { font-size: 9px; fill: var(--gold); font-variant-numeric: tabular-nums; }
+.dadu__axis { font-size: 9px; fill: var(--muted); }
+
+/* ---------- Widget penggeser barisan bilangan ---------- */
+.bar__strip { display: flex; flex-wrap: wrap; gap: 6px; }
+.bar__s {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  min-width: 46px; padding: 6px 8px;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+  font-family: var(--font); font-size: 13px; font-weight: 600; line-height: 1.2;
+  color: var(--text); font-variant-numeric: tabular-nums; cursor: pointer;
+  transition: border-color .15s, background .15s, opacity .15s;
+}
+.bar__s small { font-size: 9px; font-weight: 400; letter-spacing: .03em; color: var(--muted); }
+.bar__s:hover:not(.is-next) { border-color: var(--olive); }
+.bar__s.is-now { border-color: var(--gold); background: rgba(201, 180, 106, .12); }
+.bar__s.is-now b, .bar__s.is-now small { color: var(--gold); }
+.bar__s.is-next { opacity: .4; cursor: default; }
+.bar__body { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.bar__readout { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.bar__u { font-size: 19px; font-weight: 700; line-height: 1.25; color: var(--gold); font-variant-numeric: tabular-nums; }
+.bar__rumus { font-size: 12px; line-height: 1.6; color: var(--text); font-variant-numeric: tabular-nums; }
+.bar__sum { font-size: 11px; line-height: 1.6; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar__sum b { color: var(--text); }
+.bar__ctl { flex: 0 1 210px; min-width: 170px; }
+
+/* ---------- Widget diagram panah (relasi & fungsi) ---------- */
+.panah__svg { display: block; width: 100%; max-width: 340px; height: auto; margin: 0 auto; }
+.panah__judul { font-family: var(--font); font-size: 10px; letter-spacing: .05em; fill: var(--olive); }
+.panah__garis { fill: none; stroke-width: 2; stroke-linecap: round; }
+.panah__garis.is-benar { stroke: var(--gold); }
+.panah__kepala.is-benar { fill: var(--gold); }
+.panah__garis.is-salah { stroke: var(--orange); stroke-dasharray: 5 4; }
+.panah__kepala.is-salah { fill: var(--orange); }
+.panah__titik { cursor: pointer; outline: none; }
+.panah__bulat { fill: var(--surface-2); stroke: var(--border-2); stroke-width: 1.5; transition: stroke .15s ease, fill .15s ease; }
+.panah__bulat--a.is-terisi { stroke: var(--olive); }
+.panah__bulat.is-pilih { stroke: var(--gold); fill: rgba(201, 180, 106, .16); }
+.panah__titik:hover .panah__bulat { stroke: var(--gold); }
+.panah__titik:focus-visible .panah__bulat { stroke: var(--gold); stroke-width: 2.5; }
+.panah__isi { fill: var(--text); font-family: var(--font); font-size: 11px; font-weight: 700; }
+.panah__stat { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.panah__stat b { color: var(--gold); }
+.panah__fb { font-size: 12px; line-height: 1.6; }
+.panah__fb b { color: var(--gold); }
+.panah__fb small { display: block; margin-top: 4px; font-size: 11px; line-height: 1.6; color: var(--muted); }
+.panah__btn { display: flex; flex-wrap: wrap; gap: 6px; }
+.panah__periksa { color: var(--gold); border-color: var(--olive-dim); }
+.panah__ulang { color: var(--muted); }
+.inter--panah.is-lulus .panah__stat b { color: var(--gold); }
+
+/* ---------- Widget dua sudut berpelurus ---------- */
+.sudut__garis { stroke: var(--muted); stroke-width: 2; stroke-linecap: round; }
+.sudut__kaki { stroke: var(--text); stroke-width: 2.4; stroke-linecap: round; }
+.sudut__busur { fill: none; stroke-width: 2; stroke-linecap: round; }
+.sudut__busur--kiri { stroke: var(--gold); }
+.sudut__busur--kanan { stroke: var(--orange); }
+.sudut__val { font-family: var(--font); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sudut__val--kiri { fill: var(--gold); }
+.sudut__val--kanan { fill: var(--orange); }
+.sudut__titik { fill: var(--text); }
+
+/* Baris rumus bayangan di bawah grafik fungsi saat digeser */
+.inter__geser { font-size: 11px; line-height: 1.55; color: var(--muted); }
+.inter__geser b { display: block; margin: 2px 0; font-size: 12px; color: var(--gold); font-variant-numeric: tabular-nums; }
+
+/* .ctl memakai display:grid, jadi atribut hidden perlu ditegaskan */
+.ctl[hidden] { display: none; }
+
 /* 16,7% dari skala 50% = 33,3% tinggi batang, jadi garisnya di 66,7% dari atas */
 .dadu__line { position: absolute; left: 0; right: 0; top: 66.7%; border-top: 1px dashed var(--gold); opacity: .5; }
 .dadu__f { font-size: 11px; color: var(--muted); }
@@ -1195,6 +1272,8 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 
 @media (max-width: 680px) {
   .inter__side { flex: 1 1 100%; }
+  .bar__ctl { flex: 1 1 100%; }
+  .bar__s { min-width: 40px; padding: 5px 7px; font-size: 12px; }
   .dadu__die { width: 78px; height: 78px; }
   .dadu__pip { width: 11px; height: 11px; }
   .dadu__track { height: 62px; }

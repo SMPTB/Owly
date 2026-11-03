@@ -1,8 +1,9 @@
 /* =========================================================
    interaktif.js — widget belajar interaktif (belajar.html)
    Widget dipanggil lewat atribut data-widget:
-     · "graph" — grafik fungsi linear f(x) = ax + b, dengan
-                 penggeser a, b, dan x. Nilai f(x) tampil di grafik.
+     · "graph" — grafik fungsi linear f(x) = ax + b, dengan penggeser
+                 a, b, x, serta geseran p dan q yang memindahkan
+                 seluruh grafik (translasi grafik).
      · "net"   — bangun ruang (kubus, balok, prisma segitiga, tabung,
                  limas) yang bisa dilipat jadi jaring-jaring.
      · "sorot" — paragraf yang kalimat utamanya harus ditandai murid,
@@ -11,6 +12,10 @@
                  1/6 dengan frekuensi hasil percobaan.
      · "capit" — mesin capit bola: peluang tiap warna berubah karena
                  bola yang terambil tidak dikembalikan.
+     · "barisan" — penggeser barisan bilangan: pilih pola (aritmetika,
+                 geometri, Fibonacci), geser posisi suku, ubah beda/rasio.
+     · "sudut" — dua sudut berpelurus: geser sudut kiri, sudut kanan
+                 ikut menyesuaikan supaya jumlahnya tetap 180°.
    Semua gambar dibuat langsung sebagai SVG, jadi tidak butuh library.
    ========================================================= */
 (function () {
@@ -263,13 +268,18 @@
     return s;
   }
 
-  function graphSvg(a, b, x) {
+  function graphSvg(a, b, x, p, q) {
+    p = p || 0; q = q || 0;
+    const geser = Math.abs(p) > 1e-9 || Math.abs(q) > 1e-9;
     const W = 420, H = 300, L = 38, Rr = 16, T = 18, B = 30;
     const X0 = -5, X1 = 5;
     const fx = v => a * v + b;
+    /* Bayangan f setelah digeser sejauh (p; q): g(x) = f(x − p) + q */
+    const gx = v => a * (v - p) + b + q;
 
-    /* Rentang sumbu y mengikuti garis, dan 0 selalu ikut kalau dekat */
-    let lo = Math.min(fx(X0), fx(X1), 0), hi = Math.max(fx(X0), fx(X1), 0);
+    /* Rentang sumbu y mengikuti kedua garis, dan 0 selalu ikut kalau dekat */
+    let lo = Math.min(fx(X0), fx(X1), gx(X0), gx(X1), 0);
+    let hi = Math.max(fx(X0), fx(X1), gx(X0), gx(X1), 0);
     if (hi - lo < 2) { const m = (hi + lo) / 2; lo = m - 1; hi = m + 1; }
     const padY = (hi - lo) * 0.14; lo -= padY; hi += padY;
 
@@ -305,12 +315,28 @@
     g.push('<text x="' + (L + w) + '" y="' + (T + h + 14) + '" text-anchor="end"' + tick + '>x</text>');
     g.push('<text x="' + (px(0) + 6) + '" y="' + (T + 10) + '"' + tick + '>y</text>');
 
-    /* Garis f(x) */
-    g.push('<line x1="' + r1(px(X0)) + '" y1="' + r1(py(fx(X0))) + '" x2="' + r1(px(X1)) + '" y2="' + r1(py(fx(X1))) +
+    /* Garis asli f(x): jadi acuan putus-putus begitu grafik digeser */
+    if (geser) {
+      g.push('<line x1="' + r1(px(X0)) + '" y1="' + r1(py(fx(X0))) + '" x2="' + r1(px(X1)) + '" y2="' + r1(py(fx(X1))) +
+        '" stroke="#8C9068" stroke-width="1.8" stroke-dasharray="7 5" stroke-linecap="round"/>');
+    }
+
+    /* Garis bayangan g(x) = f(x − p) + q. Tanpa geseran, inilah garis f(x). */
+    g.push('<line x1="' + r1(px(X0)) + '" y1="' + r1(py(gx(X0))) + '" x2="' + r1(px(X1)) + '" y2="' + r1(py(gx(X1))) +
       '" stroke="#C9B46A" stroke-width="2.4" stroke-linecap="round"/>');
 
-    /* Garis bantu putus-putus ke titik (x, f(x)) */
-    const cx = px(x), cy = py(fx(x));
+    /* Garis bantu putus-putus ke titik (x, g(x)) */
+    const cx = px(x), cy = py(gx(x));
+
+    /* Titik asal di garis f(x) tetap ditandai, jadi pergeserannya kelihatan */
+    if (geser) {
+      const ox = px(x), oy = py(fx(x));
+      if (Math.abs(oy - cy) > 3) {
+        g.push('<line x1="' + r1(ox) + '" y1="' + r1(oy) + '" x2="' + r1(cx) + '" y2="' + r1(cy) +
+          '" stroke="#C9A898" stroke-opacity=".45" stroke-width="1.2" stroke-dasharray="3 4"/>');
+      }
+      g.push('<circle cx="' + r1(ox) + '" cy="' + r1(oy) + '" r="4.5" fill="none" stroke="#C9B46A" stroke-opacity=".7" stroke-width="1.6"/>');
+    }
     g.push('<line x1="' + r1(cx) + '" y1="' + r1(cy) + '" x2="' + r1(cx) + '" y2="' + r1(py(0)) +
       '" stroke="#C9A898" stroke-opacity=".45" stroke-width="1.2" stroke-dasharray="4 4"/>');
     g.push('<line x1="' + r1(px(0)) + '" y1="' + r1(cy) + '" x2="' + r1(cx) + '" y2="' + r1(cy) +
@@ -322,19 +348,62 @@
     g.push('<circle cx="' + r1(cx) + '" cy="' + r1(cy) + '" r="5" fill="#C9B46A" stroke="#13150C" stroke-width="2"/>');
 
     /* Label titik, dijaga tetap di dalam bidang grafik */
-    const label = '(' + fmt(x) + '; ' + fmt(fx(x)) + ')';
+    const label = '(' + fmt(x) + '; ' + fmt(gx(x)) + ')';
     const right = cx < L + w - 84;
     const ly = clamp(cy - 17, T + 11, T + h - 6);
     g.push('<text x="' + r1(cx + (right ? 15 : -15)) + '" y="' + r1(ly) + '" text-anchor="' + (right ? 'start' : 'end') +
       '" fill="#EDE8CC" font-size="11" font-weight="600" font-family="Inter,sans-serif">' + label + '</text>');
 
-    return '<svg class="inter__svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Grafik f(x) = ' +
-      eqText(a, b) + ', titik (' + fmt(x) + '; ' + fmt(fx(x)) + ')">' + g.join('') + '</svg>';
+    const aria = geser
+      ? 'Grafik f(x) = ' + eqText(a, b) + ' yang digeser (' + fmt(p) + '; ' + fmt(q) + ') menjadi g(x) = ' + eqText(a, b + q - a * p)
+      : 'Grafik f(x) = ' + eqText(a, b) + ', titik (' + fmt(x) + '; ' + fmt(gx(x)) + ')';
+    return '<svg class="inter__svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + aria + '">' + g.join('') + '</svg>';
+  }
+
+  /* =========================================================
+     2b. DUA SUDUT BERPELURUS
+     ========================================================= */
+
+  /* Kedua sudut dihitung dari satu garis lurus, jadi sisanya selalu 180° − a.
+     Busur digambar sebagai poligon pendek supaya arah putarnya tidak perlu ditentukan. */
+  function sudutSvg(a) {
+    const W = 420, H = 236;
+    const vx = 210, vy = 176, r = 150;
+    const beta = 180 - a;
+    const at = (deg, rr) => [vx + (rr || r) * Math.cos(deg * R), vy - (rr || r) * Math.sin(deg * R)];
+    const busur = (d1, d2, rr) => {
+      const n = 28, pt = [];
+      for (let i = 0; i <= n; i++) pt.push(at(d1 + (d2 - d1) * i / n, rr).map(r1).join(','));
+      return pt.join(' ');
+    };
+    const g = [];
+
+    const kiri = at(180), kanan = at(0), miring = at(beta);
+    g.push('<line class="sudut__garis" x1="' + r1(kiri[0]) + '" y1="' + r1(kiri[1]) +
+      '" x2="' + r1(kanan[0]) + '" y2="' + r1(kanan[1]) + '"/>');
+    g.push('<line class="sudut__kaki" x1="' + vx + '" y1="' + vy +
+      '" x2="' + r1(miring[0]) + '" y2="' + r1(miring[1]) + '"/>');
+
+    /* Dua busur dengan jari-jari berbeda supaya tidak bertumpuk */
+    g.push('<polyline class="sudut__busur sudut__busur--kiri" points="' + busur(180, beta, 50) + '"/>');
+    g.push('<polyline class="sudut__busur sudut__busur--kanan" points="' + busur(beta, 0, 82) + '"/>');
+
+    /* Angka besar tiap sudut, di tengah busurnya */
+    const tl = at(180 - a / 2, 70), tr = at(beta / 2, 104);
+    g.push('<text class="sudut__val sudut__val--kiri" x="' + r1(tl[0]) + '" y="' + r1(tl[1] + 4) +
+      '" text-anchor="middle">' + a + '°</text>');
+    g.push('<text class="sudut__val sudut__val--kanan" x="' + r1(tr[0]) + '" y="' + r1(tr[1] + 4) +
+      '" text-anchor="middle">' + beta + '°</text>');
+
+    g.push('<circle class="sudut__titik" cx="' + vx + '" cy="' + vy + '" r="3.5"/>');
+
+    return '<svg class="inter__svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Dua sudut berpelurus ' +
+      a + ' derajat dan ' + beta + ' derajat; jumlahnya 180 derajat">' + g.join('') + '</svg>';
   }
 
   /* Dipakai untuk menguji geometri di luar browser */
   if (typeof window !== 'undefined') {
-    window.OwlyInteraktif = { netSvg: netSvg, graphSvg: graphSvg, foldFaces: foldFaces, SHAPES: SHAPES };
+    window.OwlyInteraktif = { netSvg: netSvg, graphSvg: graphSvg, sudutSvg: sudutSvg, foldFaces: foldFaces, SHAPES: SHAPES, barisanSuku: barisanSuku };
   }
   if (typeof document === 'undefined') return;
 
@@ -354,7 +423,9 @@
     const st = {
       x: clamp(read(host.dataset.x, 1), -5, 5),
       a: clamp(read(host.dataset.a, 2), -3, 3),
-      b: clamp(read(host.dataset.b, 1), -5, 5)
+      b: clamp(read(host.dataset.b, 1), -5, 5),
+      p: clamp(read(host.dataset.p, 0), -4, 4),
+      q: clamp(read(host.dataset.q, 0), -4, 4)
     };
 
     host.classList.add('inter', 'inter--graph');
@@ -369,20 +440,38 @@
             ctl('x', 'nilai x', -5, 5, 0.5, st.x) +
             ctl('a', 'kemiringan a', -3, 3, 0.5, st.a) +
             ctl('b', 'konstanta b', -5, 5, 1, st.b) +
+            ctl('p', 'geser mendatar p', -4, 4, 1, st.p) +
+            ctl('q', 'geser tegak q', -4, 4, 1, st.q) +
           '</div>' +
-          '<p class="inter__hint">Geser x, lalu lihat titiknya berjalan di sepanjang garis.</p>' +
+          '<p class="inter__geser" data-geser></p>' +
+          '<p class="inter__hint">Geser x untuk berjalan di sepanjang garis. Ubah p atau q untuk memindahkan seluruh grafik.</p>' +
         '</div>' +
       '</div>';
 
     const plot = host.querySelector('[data-plot]');
     const eq = host.querySelector('[data-eq]');
     const val = host.querySelector('[data-val]');
+    const geserOut = host.querySelector('[data-geser]');
 
     function update() {
-      plot.innerHTML = graphSvg(st.a, st.b, st.x);
+      const y = st.a * (st.x - st.p) + st.b + st.q;
+      const geser = st.p !== 0 || st.q !== 0;
+      plot.innerHTML = graphSvg(st.a, st.b, st.x, st.p, st.q);
       eq.innerHTML = 'f(x) = ' + eqText(st.a, st.b);
-      val.innerHTML = 'f(' + fmt(st.x) + ') = <b>' + fmt(st.a * st.x + st.b) + '</b>' +
-        '<small>titik (' + fmt(st.x) + '; ' + fmt(st.a * st.x + st.b) + ') berada di garis</small>';
+      val.innerHTML = (geser ? 'g(' + fmt(st.x) + ')' : 'f(' + fmt(st.x) + ')') + ' = <b>' + fmt(y) + '</b>' +
+        '<small>titik (' + fmt(st.x) + '; ' + fmt(y) + ') berada di ' + (geser ? 'garis bayangan' : 'garis') + '</small>';
+
+      /* Rumus bayangan: g(x) = f(x − p) + q. Tanpa geseran, baris ini jadi petunjuk. */
+      if (geser) {
+        const geserTeks = 'g(x) = f(x' + (st.p === 0 ? '' : (st.p > 0 ? ' − ' + fmt(st.p) : ' + ' + fmt(-st.p))) + ')' +
+          (st.q === 0 ? '' : (st.q > 0 ? ' + ' + fmt(st.q) : ' − ' + fmt(-st.q)));
+        geserOut.innerHTML = 'Digeser (' + fmt(st.p) + '; ' + fmt(st.q) + ') dari garis putus-putus:' +
+          '<b>' + geserTeks + ' = ' + eqText(st.a, st.b + st.q - st.a * st.p) + '</b>' +
+          'kemiringannya tetap ' + fmt(st.a) + ', jadi kedua garis sejajar.';
+      } else {
+        geserOut.innerHTML = 'Garis ini belum digeser. Naikkan <b>p</b> untuk menggeser mendatar atau <b>q</b> untuk menggeser tegak.';
+      }
+
       host.querySelectorAll('[data-k]').forEach(inp => {
         const o = host.querySelector('[data-out="' + inp.dataset.k + '"]');
         if (o) o.textContent = fmt(parseFloat(inp.value));
@@ -625,7 +714,16 @@
             '<b class="dadu__f">' + (i + 1) + '</b>' +
           '</div>').join('') +
       '</div>' +
-      '<p class="inter__hint">Garis putus-putus adalah peluang teoretis tiap mata, 1/6 ≈ 16,7%. Makin banyak lemparan, makin dekat batang hasil percobaan ke garis itu.</p>';
+      '<div class="dadu__grafik" data-grafik>' +
+        '<span class="dadu__leg"><i style="background:var(--olive)"></i> frekuensi relatif mata ' + MATA + '</span>' +
+        '<svg class="dadu__svg" viewBox="0 0 280 110" role="img" aria-label="Frekuensi relatif mata dadu terhadap jumlah lemparan">' +
+          '<polyline class="dadu__line"/>' +
+          '<line class="dadu__guide" x1="4" y1="93" x2="276" y2="93"/>' +
+          '<text class="dadu__pct" x="274" y="95" text-anchor="end">16,7%</text>' +
+          '<text class="dadu__axis" x="140" y="108" text-anchor="middle">jumlah lemparan</text>' +
+        '</svg>' +
+      '</div>' +
+      '<p class="inter__hint">Garis putus-putus adalah peluang teoretis tiap mata, 1/6 ≈ 16,7%. Batang-batang kanan atas menampilkan frekuensi relatif tiap mata, dan grafik di bawah menunjukkan frekuensi relatif mata ' + MATA + ' dari semua lemparan: makin banyak lemparan, makin condong ke 16,7%.</p>';
 
     const die = host.querySelector('[data-die]');
     const prob = host.querySelector('[data-prob]');
@@ -636,6 +734,29 @@
     /* Tinggi batang: frekuensi relatif 0–50% dipetakan ke 0–100% tinggi kotak. */
     const SKALA = 50;
 
+    const grafik = host.querySelector('[data-grafik]');
+    const line = grafik.querySelector('.dadu__line');
+    const svgGrafik = grafik.querySelector('svg');
+    const pct = grafik.querySelector('.dadu__pct');
+    const leg = grafik.querySelector('.dadu__leg');
+    const axis = grafik.querySelector('.dadu__axis');
+
+    function draw() {
+      const W = 272, H = 88;
+      const px = i => 4 + (i / n) * W;
+      const py = rel => 93 - clamp(rel / 50, 0, 1) * H;
+      line.setAttribute('points', [].map.call(Array.from({ length: n }, (_, i) => i + 1), (j) => px(j) + ',' + py((hitung[j - 1] || 0) / n * 100)).join(' '));
+      svgGrafik.querySelectorAll('circle').forEach(c => c.remove());
+      for (let j = 1; j <= n; j++) {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', px(j));
+        c.setAttribute('cy', py((hitung[j - 1] || 0) / n * 100));
+        c.setAttribute('r', '2.5');
+        c.classList.add('dadu__dot');
+        svgGrafik.appendChild(c);
+      }
+    }
+
     function render() {
       hitung.forEach((v, i) => {
         const rel = n ? v / n * 100 : 0;
@@ -645,13 +766,16 @@
       });
       if (!n) {
         prob.innerHTML = 'Tekan <b>Lempar sekali</b>. Sebelum itu, coba tebak dulu: mata berapa yang akan muncul?';
-      } else {
-        const kali = hitung[MATA - 1];
-        prob.innerHTML =
-          'Mata ' + MATA + ' keluar <b>' + kali + '</b> dari ' + n + ' lemparan = <b>' + fmt(kali / n * 100) + '%</b>' +
-          '<small>peluang teoretis 1/6 ≈ 16,7% · frekuensi harapan dalam ' + n +
-          ' lemparan ≈ ' + fmt(n / 6) + ' kali</small>';
+        grafik.classList.remove('is-done');
+        return;
       }
+      grafik.classList.add('is-done');
+      draw();
+      const kali = hitung[MATA - 1];
+      prob.innerHTML =
+        'Mata ' + MATA + ' keluar <b>' + kali + '</b> dari ' + n + ' lemparan = <b>' + fmt(kali / n * 100) + '%</b>' +
+        '<small>peluang teoretis 1/6 ≈ 16,7% · frekuensi harapan dalam ' + n +
+        ' lemparan ≈ ' + fmt(n / 6) + ' kali</small>';
     }
 
     const acak = () => 1 + Math.floor(Math.random() * 6);
@@ -686,6 +810,7 @@
       hitung.fill(0);
       n = 0;
       die.innerHTML = mukaDadu(0);
+      grafik.classList.remove('is-done');
       render();
     }
 
@@ -899,7 +1024,494 @@
     ulang();
   }
 
-  const WIDGETS = { graph: mountGraph, net: mountNet, sorot: mountSorot, dadu: mountDadu, capit: mountCapit };
+  /* ---------- Widget barisan bilangan ---------- */
+  /* Suku-suku pertama sebuah barisan. Pada aritmetika b adalah beda,
+     pada geometri b adalah rasio; Fibonacci cukup dari dua suku awal. */
+  function barisanSuku(jenis, a, b, n) {
+    const out = [];
+    let i;
+    if (jenis === 'geometri') {
+      let v = a;
+      for (i = 0; i < n; i++) { out.push(v); v *= b; }
+    } else if (jenis === 'fibonacci') {
+      let p = a, q = b;
+      for (i = 0; i < n; i++) {
+        out.push(p);
+        const s = p + q;
+        p = q;
+        q = s;
+      }
+    } else {
+      for (i = 0; i < n; i++) out.push(a + i * b);
+    }
+    return out;
+  }
+
+  /* Batas tiap penggeser beda/rasio, plus label dan nilai awalnya */
+  const BARISAN = {
+    aritmetika: { label: 'Aritmetika', beda: 'beda b', min: -5, max: 8, step: 1 },
+    geometri: { label: 'Geometri', beda: 'rasio r', min: 1, max: 4, step: 0.5 },
+    fibonacci: { label: 'Fibonacci', beda: null, min: 1, max: 1, step: 1 }
+  };
+
+  function mountBarisan(host) {
+    const read = (v, d) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
+    const st = {
+      jenis: BARISAN[host.dataset.jenis] ? host.dataset.jenis : 'aritmetika',
+      n: Math.round(clamp(read(host.dataset.n, 6), 1, 12))
+    };
+
+    /* Nilai awal & beda disimpan per pola, jadi pindah tab tidak menghapus
+       angka yang sudah diatur murid. Fibonacci memakai 1, 1. */
+    const awal = { aritmetika: 3, geometri: 2 };
+    const beda = { aritmetika: 4, geometri: 3 };
+    if (st.jenis === 'aritmetika') {
+      awal.aritmetika = read(host.dataset.a, 3);
+      beda.aritmetika = clamp(read(host.dataset.b, 4), BARISAN.aritmetika.min, BARISAN.aritmetika.max);
+    } else if (st.jenis === 'geometri') {
+      awal.geometri = read(host.dataset.a, 2);
+      beda.geometri = clamp(read(host.dataset.b, 3), BARISAN.geometri.min, BARISAN.geometri.max);
+    }
+
+    const aKini = () => (st.jenis === 'fibonacci' ? 1 : awal[st.jenis]);
+    const bKini = () => (st.jenis === 'fibonacci' ? 1 : beda[st.jenis]);
+
+    host.classList.add('inter', 'inter--barisan');
+    host.innerHTML =
+      '<figcaption class="inter__cap">Coba sendiri · barisan bilangan</figcaption>' +
+      '<div class="inter__tabs" role="group" aria-label="Pilih pola barisan">' +
+        Object.keys(BARISAN).map(k => '<button type="button" class="inter__tab" data-pola="' + k +
+          '" aria-pressed="false">' + BARISAN[k].label + '</button>').join('') +
+      '</div>' +
+      '<div class="bar__strip" data-strip></div>' +
+      '<div class="bar__body">' +
+        '<div class="bar__readout">' +
+          '<p class="bar__u" data-u aria-live="polite"></p>' +
+          '<p class="bar__rumus" data-rumus></p>' +
+          '<p class="bar__sum" data-sum></p>' +
+          '<p class="inter__info" data-info></p>' +
+        '</div>' +
+        '<div class="bar__ctl inter__ctl">' +
+          ctl('n', 'suku ke-', 1, 12, 1, st.n) +
+          ctl('b', 'beda b', -5, 8, 1, beda.aritmetika) +
+        '</div>' +
+      '</div>' +
+      '<p class="inter__hint">Geser posisinya untuk melihat suku ke-n, atau ubah beda/rasio untuk melihat polanya berubah.</p>';
+
+    const strip = host.querySelector('[data-strip]');
+    const uOut = host.querySelector('[data-u]');
+    const rumusOut = host.querySelector('[data-rumus]');
+    const sumOut = host.querySelector('[data-sum]');
+    const infoOut = host.querySelector('[data-info]');
+    const nInp = host.querySelector('[data-k="n"]');
+    const bInp = host.querySelector('[data-k="b"]');
+    const bCtl = bInp.closest('.ctl');
+    const bLabel = bCtl.querySelector('span');
+
+    function update() {
+      const meta = BARISAN[st.jenis];
+      const a = aKini(), b = bKini(), n = st.n;
+      const suku = barisanSuku(st.jenis, a, b, n);
+      const un = suku[suku.length - 1];
+
+      /* Suku-suku yang sudah muncul, ditutup satu kotak tanda tanya
+         untuk suku berikutnya yang belum dihitung. */
+      strip.innerHTML = suku.map((v, i) =>
+        '<button type="button" class="bar__s' + (i === n - 1 ? ' is-now' : '') + '" data-n="' + (i + 1) +
+        '" aria-pressed="' + (i === n - 1 ? 'true' : 'false') +
+        '" aria-label="suku ke-' + (i + 1) + ': ' + fmt(v) + '">' +
+        '<b>' + fmt(v) + '</b><small>U<sub>' + (i + 1) + '</sub></small></button>').join('') +
+        '<span class="bar__s is-next" aria-hidden="true"><b>?</b><small>U<sub>' + (n + 1) + '</sub></small></span>';
+
+      let rumus, info, sum;
+      if (st.jenis === 'fibonacci') {
+        if (n === 1) rumus = 'U<sub>1</sub> = suku awal = ' + fmt(a);
+        else if (n === 2) rumus = 'U<sub>2</sub> = suku kedua = ' + fmt(b);
+        else rumus = 'U<sub>' + n + '</sub> = U<sub>' + (n - 1) + '</sub> + U<sub>' + (n - 2) + '</sub> = ' +
+          fmt(suku[n - 3]) + ' + ' + fmt(suku[n - 2]) + ' = ' + fmt(un);
+        info = 'Fibonacci: setiap suku adalah jumlah dua suku sebelumnya, jadi tidak ada beda atau rasio tetap.';
+        sum = 'S<sub>' + n + '</sub> = ' + fmt(suku.reduce((t, v) => t + v, 0)) + ' (jumlah semua suku di atas)';
+      } else if (st.jenis === 'geometri') {
+        rumus = 'U<sub>' + n + '</sub> = ' + fmt(a) + ' × ' + fmt(b) + '<sup>' + (n - 1) + '</sup> = ' + fmt(un);
+        info = b === 1
+          ? 'Rasio 1: semua suku sama dengan suku pertama, jadi barisannya tetap.'
+          : 'Rasio ' + fmt(b) + ' tetap: setiap suku didapat dengan mengali ' + fmt(b) + ' suku sebelumnya.';
+        sum = 'S<sub>' + n + '</sub> = ' + (b === 1
+          ? fmt(n) + ' × ' + fmt(a) + ' = ' + fmt(n * a)
+          : fmt(a) + ' × (' + fmt(b) + '<sup>' + n + '</sup> − 1) ÷ (' + fmt(b) + ' − 1) = ' +
+            fmt(a * (Math.pow(b, n) - 1) / (b - 1))) +
+          ' (jumlah ' + n + ' suku pertama)';
+      } else {
+        rumus = 'U<sub>' + n + '</sub> = ' + fmt(a) + ' + ' + (n - 1) + ' × ' +
+          (b < 0 ? '(' + fmt(b) + ')' : fmt(b)) + ' = ' + fmt(un);
+        info = b === 0
+          ? 'Beda 0: semua suku sama, jadi barisannya tetap.'
+          : 'Beda ' + fmt(b) + ' tetap: setiap suku ' + (b > 0 ? 'bertambah' : 'berkurang') + ' ' +
+            fmt(Math.abs(b)) + ' dari suku sebelumnya.';
+        sum = 'S<sub>' + n + '</sub> = ' + fmt(n) + '/2 × (' + fmt(a) + ' + ' + fmt(un) + ') = ' +
+          fmt(n / 2 * (a + un)) + ' (jumlah ' + n + ' suku pertama)';
+      }
+
+      uOut.innerHTML = 'U<sub>' + n + '</sub> = ' + fmt(un);
+      rumusOut.innerHTML = rumus;
+      sumOut.innerHTML = sum;
+      infoOut.textContent = info;
+      host.querySelector('[data-out="n"]').textContent = n;
+
+      /* Penggeser beda/rasio ikut berganti arti saat pola diganti */
+      if (meta.beda) {
+        bCtl.hidden = false;
+        bLabel.textContent = meta.beda;
+        bInp.min = meta.min;
+        bInp.max = meta.max;
+        bInp.step = meta.step;
+        bInp.value = b;
+        bInp.setAttribute('aria-label', meta.beda);
+        host.querySelector('[data-out="b"]').textContent = fmt(b);
+      } else {
+        bCtl.hidden = true;
+      }
+
+      host.querySelectorAll('[data-pola]').forEach(t => {
+        const aktif = t.dataset.pola === st.jenis;
+        t.classList.toggle('is-active', aktif);
+        t.setAttribute('aria-pressed', aktif ? 'true' : 'false');
+      });
+    }
+
+    host.addEventListener('input', e => {
+      const k = e.target.dataset.k;
+      if (k === 'n') st.n = Math.round(clamp(parseFloat(e.target.value), 1, 12));
+      else if (k === 'b') beda[st.jenis] = parseFloat(e.target.value);
+      else return;
+      update();
+    });
+
+    host.addEventListener('click', e => {
+      /* Tab memakai data-pola, bukan data-jenis: figure-nya sendiri sudah
+         membawa data-jenis, jadi closest() akan menangkap host dan menelan klik. */
+      const tab = e.target.closest('[data-pola]');
+      if (tab) { st.jenis = tab.dataset.pola; update(); return; }
+      const s = e.target.closest('.bar__s[data-n]');
+      if (s) {
+        st.n = parseInt(s.dataset.n, 10);
+        nInp.value = st.n;
+        update();
+      }
+    });
+
+    update();
+  }
+
+  /* ---------- Widget diagram panah (hubungkan daerah asal ke daerah kawan) ----------
+     Murid memilih rumus, lalu memasang panah dari tiap x ke f(x). Panah yang tepat
+     berwarna emas, yang keliru oranye, sehingga syarat fungsi terlihat sendiri:
+     setiap anggota A punya tepat satu panah, sedangkan anggota B boleh dipakai
+     bersama atau tidak dipakai sama sekali. */
+  const PANAH_FUNGSI = {
+    tambah: {
+      label: 'f(x) = x + 1',
+      A: [1, 2, 3, 4],
+      B: [2, 3, 4, 5, 6],
+      hitung: x => x + 1,
+      cara: x => 'f(' + fmt(x) + ') = ' + fmt(x) + ' + 1 = ' + fmt(x + 1)
+    },
+    kali: {
+      label: 'f(x) = 2x',
+      A: [1, 2, 3],
+      B: [2, 3, 4, 6],
+      hitung: x => 2 * x,
+      cara: x => 'f(' + fmt(x) + ') = 2 × ' + fmt(x) + ' = ' + fmt(2 * x)
+    },
+    kuadrat: {
+      label: 'f(x) = x²',
+      A: [-2, -1, 0, 1, 2],
+      B: [0, 1, 4],
+      hitung: x => x * x,
+      cara: x => 'f(' + fmt(x) + ') = (' + fmt(x) + ')² = ' + fmt(x * x)
+    }
+  };
+
+  /* Gambar diagram panah untuk satu rumus. `jawab` memetakan indeks A ke indeks B,
+     `pilih` adalah indeks A yang sedang dipilih murid. */
+  function panahSvg(fn, jawab, pilih) {
+    const W = 300, H = 224, xa = 54, xb = 246, R = 13, atas = 38, bawah = 22;
+    const n = fn.A.length, m = fn.B.length;
+    const yA = i => atas + (i + 0.5) * ((H - atas - bawah) / n);
+    const yB = j => atas + (j + 0.5) * ((H - atas - bawah) / m);
+    const rb = v => Math.round(v * 10) / 10;
+
+    let garis = '';
+    Object.keys(jawab).forEach(k => {
+      const i = Number(k), j = jawab[k];
+      if (j == null) return;
+      const benar = fn.hitung(fn.A[i]) === fn.B[j];
+      const x1 = xa + R, y1 = rb(yA(i)), x2 = xb - R, y2 = rb(yB(j));
+      const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1;
+      /* Sedikit melengkung supaya dua panah yang menuju titik B sama tetap terpisah. */
+      const cx = rb((x1 + x2) / 2 - (dy / len) * 9), cy = rb((y1 + y2) / 2 + (dx / len) * 9);
+      const tx = x2 - cx, ty = y2 - cy, tl = Math.hypot(tx, ty) || 1;
+      const ux = tx / tl, uy = ty / tl;
+      const bx = x2 - ux * 8, by = y2 - uy * 8;
+      const kepala = [x2 + ',' + y2,
+        rb(bx - uy * 4.5) + ',' + rb(by + ux * 4.5),
+        rb(bx + uy * 4.5) + ',' + rb(by - ux * 4.5)].join(' ');
+      const kelas = benar ? 'is-benar' : 'is-salah';
+      garis += '<path class="panah__garis ' + kelas + '" d="M' + x1 + ' ' + y1 + ' Q' + cx + ' ' + cy + ' ' + x2 + ' ' + y2 + '"></path>' +
+        '<polygon class="panah__kepala ' + kelas + '" points="' + kepala + '"></polygon>';
+    });
+
+    const titik = (x, y, teks, kelas, attr, label) =>
+      '<g class="panah__titik" ' + attr + ' role="button" tabindex="0" aria-label="' + label + '">' +
+        '<circle class="panah__bulat ' + kelas + '" cx="' + x + '" cy="' + y + '" r="' + R + '"></circle>' +
+        '<text class="panah__isi" x="' + x + '" y="' + y + '" text-anchor="middle" dominant-baseline="central">' + teks + '</text>' +
+      '</g>';
+
+    let simpul = '';
+    fn.A.forEach((v, i) => {
+      const kelas = 'panah__bulat--a' + (jawab[i] != null ? ' is-terisi' : '') + (pilih === i ? ' is-pilih' : '');
+      simpul += titik(xa, rb(yA(i)), fmt(v), kelas, 'data-dari="' + i + '"',
+        'x = ' + fmt(v) + (jawab[i] != null ? ', sudah punya panah' : ', belum ada panah') +
+        (pilih === i ? ', sedang dipilih' : ''));
+    });
+    fn.B.forEach((v, j) => {
+      simpul += titik(xb, rb(yB(j)), fmt(v), 'panah__bulat--b', 'data-ke="' + j + '"',
+        'anggota daerah kawan ' + fmt(v));
+    });
+
+    return '<svg class="panah__svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Diagram panah untuk ' +
+      fn.label + ': ' + n + ' anggota daerah asal dan ' + m + ' anggota daerah kawan">' +
+      '<text class="panah__judul" x="' + xa + '" y="22" text-anchor="middle">Daerah asal A</text>' +
+      '<text class="panah__judul" x="' + xb + '" y="22" text-anchor="middle">Daerah kawan B</text>' +
+      garis + simpul + '</svg>';
+  }
+
+  function mountPanah(host) {
+    const st = {
+      kunci: PANAH_FUNGSI[host.dataset.fungsi] ? host.dataset.fungsi : 'tambah',
+      pilih: 0,
+      pesan: ''
+    };
+    /* Jawaban disimpan per rumus, jadi pindah tab tidak menghapus kerja murid. */
+    const jawab = {};
+    Object.keys(PANAH_FUNGSI).forEach(k => { jawab[k] = {}; });
+
+    host.classList.add('inter', 'inter--panah');
+    host.innerHTML =
+      '<figcaption class="inter__cap">Main sendiri · hubungkan daerah asal ke daerah kawan</figcaption>' +
+      '<div class="inter__tabs" role="group" aria-label="Pilih rumus fungsi">' +
+        Object.keys(PANAH_FUNGSI).map(k => '<button type="button" class="inter__tab" data-fn="' + k +
+          '" aria-pressed="false">' + PANAH_FUNGSI[k].label + '</button>').join('') +
+      '</div>' +
+      '<div class="inter__body">' +
+        '<div class="inter__plot" data-plot></div>' +
+        '<div class="inter__side">' +
+          '<p class="inter__eq" data-rumus></p>' +
+          '<p class="panah__stat" data-stat aria-live="polite"></p>' +
+          '<p class="panah__fb" data-fb aria-live="polite"></p>' +
+          '<div class="panah__btn">' +
+            '<button type="button" class="inter__tab panah__periksa" data-periksa>Periksa</button>' +
+            '<button type="button" class="inter__tab panah__ulang" data-ulang>Ulangi</button>' +
+          '</div>' +
+          '<p class="inter__hint">Klik satu anggota di kiri, lalu klik pasangannya di kanan. Panah emas berarti tepat, panah oranye berarti belum tepat. Klik titik di kiri untuk melepas panahnya.</p>' +
+        '</div>' +
+      '</div>';
+
+    const plot = host.querySelector('[data-plot]');
+    const rumusOut = host.querySelector('[data-rumus]');
+    const stat = host.querySelector('[data-stat]');
+    const fb = host.querySelector('[data-fb]');
+
+    const fn = () => PANAH_FUNGSI[st.kunci];
+    const kini = () => jawab[st.kunci];
+
+    /* Indeks A berikutnya yang belum punya panah, atau null kalau sudah lengkap. */
+    const berikut = () => {
+      const jw = kini(), f = fn();
+      const i = f.A.findIndex((_, k) => jw[k] == null);
+      return i < 0 ? null : i;
+    };
+
+    function render() {
+      const f = fn(), jw = kini();
+      const isi = Object.keys(jw);
+      const tepat = isi.filter(k => f.hitung(f.A[Number(k)]) === f.B[jw[k]]).length;
+
+      plot.innerHTML = panahSvg(f, jw, st.pilih);
+      rumusOut.innerHTML = f.label;
+      stat.innerHTML = '<b>' + tepat + '</b> dari ' + f.A.length + ' panah tepat · ' +
+        isi.length + ' dari ' + f.A.length + ' anggota A punya panah';
+
+      let pesan = st.pesan;
+      if (!pesan) {
+        if (isi.length === f.A.length) {
+          pesan = tepat === f.A.length
+            ? '<b>Semua panah terpasang dan tepat.</b> Tekan <b>Periksa</b> untuk melihat kesimpulannya.'
+            : 'Masih ada panah yang perlu diperbaiki. Klik titik di kiri untuk melepas, lalu pasang ulang.';
+        } else if (st.pilih != null) {
+          pesan = 'x = ' + fmt(f.A[st.pilih]) + ' belum punya panah. Klik satu anggota B di kanan sebagai pasangannya.';
+        } else {
+          pesan = 'Klik anggota A yang belum punya panah, lalu klik pasangannya di B.';
+        }
+      }
+      fb.innerHTML = pesan;
+      host.classList.toggle('is-lulus', isi.length === f.A.length && tepat === f.A.length);
+
+      host.querySelectorAll('[data-fn]').forEach(btn => {
+        const aktif = btn.dataset.fn === st.kunci;
+        btn.classList.toggle('is-active', aktif);
+        btn.setAttribute('aria-pressed', aktif ? 'true' : 'false');
+      });
+    }
+
+    function pilihTitik(i) {
+      const f = fn(), jw = kini();
+      st.pilih = i;
+      if (jw[i] != null) {
+        delete jw[i];
+        st.pesan = 'Panah dari x = ' + fmt(f.A[i]) + ' dilepas. Klik anggota B untuk memasang pasangan yang baru.';
+      } else {
+        st.pesan = 'x = ' + fmt(f.A[i]) + ' dipilih. Sekarang klik pasangannya di daerah kawan B.';
+      }
+      render();
+    }
+
+    function pasang(j) {
+      if (st.pilih == null) {
+        st.pesan = 'Pilih dulu anggota daerah asal A di kiri, baru pilih pasangannya di B.';
+        render();
+        return;
+      }
+      const f = fn(), jw = kini();
+      const i = st.pilih, x = f.A[i], y = f.B[j];
+      jw[i] = j;
+
+      const tepat = f.hitung(x) === y;
+      const dipakai = Object.keys(jw).filter(k => Number(k) !== i && jw[k] === j).length;
+      if (tepat) {
+        st.pesan = '<b>Tepat.</b> ' + f.cara(x) + ', jadi x = ' + fmt(x) + ' berpasangan dengan ' + fmt(y) + '.' +
+          (dipakai ? '<small>Anggota B ini juga ditunjuk anggota A lain. Boleh: syarat fungsi hanya setiap anggota A punya tepat satu panah.</small>' : '');
+      } else {
+        st.pesan = '<b>Belum tepat.</b> ' + f.cara(x) + ', bukan ' + fmt(y) + '.' +
+          '<small>Klik x = ' + fmt(x) + ' di kiri untuk melepas panah ini, lalu pilih ' + fmt(f.hitung(x)) + '.</small>';
+      }
+
+      const sisa = berikut();
+      st.pilih = sisa;
+      if (sisa == null) st.pesan += '<small>Semua anggota A sudah punya satu panah. Tekan Periksa.</small>';
+      render();
+    }
+
+    function periksa() {
+      const f = fn(), jw = kini();
+      const kosong = f.A.map((_, i) => i).filter(i => jw[i] == null);
+      const salah = f.A.map((_, i) => i).filter(i => jw[i] != null && f.hitung(f.A[i]) !== f.B[jw[i]]);
+
+      if (kosong.length) {
+        st.pesan = '<b>Belum lengkap.</b> ' + kosong.length + ' anggota A belum punya panah (' +
+          kosong.map(i => 'x = ' + fmt(f.A[i])).join(', ') + '). Selama ada anggota A tanpa pasangan, relasinya <b>bukan fungsi</b>.';
+        st.pilih = kosong[0];
+      } else if (salah.length) {
+        st.pesan = '<b>Ada ' + salah.length + ' panah yang keliru.</b> ' +
+          salah.map(i => 'x = ' + fmt(f.A[i]) + ' seharusnya ' + fmt(f.hitung(f.A[i]))).join('; ') + '.';
+        st.pilih = salah[0];
+      } else {
+        st.pesan = '<b>Lulus.</b> Setiap anggota A punya tepat satu panah, jadi relasi ini <b>fungsi</b> dari A ke B.' +
+          '<small>Satu anggota A tidak boleh bercabang menjadi dua panah — itu satu-satunya syarat fungsi. Anggota B yang tidak dituju panah tetap boleh ada.</small>';
+        st.pilih = null;
+      }
+      render();
+    }
+
+    function ulang() {
+      Object.keys(kini()).forEach(k => { delete kini()[k]; });
+      st.pilih = 0;
+      st.pesan = 'Semua panah dihapus. Mulai lagi dari x = ' + fmt(fn().A[0]) + '.';
+      render();
+    }
+
+    plot.addEventListener('click', e => {
+      const a = e.target.closest('[data-dari]');
+      if (a) { pilihTitik(Number(a.dataset.dari)); return; }
+      const b = e.target.closest('[data-ke]');
+      if (b) pasang(Number(b.dataset.ke));
+    });
+
+    /* Enter/Spasi pada titik yang sedang fokus melakukan hal yang sama dengan klik. */
+    plot.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const g = e.target.closest('[data-dari], [data-ke]');
+      if (!g) return;
+      e.preventDefault();
+      if (g.dataset.dari != null) pilihTitik(Number(g.dataset.dari));
+      else pasang(Number(g.dataset.ke));
+    });
+
+    host.addEventListener('click', e => {
+      const tab = e.target.closest('[data-fn]');
+      if (tab) {
+        st.kunci = tab.dataset.fn;
+        st.pesan = '';
+        st.pilih = berikut();
+        render();
+        return;
+      }
+      if (e.target.closest('[data-periksa]')) { periksa(); return; }
+      if (e.target.closest('[data-ulang]')) ulang();
+    });
+
+    st.pilih = berikut();
+    render();
+  }
+
+  /* ---------- Widget dua sudut berpelurus ---------- */
+  function mountSudut(host) {
+    const read = (v, d) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
+    const st = { a: Math.round(clamp(read(host.dataset.a, 55), 10, 170)) };
+
+    host.classList.add('inter', 'inter--sudut');
+    host.innerHTML =
+      '<figcaption class="inter__cap">Coba sendiri · dua sudut berpelurus</figcaption>' +
+      '<div class="inter__body">' +
+        '<div class="inter__plot" data-plot></div>' +
+        '<div class="inter__side">' +
+          '<p class="inter__val" data-readout aria-live="polite"></p>' +
+          '<p class="inter__eq" data-rumus></p>' +
+          '<div class="inter__ctl">' + ctl('a', 'sudut kiri α', 10, 170, 1, st.a) + '</div>' +
+          '<p class="inter__hint">Geser sudut kiri; kaki kanan tetap di garis lurus yang sama, jadi sudut kanan ikut menyesuaikan.</p>' +
+        '</div>' +
+      '</div>' +
+      '<p class="inter__info" data-info></p>';
+
+    const plot = host.querySelector('[data-plot]');
+    const readout = host.querySelector('[data-readout]');
+    const rumus = host.querySelector('[data-rumus]');
+    const info = host.querySelector('[data-info]');
+    const out = host.querySelector('[data-out="a"]');
+
+    function update() {
+      const a = st.a, beta = 180 - a;
+      plot.innerHTML = sudutSvg(a);
+      out.textContent = a + '°';
+      readout.innerHTML = fmt(a) + '° + ' + fmt(beta) + '° = <b>180°</b>';
+      rumus.innerHTML = 'Sudut kanan = 180° − ' + fmt(a) + '° = <b>' + fmt(beta) + '°</b>';
+      info.innerHTML = a === 90
+        ? '<b>Keduanya 90°:</b> kaki sudutnya tegak lurus dengan garis, jadi kedua sudut siku-siku. Jumlahnya tetap 180°.'
+        : 'Sudut kiri <b>' + (a < 90 ? 'lancip' : 'tumpul') + '</b> (' + fmt(a) + '°), sudut kanan <b>' +
+          (beta < 90 ? 'lancip' : 'tumpul') + '</b> (' + fmt(beta) + '°). Keduanya berpelurus: kaki-kakinya ' +
+          'membentuk satu garis lurus, jadi jumlahnya selalu 180°.';
+    }
+
+    host.addEventListener('input', e => {
+      if (e.target.dataset.k !== 'a') return;
+      st.a = Math.round(clamp(parseFloat(e.target.value), 10, 170));
+      update();
+    });
+
+    update();
+  }
+
+  const WIDGETS = { graph: mountGraph, net: mountNet, sorot: mountSorot, dadu: mountDadu, capit: mountCapit, barisan: mountBarisan, sudut: mountSudut, panah: mountPanah };
   document.querySelectorAll('[data-widget]').forEach(host => {
     const mount = WIDGETS[host.dataset.widget];
     if (mount) mount(host);

@@ -35,7 +35,19 @@
       case 'graph': {
         const c = b[1] || {};
         return '<figure class="inter" data-widget="graph" data-a="' + (c.a != null ? c.a : 2) +
-          '" data-b="' + (c.b != null ? c.b : 1) + '" data-x="' + (c.x != null ? c.x : 1) + '"></figure>';
+          '" data-b="' + (c.b != null ? c.b : 1) + '" data-x="' + (c.x != null ? c.x : 1) +
+          '" data-p="' + (c.p != null ? c.p : 0) + '" data-q="' + (c.q != null ? c.q : 0) + '"></figure>';
+      }
+      /* Minigame diagram panah: hubungkan setiap anggota daerah asal ke f(x). */
+      case 'panah': {
+        const c = b[1] || {};
+        return '<figure class="inter" data-widget="panah" data-fungsi="' +
+          (c.fungsi || 'tambah') + '"></figure>';
+      }
+      /* Dua sudut berpelurus: geser sudut kiri, sudut kanan ikut menyesuaikan. */
+      case 'sudut': {
+        const c = b[1] || {};
+        return '<figure class="inter" data-widget="sudut" data-a="' + (c.a != null ? c.a : 55) + '"></figure>';
       }
       case 'net': {
         const c = b[1] || {};
@@ -49,10 +61,20 @@
       /* Dua widget peluang: dadu (percobaan vs teoretis) dan mesin capit
          (peluang berubah karena tanpa pengembalian). */
       case 'dadu':
-        return '<figure class="inter" data-widget="dadu" data-mata="' + ((b[1] && b[1].mata) || 6) + '"></figure>';
+        const d = b[1] || {};
+        return '<figure class="inter" data-widget="dadu" data-mata="' + (d.mata || 6) + '">' +
+          (d.note ? '<p class="dadu__note">' + d.note + '</p>' : '') +
+        '</figure>';
       case 'capit':
         return '<figure class="inter" data-widget="capit"><script type="application/json">' +
           JSON.stringify(b[1] || {}).replace(/</g, '\\u003c') + '</script></figure>';
+      /* Penggeser barisan: pilih pola, geser posisi suku, ubah beda/rasio. */
+      case 'barisan': {
+        const c = b[1] || {};
+        return '<figure class="inter" data-widget="barisan" data-jenis="' + (c.jenis || 'aritmetika') +
+          '" data-a="' + (c.a != null ? c.a : 3) + '" data-b="' + (c.b != null ? c.b : 4) +
+          '" data-n="' + (c.n != null ? c.n : 6) + '"></figure>';
+      }
       case 'ex':
         return '<div class="example"><span class="example__label">Contoh soal</span><p class="example__q">' + b[1] + '</p>' +
           '<details><summary>Lihat langkah penyelesaian</summary><ol>' + b[2].map(s => '<li>' + s + '</li>').join('') + '</ol>' +
