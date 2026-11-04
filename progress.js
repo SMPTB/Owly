@@ -422,6 +422,12 @@
     fill();
     pf.addEventListener('submit', e => {
       e.preventDefault();
+      /* Di halaman Latihan Soal, form ini membuka latihan Alpha di tempat,
+         bukan melempar murid ke Bank Soal. */
+      if (window.OwlyLatihan) {
+        window.OwlyLatihan.open('alpha', { subject: mapel.value, topic: topik.value });
+        return;
+      }
       let url = 'bank-soal.html?subject=' + mapel.value;
       if (topik.value) url += '&topic=' + encodeURIComponent(topik.value);
       location.href = url;

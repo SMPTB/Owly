@@ -1512,8 +1512,18 @@
   }
 
   const WIDGETS = { graph: mountGraph, net: mountNet, sorot: mountSorot, dadu: mountDadu, capit: mountCapit, barisan: mountBarisan, sudut: mountSudut, panah: mountPanah };
-  document.querySelectorAll('[data-widget]').forEach(host => {
-    const mount = WIDGETS[host.dataset.widget];
-    if (mount) mount(host);
-  });
+  /* Pasang semua widget di dalam root. Dipanggil sekali saat halaman siap,
+     lalu bisa dipanggil lagi untuk widget yang disisipkan belakangan
+     (mis. kegiatan Omega di halaman Latihan Soal). */
+  function mountAll(root) {
+    (root || document).querySelectorAll('[data-widget]').forEach(host => {
+      if (host.dataset.terpasang) return;
+      const mount = WIDGETS[host.dataset.widget];
+      if (!mount) return;
+      host.dataset.terpasang = '1';
+      mount(host);
+    });
+  }
+  mountAll();
+  window.OwlyInteraktif = Object.assign(window.OwlyInteraktif || {}, { mountAll: mountAll });
 })();
