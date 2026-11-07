@@ -23,13 +23,14 @@ const TOPICS = {
 const SOAL = [
 
   /* ================= MATEMATIKA · Bab 1: Bilangan ================= */
-  {
+    {
     id: 'MTK-001', subject: 'mtk', bab: 'Bilangan', title: 'Operasi bilangan berpangkat',
-    level: 'Sedang', type: 'pg', stimulus: '',
-    question: 'Hasil dari (5<sup>4</sup> × 5<sup>−2</sup>) ÷ 5<sup>3</sup> adalah …',
-    options: ['5<sup>−9</sup>', '5<sup>−1</sup>', '5', '5<sup>9</sup>'],
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Lantai sebuah aula berbentuk persegi. Panjang sisinya 5<sup>3</sup> dm.</p>',
+    question: 'Luas lantai aula tersebut adalah … dm²',
+    options: ['5<sup>5</sup>', '5<sup>6</sup>', '5<sup>9</sup>', '5<sup>12</sup>'],
     answer: 1,
-    explain: 'Pada perkalian, pangkat dijumlahkan: 5<sup>4</sup> × 5<sup>−2</sup> = 5<sup>2</sup>. Pada pembagian, pangkat dikurangkan: 5<sup>2</sup> ÷ 5<sup>3</sup> = 5<sup>2−3</sup> = 5<sup>−1</sup>.'
+    explain: 'Luas persegi = sisi × sisi = 5<sup>3</sup> × 5<sup>3</sup> = 5<sup>3+3</sup> = 5<sup>6</sup> dm².'
   },
   {
     id: 'MTK-002', subject: 'mtk', bab: 'Bilangan', title: 'Bilangan rasional dan irasional',
@@ -319,54 +320,59 @@ const SOAL = [
   },
 
   /* ================= MATEMATIKA · tambahan ================= */
-  {
+    {
     id: 'MTK-014', subject: 'mtk', bab: 'Bilangan', title: 'Menyederhanakan bentuk akar',
-    level: 'Dasar', type: 'pg', stimulus: '',
-    question: 'Bentuk sederhana dari 3√12 + 2√27 adalah …',
-    options: ['5√39', '6√3', '12√3', '12√39'],
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Dua batang pipa besi disambung. Panjang masing-masing 3√12 meter dan 2√27 meter.</p>',
+    question: 'Panjang pipa setelah disambung adalah …',
+    options: ['5√39 m', '6√3 m', '12√3 m', '12√39 m'],
     answer: 2,
-    explain: '√12 = 2√3 dan √27 = 3√3. Jadi 3√12 + 2√27 = 3(2√3) + 2(3√3) = 6√3 + 6√3 = 12√3.'
+    explain: '√12 = 2√3 dan √27 = 3√3. Jadi 3(2√3) + 2(3√3) = 6√3 + 6√3 = 12√3 meter.'
   },
-  {
+    {
     id: 'MTK-015', subject: 'mtk', bab: 'Bilangan', title: 'Skala pada peta',
-    level: 'Sedang', type: 'pg', stimulus: '',
-    question: 'Jarak dua kota pada peta 6 cm. Peta itu berskala 1 : 250.000. Jarak sebenarnya kedua kota adalah …',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Rani mengukur jarak dua kota pada peta, hasilnya 6 cm. Peta itu berskala 1 : 250.000.</p>',
+    question: 'Jarak sebenarnya kedua kota tersebut adalah …',
     options: ['1,5 km', '15 km', '150 km', '1.500 km'],
     answer: 1,
     explain: 'Jarak sebenarnya = 6 × 250.000 cm = 1.500.000 cm. Karena 1 km = 100.000 cm, hasilnya 15 km.'
   },
-  {
+    {
     id: 'MTK-016', subject: 'mtk', bab: 'Aljabar', title: 'Persamaan linear satu variabel',
-    level: 'Dasar', type: 'pg', stimulus: '',
-    question: 'Jika 3(2x − 5) = 4x + 7, nilai x adalah …',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Rara membeli 3 bungkus permen yang masing-masing berisi (2x − 5) butir. Adiknya membeli 4 bungkus berisi x butir dan 7 butir permen lepas. Ternyata jumlah permen mereka sama.</p>',
+    question: 'Nilai x pada cerita tersebut adalah …',
     options: ['4', '8', '11', '22'],
     answer: 2,
-    explain: 'Kalikan dulu: 6x − 15 = 4x + 7. Kurangi 4x di kedua ruas: 2x − 15 = 7, lalu 2x = 22, sehingga x = 11.'
+    explain: '3(2x − 5) = 4x + 7, lalu 6x − 15 = 4x + 7. Kurangi 4x: 2x − 15 = 7, sehingga 2x = 22 dan x = 11.'
   },
-  {
+    {
     id: 'MTK-017', subject: 'mtk', bab: 'Aljabar', title: 'Nilai fungsi kuadrat',
-    level: 'Menantang', type: 'pg', stimulus: '',
-    question: 'Diketahui f(x) = 2x² − 3x + 1. Nilai f(−2) adalah …',
-    options: ['3', '11', '15', '21'],
-    answer: 2,
-    explain: 'f(−2) = 2(−2)² − 3(−2) + 1 = 2(4) + 6 + 1 = 8 + 6 + 1 = 15.'
-  },
-  {
-    id: 'MTK-018', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Keliling lingkaran',
-    level: 'Dasar', type: 'pg', stimulus: '',
-    question: 'Sebuah lingkaran berdiameter 14 cm. Dengan π = 22/7, kelilingnya adalah …',
-    options: ['22 cm', '44 cm', '88 cm', '154 cm'],
+    level: 'Menantang', type: 'pg',
+    stimulus: '<p>Banyak ubin pada sebuah pola mengikuti U(n) = 2n² − 3n + 1, dengan n nomor pola.</p>',
+    question: 'Banyak ubin pada pola ke-5 adalah …',
+    options: ['26', '36', '46', '51'],
     answer: 1,
-    explain: 'Keliling = π × d = 22/7 × 14 = 44 cm. Angka 154 cm itu luasnya, bukan kelilingnya.'
+    explain: 'U(5) = 2(5)² − 3(5) + 1 = 50 − 15 + 1 = 36 ubin.'
   },
-  {
+    {
+    id: 'MTK-018', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Keliling lingkaran',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Sebuah taman berbentuk lingkaran dengan diameter 14 meter. Seluruh tepi taman akan dipasangi pagar kawat. Gunakan π = 22/7.</p>',
+    question: 'Panjang pagar kawat yang dibutuhkan adalah …',
+    options: ['22 m', '44 m', '88 m', '154 m'],
+    answer: 1,
+    explain: 'Keliling lingkaran = π × d = 22/7 × 14 = 44 meter. Angka 154 m itu luas tamannya, bukan panjang tepinya.'
+  },
+    {
     id: 'MTK-019', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Volume tabung',
     level: 'Sedang', type: 'pg',
-    stimulus: '<p>Sebuah tabung memiliki jari-jari 7 cm dan tinggi 10 cm. Gunakan π = 22/7.</p>',
-    question: 'Volume tabung tersebut adalah …',
+    stimulus: '<p>Ibu menyimpan sirup dalam kaleng berbentuk tabung. Jari-jari kaleng 7 cm dan tingginya 10 cm. Gunakan π = 22/7.</p>',
+    question: 'Volume sirup yang dapat ditampung kaleng tersebut adalah …',
     options: ['154 cm³', '770 cm³', '1.540 cm³', '3.080 cm³'],
     answer: 2,
-    explain: 'Volume = πr²t = 22/7 × 7² × 10 = 22 × 7 × 10 = 1.540 cm³.'
+    explain: 'Volume tabung = πr²t = 22/7 × 7² × 10 = 22 × 7 × 10 = 1.540 cm³.'
   },
   {
     id: 'MTK-020', subject: 'mtk', bab: 'Data dan Peluang', title: 'Mencari data yang hilang dari rata-rata',
@@ -377,13 +383,14 @@ const SOAL = [
     answer: 1,
     explain: 'Jumlah kelima nilai = 5 × 78 = 390. Jumlah empat nilai = 75 + 80 + 70 + 85 = 310. Nilai kelima = 390 − 310 = 80.'
   },
-  {
+    {
     id: 'MTK-021', subject: 'mtk', bab: 'Data dan Peluang', title: 'Peluang dua dadu',
-    level: 'Sedang', type: 'pg', stimulus: '',
-    question: 'Dua dadu dilempar bersamaan. Peluang munculnya jumlah mata dadu 7 adalah …',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Dalam permainan ular tangga, Andi melempar dua dadu sekaligus. Ia baru bisa naik jika jumlah mata kedua dadu tepat 7.</p>',
+    question: 'Peluang Andi mendapat jumlah mata dadu 7 adalah …',
     options: ['1/12', '1/9', '1/6', '7/36'],
     answer: 2,
-    explain: 'Ada 36 kemungkinan. Jumlah 7 muncul pada (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) — enam kemungkinan. Jadi peluangnya 6/36 = 1/6.'
+    explain: 'Ada 36 kemungkinan. Jumlah 7 muncul pada (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) — enam kemungkinan, jadi peluangnya 6/36 = 1/6.'
   },
 
   /* ================= BAHASA INDONESIA · tambahan ================= */
