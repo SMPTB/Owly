@@ -26,7 +26,7 @@
   const MONTH_S = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
   /* Nilai awal profil (contoh) sampai kamu mengubahnya di halaman Profile */
-  const DEFAULT_PROFILE = { name: 'Nara Aditya', nick: 'Nara', school: 'SMP Negeri 1 Bandung', grade: 'SMP · Kelas 9', target: '120 menit / minggu' };
+  const DEFAULT_PROFILE = { name: '', nick: '', school: '', grade: '', target: '120 menit / minggu' };
   /* Kolom di halaman Profile: id input -> nama field */
   const FIELDS = { f1: 'name', f2: 'nick', f3: 'email', f4: 'phone', f5: 'school', f6: 'grade', f7: 'city', f8: 'year', f9: 'target', f10: 'fav' };
 
@@ -164,7 +164,7 @@
     text('[data-greet]', greet);
     text('[data-grade]', P.grade);
     text('[data-gradeshort]', kelas ? 'Siswa kelas ' + kelas[1] : 'Siswa');
-    text('[data-idline]', P.grade + '  |  ' + P.school);
+    text('[data-idline]', P.school ? P.grade + '  |  ' + P.school : P.grade);
 
     /* Streak */
     text('[data-streak]', S.streak > 0 ? '🔥  ' + S.streak + ' hari berturut-turut' : '🌱  Mulai streak-mu hari ini');

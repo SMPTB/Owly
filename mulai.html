@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Let's get started · Ωwly</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20261107j">
+</head>
+<body class="mulai-body">
+
+<main class="mulai">
+  <div class="mulai__brand"><img class="mulai__logo" src="logo.svg" alt=""><span>Ωwly</span></div>
+
+  <p class="mulai__eyebrow">SEBELUM MASUK</p>
+  <h1>Let's get started.</h1>
+  <p class="mulai__sub">Isi nama dan kelasmu dulu. Setelah itu beranda langsung nyapa kamu, dan datanya otomatis kepakai di halaman Profile.</p>
+
+  <form class="mulai__form" id="formMulai" novalidate>
+    <div class="field">
+      <label for="nama">Nama kamu</label>
+      <input class="input" id="nama" name="nama" type="text" maxlength="40" autocomplete="name" placeholder="Misal: Andra Pratama">
+    </div>
+    <div class="field">
+      <label for="kelas">Kelas</label>
+      <select class="select" id="kelas" name="kelas">
+        <option value="" selected disabled>Pilih kelas</option>
+        <option value="7">Kelas 7</option>
+        <option value="8">Kelas 8</option>
+        <option value="9">Kelas 9</option>
+      </select>
+    </div>
+    <p class="mulai__err" id="mulaiErr" role="alert" aria-live="polite"></p>
+    <button class="btn-act btn-act--red mulai__go" type="submit"><span>Let's get started</span></button>
+  </form>
+
+  <p class="mulai__note">Data ini cuma disimpan di browser kamu, nggak dikirim ke mana-mana. Mau ganti nanti? Buka halaman Profile.</p>
+</main>
+
+<script src="mulai.js?v=20261107j"></script>
+</body>
+</html>
