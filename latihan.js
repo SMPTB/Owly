@@ -199,7 +199,7 @@
   /* Jawaban ringkas untuk sisi belakang kartu */
   function jawaban(q) {
     if (q.type === 'pg') return LETTERS[q.answer] + '. ' + q.options[q.answer];
-    if (q.type === 'multi') return q.answer.map(i => LETTERS[i]).join(', ') + ' — ' + q.answer.map(i => q.options[i]).join('; ');
+    if (q.type === 'multi') return q.answer.map(i => LETTERS[i]).join(', ') + ': ' + q.answer.map(i => q.options[i]).join('; ');
     if (q.type === 'table') return q.rows.map(r => q.cols[r.a] + ': ' + plain(r.t)).join(' · ');
     return '';
   }
@@ -249,7 +249,7 @@
       '<div class="quiz quiz--done">' +
         '<span class="quiz__badge">' + paham + ' / ' + total + '</span>' +
         '<h3>Satu putaran selesai.</h3>' +
-        '<p>' + paham + ' dari ' + total + ' kartu kamu tandai sudah paham. Kartu yang tadi kamu ulang sudah ikut lewat.</p>' +
+        '<p>' + paham + ' dari ' + total + ' kartu kamu tandai sudah paham. Kartu yang tadi kamu ulang nggak dihitung lagi.</p>' +
         '<div class="quiz__foot">' +
           '<button class="btn-act btn-act--red" type="button" data-ulang><span>Ulangi Delta</span>' + icon('arrow-right') + '</button>' +
           '<button class="btn-act" type="button" data-mode-jump="alpha"><span>Coba Alpha</span>' + icon('chev-right') + '</button>' +

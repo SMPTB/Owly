@@ -165,28 +165,28 @@
       label: 'Kubus',
       faces: () => boxFaces(4, 4, 4),
       pivot: [2, 2, 2],
-      flat: 'Jaring-jaring kubus — 6 persegi berukuran sama.',
+      flat: 'Jaring-jaring kubus: 6 persegi berukuran sama.',
       space: 'Kubus · rusuk 4 cm · volume 64 cm³'
     },
     balok: {
       label: 'Balok',
       faces: () => boxFaces(6, 5, 4),
       pivot: [3, 2.5, 2],
-      flat: 'Jaring-jaring balok — 3 pasang persegi panjang.',
+      flat: 'Jaring-jaring balok: 3 pasang persegi panjang.',
       space: 'Balok · 6 × 5 × 4 cm · volume 120 cm³'
     },
     prisma: {
       label: 'Prisma segitiga',
       faces: () => prismFaces(4, 3, 6),
       pivot: [2, 3, 1.5],
-      flat: 'Jaring-jaring prisma segitiga — 2 segitiga + 3 persegi panjang.',
+      flat: 'Jaring-jaring prisma segitiga: 2 segitiga + 3 persegi panjang.',
       space: 'Prisma segitiga · alas 4 cm, tinggi 3 cm · volume 36 cm³'
     },
     tabung: {
       label: 'Tabung',
       faces: () => cylinderFaces(2, 4),
       pivot: [0, 2, 2],
-      flat: 'Jaring-jaring tabung — 1 persegi panjang (selimut) + 2 lingkaran.',
+      flat: 'Jaring-jaring tabung: 1 persegi panjang (selimut) + 2 lingkaran.',
       space: 'Tabung · jari-jari 2 cm, tinggi 4 cm · volume 50,3 cm³'
     },
     limas: {
@@ -194,7 +194,7 @@
       faces: () => pyramidFaces(6, 4),
       pivot: [3, 3, 4 / 3],
       elev: 16,   /* kamera sedikit lebih tinggi supaya alas limas terlihat */
-      flat: 'Jaring-jaring limas — 1 persegi + 4 segitiga.',
+      flat: 'Jaring-jaring limas: 1 persegi + 4 segitiga.',
       space: 'Limas · alas 6 cm, tinggi 4 cm · volume 48 cm³'
     }
   };
@@ -246,7 +246,7 @@
         '" stroke="#C9B46A" stroke-opacity="' + so + '" stroke-width="1.2" stroke-linejoin="round"/>';
     }).join('');
 
-    const info = t < 0.05 ? shape.flat : t > 0.95 ? shape.space : 'Sedang dilipat — ' + Math.round(t * 100) + '%';
+    const info = t < 0.05 ? shape.flat : t > 0.95 ? shape.space : 'Sedang dilipat, ' + Math.round(t * 100) + '%';
     return {
       svg: '<svg class="inter__svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + shape.label + ', ' + info + '">' + body + '</svg>',
       info: info
@@ -628,7 +628,7 @@
 
     function buka() {
       beres = true;
-      fb.textContent = 'Benar. Kalimat lain hanya penjelas — perhatikan alasannya.';
+      fb.textContent = 'Benar. Kalimat lain cuma penjelas, cek alasannya.';
       text.classList.add('is-revealed');
       cards.forEach((c, i) => {
         c.disabled = true;
@@ -954,7 +954,7 @@
       }
 
       if (!sisa.length) {
-        pesan += '<small>Kotak sudah kosong — semua bola terambil. Tekan Isi ulang untuk mengulang percobaan.</small>';
+        pesan += '<small>Kotak sudah kosong, semua bola terambil. Tekan Isi ulang buat ngulang percobaan.</small>';
       } else {
         const rinci = kunci.map(k => jumlah(k) - (k === key ? 1 : 0) + ' ' + nama(k)).join(', ');
         const sisaJumlah = sisa.filter(b => b.key === key).length;
@@ -1417,7 +1417,7 @@
         st.pilih = salah[0];
       } else {
         st.pesan = '<b>Lulus.</b> Setiap anggota A punya tepat satu panah, jadi relasi ini <b>fungsi</b> dari A ke B.' +
-          '<small>Satu anggota A tidak boleh bercabang menjadi dua panah — itu satu-satunya syarat fungsi. Anggota B yang tidak dituju panah tetap boleh ada.</small>';
+          '<small>Satu anggota A nggak boleh bercabang jadi dua panah, itu satu-satunya syarat fungsi. Anggota B yang tidak dituju panah tetap boleh ada.</small>';
         st.pilih = null;
       }
       render();

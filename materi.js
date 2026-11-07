@@ -150,7 +150,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'mtk-2', subject: 'mtk', bab: 'Aljabar', no: '02',
-  intro: `Aljabar memakai huruf untuk mewakili bilangan yang belum diketahui. Dengan aljabar, kamu bisa mengubah cerita sehari-hari menjadi persamaan dan menyelesaikannya langkah demi langkah.`,
+  intro: `Aljabar memakai huruf untuk mewakili bilangan yang belum diketahui. Aljabar dipakai buat mengubah cerita sehari-hari jadi persamaan, lalu diselesaikan langkah demi langkah.`,
   goals: [
     `Menyelesaikan persamaan dan pertidaksamaan linear satu variabel`,
     `Menyelesaikan sistem persamaan linear dua variabel (SPLDV)`,
@@ -237,7 +237,7 @@ const MATERI = [
         [`{(1,c), (2,d)}`, `Bukan`, `Angka 3 tidak punya pasangan`]
       ]],
       ['h', `Diagram panah`],
-      ['p', `Fungsi paling mudah dilihat lewat <b>diagram panah</b>: anggota A di kiri, anggota B di kanan, dan setiap anggota A diberi satu panah menuju pasangannya di B. Di bawah ini kamu yang memasang panahnya.`],
+      ['p', `Fungsi paling mudah dilihat lewat <b>diagram panah</b>: anggota A di kiri, anggota B di kanan, dan setiap anggota A diberi satu panah menuju pasangannya di B. Panahnya kamu yang pasang di bawah ini.`],
       ['panah', { fungsi: 'tambah' }],
       ['p', `Sudah ketemu polanya? Dua anggota A boleh menunjuk ke anggota B yang sama, dan anggota B yang tidak dituju panah pun tidak masalah. Yang membuat relasi gagal menjadi fungsi hanya satu hal: ada anggota A yang tidak punya panah, atau punya dua panah sekaligus.`],
       ['h', `Rumus fungsi`],
@@ -447,7 +447,7 @@ const MATERI = [
       ], `240 cm<sup>3</sup>`],
       ['p', `<b>Jaring-jaring</b> adalah bangun ruang yang dibuka menjadi bidang datar. Jaring-jaring prisma segitiga terdiri atas 2 segitiga (alas dan tutup) dan 3 persegi panjang (sisi tegak).`],
       ['net', { shape: 'kubus' }],
-      ['p', `Coba lipat dan bentangkan bangun di atas. Saat masih berupa jaring-jaring, hitung dulu banyak sisinya; saat sudah terlipat, kamu bisa melihat sisi mana yang tadinya berimpit menjadi rusuk.`],
+      ['p', `Coba lipat dan bentangkan bangun di atas. Saat masih berupa jaring-jaring, hitung dulu banyak sisinya; saat sudah terlipat, kelihatan sisi mana yang tadinya berimpit jadi rusuk.`],
       ['task', `Coba sendiri`, [
         `Hitung volume tabung berjari-jari 7 cm dan tinggi 10 cm (π = 22/7).`,
         `Ada berapa persegi panjang pada jaring-jaring prisma segitiga?`,
@@ -703,7 +703,7 @@ const MATERI = [
       ['sorot', {
         kalimat: [
           [`Membaca setiap hari memberi banyak manfaat.`, `utama`, `Kalimat paling umum; kalimat sesudahnya hanya merinci manfaat itu.`],
-          [`Membaca menambah kosakata.`, `penjelas`, `Satu contoh manfaat — rincian, bukan inti paragraf.`],
+          [`Membaca menambah kosakata.`, `penjelas`, `Satu contoh manfaat, rincian saja, bukan inti paragraf.`],
           [`Membaca melatih kita untuk fokus.`, `penjelas`, `Contoh manfaat lain, cakupannya lebih sempit dari kalimat 1.`],
           [`Membaca juga membuat kita lebih mudah menulis.`, `penjelas`, `Masih tambahan contoh; tidak mencakup seluruh paragraf.`]
         ],

@@ -200,7 +200,7 @@
       babDone: S.babDone, babTotal: S.babTotal,
       babOf: S.babDone + ' / ' + S.babTotal,
       babPct: Math.round(S.babDone / S.babTotal * 100),
-      daysNote: S.activeDays > 0 ? S.activeDays + ' hari belajar minggu ini. Satu sesi pendek pun tetap berarti.' : 'Belum ada hari belajar minggu ini. Satu sesi pendek pun sudah berarti.',
+      daysNote: S.activeDays > 0 ? S.activeDays + ' hari belajar minggu ini. Sesi pendek juga dihitung.' : 'Belum ada hari belajar minggu ini. Sesi pendek juga dihitung.',
       streakTitle: S.streak > 0 ? S.streak + ' hari berturut-turut' : 'Belum ada streak',
       streakSub: S.streak > 0 ? 'Kebiasaan baikmu mulai tumbuh.' : 'Kerjakan satu soal hari ini untuk memulainya.',
       babNote: 'Semua materi dibaca dan semua soal dikuasai',
@@ -243,8 +243,8 @@
     /* Rekomendasi latihan: bab (utama) yang masih punya soal belum dikuasai */
     const rcb = rb.qDone < rb.qTotal ? rb : (S.babs.find(b => b.qDone < b.qTotal) || rb);
     const rq = nextQuestionIn(S, rcb);
-    text('[data-rec-title]', 'Biar ' + rcb.bab + ' makin melekat.');
-    text('[data-rec-text]', (rcb.qTotal - rcb.qDone) + ' soal di bab ini belum kamu kuasai. Mulai dari satu soal dulu.');
+    text('[data-rec-title]', 'Balik ke ' + rcb.bab + ', yuk.');
+    text('[data-rec-text]', (rcb.qTotal - rcb.qDone) + ' soal di bab ini belum kamu kuasai. Mulai satu soal aja dulu.');
     setAll('[data-rec-link]', e => { e.href = 'kerjakan.html?mode=alpha&q=' + rq.id; });
 
     /* Target harian */
@@ -328,7 +328,7 @@
     const low = S.subj.mtk.pct <= S.subj.ind.pct ? 'mtk' : 'ind';
     text('[data-advice-title]', 'Luangkan sedikit waktu untuk ' + SUBJ[low] + '.');
     text('[data-advice-text]', S.tries === 0 ? 'Mulai dari satu soal. Langkah kecil bisa membuat perbedaan.'
-      : 'Kamu sudah menguasai ' + S.subj[low].done + ' dari ' + S.subj[low].total + ' soal. Coba 10 menit latihan hari ini.');
+      : S.subj[low].done + ' dari ' + S.subj[low].total + ' soal sudah kamu kuasai. Coba 10 menit lagi hari ini.');
     setAll('[data-advice-link]', e => { e.href = 'kerjakan.html?mode=alpha&subject=' + low; });
 
     /* Riwayat latihan terakhir (Latihan) */
@@ -411,7 +411,7 @@
     }
   }));
 
-  /* ---------- Formulir "Latihan sesuai ritmemu" ---------- */
+  /* ---------- Formulir "Latihan sesuai maumu" ---------- */
   const pf = document.querySelector('[data-practice-form]');
   if (pf) {
     const mapel = $('mapel'), topik = $('topik');
