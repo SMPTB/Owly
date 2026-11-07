@@ -1424,3 +1424,30 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
   .lab__tabs .pill { flex: 1; }
   .mode { padding: 16px; }
 }
+
+/* ---------- Omega: campuran acak ---------- */
+.omega__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 10px; color: var(--muted); }
+.omega__dots { display: flex; gap: 5px; }
+.omega__dots i { width: 16px; height: 3px; border-radius: 2px; background: var(--border-2); }
+.omega__dots i.is-done { background: var(--olive); }
+.omega__dots i.is-now { background: var(--gold); }
+.omega__foot { display: flex; justify-content: flex-end; }
+.omega__foot:empty { display: none; }
+.mini { display: flex; flex-direction: column; gap: 14px; }
+.mini__q { font-size: 14px; line-height: 1.6; }
+.mini__q b { color: var(--gold); font-weight: 600; }
+.mini__rows { display: flex; flex-direction: column; gap: 6px; }
+.mini__row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 9px; font-size: 12.5px; color: var(--muted); }
+.mini__row b { color: var(--text); font-weight: 600; }
+.mini__jawab { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mini__input { width: 110px; height: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); font: inherit; font-size: 14px; }
+.mini__input:focus { outline: none; border-color: var(--olive); }
+.mini__pilih { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mini__toko { display: flex; flex-direction: column; gap: 5px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.mini__toko:hover { border-color: var(--border-2); }
+.mini__toko b { font-size: 14px; font-weight: 600; }
+.mini__toko span { font-size: 11px; color: var(--muted); }
+.mini__toko.is-ok { border-color: var(--olive); background: #232615; }
+.mini__toko.is-no { border-color: var(--orange); background: var(--orange-bg); }
+.mini__toko:disabled { cursor: default; }
+@media (max-width: 640px) { .mini__pilih { grid-template-columns: 1fr; } }

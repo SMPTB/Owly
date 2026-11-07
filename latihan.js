@@ -35,7 +35,7 @@
   const MODES = {
     alpha: { letter: 'α', kind: 'ALPHA', title: 'Pilihan ganda' },
     delta: { letter: 'δ', kind: 'DELTA', title: 'Flashcard' },
-    omega: { letter: 'ω', kind: 'OMEGA', title: 'Latihan interaktif' }
+    omega: { letter: 'ω', kind: 'OMEGA', title: 'Campuran acak' }
   };
 
   const state = { mode: 'alpha', opts: {} };
@@ -48,6 +48,7 @@
     state.opts = opts || {};
     if (state.mode === 'alpha') alpha = null;
     if (state.mode === 'delta') delta = null;
+    if (state.mode === 'omega') sesi = null;
     lab.hidden = false;
     render();
     if (lab.scrollIntoView) lab.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -58,6 +59,7 @@
     state.mode = mode;
     if (mode === 'alpha') alpha = null;
     if (mode === 'delta') delta = null;
+    if (mode === 'omega') sesi = null;
     render();
   }
 
@@ -260,16 +262,13 @@
   }
 
   /* =========================================================
-     4. OMEGA — kegiatan interaktif
-     Isi pantun ditulis di sini; dua kegiatan lain memakai widget
-     dari interaktif.js (diagram panah dan dua sudut berpelurus).
+     4. OMEGA — campuran acak
+     Tiap kali dibuka, Omega menyusun enam bagian dari tujuh
+     jenis kegiatan: pilihan ganda, flashcard, isi pantun,
+     timbangan bruto–netto, dua toko diskon, diagram panah, dan
+     sudut berpelurus. Urutannya diacak dan jenis boleh muncul
+     lagi, asal tidak dua kali berturut-turut.
      ========================================================= */
-  const STASIUN = [
-    { id: 'pantun', letter: '✎', title: 'Isi pantun', sub: 'Bahasa Indonesia · rima dan isi', teks: 'Satu baris hilang. Pilih baris yang rimanya nyambung dan isinya masih satu jalan.' },
-    { id: 'panah', letter: '→', title: 'Pasangkan domain dan kodomain', sub: 'Matematika · relasi dan fungsi', teks: 'Hubungkan tiap anggota A ke pasangannya di B, lalu periksa apakah relasinya fungsi.' },
-    { id: 'sudut', letter: '∠', title: 'Dua sudut berpelurus', sub: 'Matematika · geometri', teks: 'Geser sudut kiri, lihat sudut kanan ikut menyesuaikan sampai jumlahnya tetap 180°.' }
-  ];
-
   const PANTUN = [
     {
       baris: ['Pergi ke pasar membeli bayam', 'Bayam dimasak bersama tahu', 'Rajin-rajinlah belajar malam', null],
@@ -294,135 +293,337 @@
     }
   ];
 
-  let pantun = null;
+  const JENIS = ['pg', 'flash', 'pantun', 'bruto', 'diskon', 'panah', 'sudut'];
+  const PANJANG_SESI = 6;
+  const namaJenis = {
+    pg: 'pilihan ganda', flash: 'flashcard', pantun: 'pantun',
+    bruto: 'bruto–netto', diskon: 'diskon', panah: 'diagram panah', sudut: 'sudut berpelurus'
+  };
+
+  let sesi = null;
+
+  function acak(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const rp = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
+
+  function susunRencana() {
+    const rencana = [];
+    while (rencana.length < PANJANG_SESI) {
+      const kandidat = JENIS.filter(j => j !== rencana[rencana.length - 1]);
+      rencana.push(kandidat[ri(0, kandidat.length - 1)]);
+    }
+    return rencana;
+  }
+
+  function mulaiSesi(paksa) {
+    const rencana = paksa && paksa.length ? paksa.slice() : susunRencana();
+    sesi = {
+      rencana: rencana,
+      i: 0,
+      benar: 0,
+      dinilai: 0,
+      antrePg: acak(SOAL.filter(q => q.type === 'pg').map(q => q.id)),
+      antreFlash: acak(SOAL.map(q => q.id)),
+      antrePantun: acak(PANTUN.map((_, k) => k))
+    };
+    renderBagian();
+  }
 
   function renderOmega() {
-    if (!state.opts.station) {
-      body.innerHTML =
-        '<div class="omega">' +
-          '<p class="omega__intro">Pilih satu kegiatan dulu.</p>' +
-          STASIUN.map(s =>
-            '<button class="omega__row" type="button" data-station="' + s.id + '">' +
-              '<span class="omega__letter" aria-hidden="true">' + s.letter + '</span>' +
-              '<span class="omega__info"><b>' + s.title + '</b><span>' + s.sub + '</span><span class="omega__teks">' + s.teks + '</span></span>' +
-              icon('chev-right') +
-            '</button>').join('') +
-        '</div>';
+    if (!sesi) mulaiSesi();
+    else renderBagian();
+  }
 
-      body.querySelectorAll('[data-station]').forEach(b =>
-        b.addEventListener('click', () => { state.opts = { station: b.dataset.station }; render(); }));
-      return;
-    }
+  function catat(tepat) {
+    sesi.dinilai++;
+    if (tepat) sesi.benar++;
+    const skor = body.querySelector('[data-skor]');
+    if (skor) skor.textContent = sesi.benar + ' / ' + sesi.dinilai + ' benar';
+  }
+
+  function tawarkanLanjut(teks) {
+    const foot = el('[data-lanjut-foot]');
+    if (!foot) return;
+    foot.innerHTML = '<button class="btn-act btn-act--red" type="button" data-lanjut><span>' + teks +
+      '</span>' + icon('arrow-right') + '</button>';
+    foot.querySelector('[data-lanjut]').addEventListener('click', () => {
+      sesi.i++;
+      renderBagian();
+    });
+  }
+
+  function renderBagian() {
+    if (sesi.i >= sesi.rencana.length) return selesaiSesi();
+    const jenis = sesi.rencana[sesi.i];
 
     body.innerHTML =
       '<div class="omega">' +
-        '<button class="link-btn omega__back" type="button" data-omega-back>← Semua kegiatan</button>' +
-        '<div class="omega__stage" data-stage></div>' +
+        '<div class="omega__top">' +
+          '<span>Bagian ' + (sesi.i + 1) + ' / ' + sesi.rencana.length + '</span>' +
+          '<span class="omega__dots">' + sesi.rencana.map((_, k) =>
+            '<i class="' + (k < sesi.i ? 'is-done' : k === sesi.i ? 'is-now' : '') + '"></i>').join('') + '</span>' +
+          '<span data-skor>' + (sesi.dinilai ? sesi.benar + ' / ' + sesi.dinilai + ' benar' : namaJenis[jenis]) + '</span>' +
+        '</div>' +
+        '<div data-stage></div>' +
+        '<div class="omega__foot" data-lanjut-foot></div>' +
       '</div>';
 
-    el('[data-omega-back]').addEventListener('click', () => { state.opts = {}; render(); });
-
-    if (state.opts.station === 'pantun') {
-      pantun = { i: 0, selesai: 0 };
-      renderPantun();
-    } else {
-      mountStasiun(state.opts.station);
-    }
+    const stage = el('[data-stage]');
+    if (jenis === 'pg') bagianPg(stage);
+    else if (jenis === 'flash') bagianFlash(stage);
+    else if (jenis === 'pantun') bagianPantun(stage);
+    else if (jenis === 'bruto') bagianBruto(stage);
+    else if (jenis === 'diskon') bagianDiskon(stage);
+    else bagianWidget(stage, jenis);
   }
 
-  /* Widget dari interaktif.js dipasang setelah HTML-nya disisipkan */
-  function mountStasiun(id) {
-    const stage = el('[data-stage]');
-    stage.innerHTML = id === 'panah'
-      ? '<figure class="inter" data-widget="panah" data-fungsi="tambah"></figure>'
-      : '<figure class="inter" data-widget="sudut" data-a="55"></figure>';
+  /* ---------- Pilihan ganda ---------- */
+  function bagianPg(stage) {
+    const daftar = SOAL.filter(q => q.type === 'pg');
+    const id = sesi.antrePg.length ? sesi.antrePg.shift() : daftar[0].id;
+    const q = SOAL.find(x => x.id === id) || daftar[0];
 
-    if (window.OwlyInteraktif && window.OwlyInteraktif.mountAll) {
-      window.OwlyInteraktif.mountAll(stage);
-    } else {
-      stage.insertAdjacentHTML('beforeend',
-        '<p class="omega__note">Kegiatan ini butuh interaktif.js. Kamu masih bisa mencobanya di halaman materi.</p>');
-    }
+    stage.innerHTML =
+      '<div class="quiz">' +
+        '<div class="quiz__card">' +
+          (q.stimulus ? '<div class="quiz__stimulus">' + q.stimulus + '</div>' : '') +
+          '<p class="quiz__q">' + q.question + '</p>' +
+          '<div class="quiz__opts" data-opts>' + q.options.map((o, k) =>
+            '<button class="opt" type="button" data-opt="' + k + '"><b>' + LETTERS[k] + '</b><span>' + o + '</span></button>').join('') +
+          '</div>' +
+          '<div class="quiz__res" data-res></div>' +
+        '</div>' +
+      '</div>';
+
+    stage.querySelector('[data-opts]').addEventListener('click', e => {
+      const b = e.target.closest('[data-opt]');
+      if (!b || stage.dataset.dijawab) return;
+      stage.dataset.dijawab = '1';
+      const pilih = parseInt(b.dataset.opt, 10);
+      const tepat = pilih === q.answer;
+      if (O.recordAnswer) O.recordAnswer(q.id, tepat);
+
+      stage.querySelectorAll('[data-opt]').forEach((x, k) => {
+        x.disabled = true;
+        if (k === q.answer) x.classList.add('is-ok');
+        if (k === pilih && !tepat) x.classList.add('is-no');
+      });
+
+      const res = stage.querySelector('[data-res]');
+      res.className = 'quiz__res is-' + (tepat ? 'ok' : 'no');
+      res.innerHTML = '<b>' + (tepat ? 'Tepat.' : 'Belum tepat.') + '</b><p>' + q.explain + '</p>';
+      catat(tepat);
+      tawarkanLanjut('Bagian berikutnya');
+    });
+  }
+
+  /* ---------- Flashcard ---------- */
+  function bagianFlash(stage) {
+    const id = sesi.antreFlash.length ? sesi.antreFlash.shift() : SOAL[0].id;
+    const q = SOAL.find(x => x.id === id) || SOAL[0];
+    let terbuka = false;
+
+    const gambar = () => {
+      stage.innerHTML =
+        '<div class="flash">' +
+          '<button class="flash__card' + (terbuka ? ' is-open' : '') + '" type="button" data-flip>' +
+            '<span class="flash__label">' + (terbuka ? 'Pembahasan' : 'Pertanyaan') + '</span>' +
+            '<span class="flash__text">' +
+              (terbuka
+                ? q.explain + '<em class="flash__ans">Jawaban: ' + jawaban(q) + '</em>'
+                : (q.stimulus ? plain(q.stimulus) + ' ' : '') + q.question) +
+            '</span>' +
+            '<span class="flash__tip">' + (terbuka ? 'Klik untuk balik lagi' : 'Klik kartu untuk lihat jawaban') + '</span>' +
+          '</button>' +
+        '</div>';
+      stage.querySelector('[data-flip]').addEventListener('click', () => { terbuka = !terbuka; gambar(); });
+    };
+
+    gambar();
+    tawarkanLanjut('Bagian berikutnya');
   }
 
   /* ---------- Isi pantun ---------- */
-  function renderPantun() {
-    const p = PANTUN[pantun.i];
-    const stage = el('[data-stage]');
+  function bagianPantun(stage) {
+    const p = PANTUN[sesi.antrePantun.length ? sesi.antrePantun.shift() : 0];
 
     stage.innerHTML =
       '<div class="pantun">' +
-        '<div class="pantun__top"><span>Pantun ' + (pantun.i + 1) + ' dari ' + PANTUN.length + '</span><span>Rima a–b–a–b</span></div>' +
         '<p class="pantun__hint">Satu baris hilang. Pilih yang bunyi akhirnya sama dengan baris kedua dan isinya masih nyambung.</p>' +
-        '<div class="pantun__sheet">' + p.baris.map((b, i) =>
-          '<p class="pantun__line' + (b === null ? ' is-blank' : '') + '" data-line="' + i + '">' +
-            '<i aria-hidden="true">' + p.rima[i] + '</i>' +
+        '<div class="pantun__sheet">' + p.baris.map((b, k) =>
+          '<p class="pantun__line' + (b === null ? ' is-blank' : '') + '">' +
+            '<i aria-hidden="true">' + p.rima[k] + '</i>' +
             '<span data-slot>' + (b === null ? '<em>baris yang hilang</em>' : b) + '</span>' +
           '</p>').join('') +
         '</div>' +
-        '<div class="pantun__opts" data-pilhan>' + p.pilihan.map((o, i) =>
-          '<button class="pantun__opt" type="button" data-pil="' + i + '">' + o + '</button>').join('') +
+        '<div class="pantun__opts" data-pilhan>' + p.pilihan.map((o, k) =>
+          '<button class="pantun__opt" type="button" data-pil="' + k + '">' + o + '</button>').join('') +
         '</div>' +
         '<div class="pantun__res" data-pres></div>' +
       '</div>';
 
-    el('[data-pilhan]').addEventListener('click', e => {
+    stage.querySelector('[data-pilhan]').addEventListener('click', e => {
       const b = e.target.closest('[data-pil]');
       if (!b || b.disabled) return;
-      pilihPantun(parseInt(b.dataset.pil, 10));
-    });
-  }
+      const pilih = parseInt(b.dataset.pil, 10);
+      const res = stage.querySelector('[data-pres]');
 
-  function pilihPantun(pilih) {
-    const p = PANTUN[pantun.i];
-    const res = el('[data-pres]');
-
-    if (pilih !== p.jawab) {
-      el('[data-pil="' + pilih + '"]').classList.add('is-no');
-      res.className = 'pantun__res is-no';
-      res.innerHTML = '<b>Belum pas.</b> Baris keempat harus bunyi akhirnya sama kayak baris kedua (“' +
-        kataAkhir(p.baris[1]) + '”), yaitu “' + bunyiAkhir(p.baris[1]) + '”. Coba lagi.';
-      return;
-    }
-
-    el('[data-pilhan]').querySelectorAll('[data-pil]').forEach(b => { b.disabled = true; });
-    el('[data-pil="' + pilih + '"]').classList.add('is-ok');
-
-    const slot = body.querySelector('.pantun__line.is-blank');
-    slot.classList.remove('is-blank');
-    slot.classList.add('is-filled');
-    slot.querySelector('[data-slot]').textContent = p.pilihan[p.jawab];
-    pantun.selesai++;
-
-    res.className = 'pantun__res is-ok';
-    res.innerHTML = '<b>Tepat.</b> ' + p.alasan +
-      '<div class="pantun__foot"><button class="btn-act btn-act--red" type="button" data-pantun-next><span>' +
-      (pantun.i + 1 < PANTUN.length ? 'Pantun berikutnya' : 'Lihat hasil') + '</span>' + icon('arrow-right') + '</button></div>';
-
-    el('[data-pantun-next]').addEventListener('click', () => {
-      if (pantun.i + 1 < PANTUN.length) {
-        pantun.i++;
-        renderPantun();
-      } else {
-        selesaiPantun();
+      if (pilih !== p.jawab) {
+        stage.dataset.salah = '1';
+        b.classList.add('is-no');
+        res.className = 'pantun__res is-no';
+        res.innerHTML = '<b>Belum pas.</b> Baris keempat harus berakhir “' + bunyiAkhir(p.baris[1]) +
+          '”, sama seperti “' + kataAkhir(p.baris[1]) + '”. Coba lagi.';
+        return;
       }
+
+      stage.querySelectorAll('[data-pil]').forEach(x => { x.disabled = true; });
+      b.classList.add('is-ok');
+      const slot = stage.querySelector('.pantun__line.is-blank');
+      slot.classList.remove('is-blank');
+      slot.classList.add('is-filled');
+      slot.querySelector('[data-slot]').textContent = p.pilihan[p.jawab];
+
+      res.className = 'pantun__res is-ok';
+      res.innerHTML = '<b>Tepat.</b> ' + p.alasan;
+      catat(!stage.dataset.salah);
+      tawarkanLanjut('Bagian berikutnya');
     });
   }
 
-  function selesaiPantun() {
-    el('[data-stage]').innerHTML =
+  /* ---------- Timbangan: bruto, netto, tara ---------- */
+  function bagianBruto(stage) {
+    const tara = ri(2, 8) / 2;
+    const netto = ri(8, 30) / 2;
+    const bruto = netto + tara;
+
+    stage.innerHTML =
+      '<div class="mini">' +
+        '<p class="mini__q">Karung beras ini ditimbang <b>' + bruto + ' kg</b>. Karung kosongnya <b>' +
+          tara + ' kg</b>. Berapa berat berasnya saja?</p>' +
+        '<div class="mini__rows">' +
+          '<div class="mini__row"><span>Bruto (isi + karung)</span><b>' + bruto + ' kg</b></div>' +
+          '<div class="mini__row"><span>Tara (karung)</span><b>' + tara + ' kg</b></div>' +
+          '<div class="mini__row"><span>Netto (isi)</span><b>?</b></div>' +
+        '</div>' +
+        '<div class="mini__jawab">' +
+          '<input class="mini__input" type="number" step="0.5" min="0" inputmode="decimal" placeholder="kg" aria-label="Netto dalam kg" data-jawab>' +
+          '<button class="btn-act btn-act--red" type="button" data-cek><span>Cek</span>' + icon('arrow-right') + '</button>' +
+        '</div>' +
+        '<div class="quiz__res" data-res></div>' +
+      '</div>';
+
+    const cek = () => {
+      if (stage.dataset.dijawab) return;
+      const isi = stage.querySelector('[data-jawab]');
+      const nilai = parseFloat(String(isi.value).replace(',', '.'));
+      const res = stage.querySelector('[data-res]');
+      if (isNaN(nilai)) { isi.focus(); return; }
+
+      if (Math.abs(nilai - netto) > 0.001) {
+        stage.dataset.salah = '1';
+        res.className = 'quiz__res is-no';
+        res.innerHTML = '<b>Belum tepat.</b><p>Netto itu berat isinya saja. Kurangi bruto dengan tara, lalu coba lagi.</p>';
+        return;
+      }
+
+      stage.dataset.dijawab = '1';
+      isi.disabled = true;
+      stage.querySelector('[data-cek]').disabled = true;
+      res.className = 'quiz__res is-ok';
+      res.innerHTML = '<b>Tepat.</b><p>Netto = bruto − tara = ' + bruto + ' − ' + tara + ' = ' + netto +
+        ' kg. Tara ' + tara + ' kg itu ' + Math.round(tara / bruto * 100) + '% dari bruto.</p>';
+      catat(!stage.dataset.salah);
+      tawarkanLanjut('Bagian berikutnya');
+    };
+
+    stage.querySelector('[data-cek]').addEventListener('click', cek);
+    stage.querySelector('[data-jawab]').addEventListener('keydown', e => { if (e.key === 'Enter') cek(); });
+  }
+
+  /* ---------- Dua toko: diskon ---------- */
+  function bagianDiskon(stage) {
+    const harga = ri(10, 40) * 5000;
+    let dA = ri(2, 6) * 10;
+    let dB = ri(2, 6) * 10;
+    while (dB === dA) dB = ri(2, 6) * 10;
+
+    const akhirA = harga * (100 - dA) / 100;
+    const akhirB = harga * (100 - dB) / 100;
+    const murah = akhirA < akhirB ? 'a' : 'b';
+
+    stage.innerHTML =
+      '<div class="mini">' +
+        '<p class="mini__q">Sepatu yang sama harganya <b>' + rp(harga) +
+          '</b> di dua toko. Toko mana yang bikin kamu bayar lebih sedikit?</p>' +
+        '<div class="mini__pilih">' +
+          '<button class="mini__toko" type="button" data-toko="a"><b>Toko A</b><span>Diskon ' + dA + '%</span><span>Harga ' + rp(harga) + '</span></button>' +
+          '<button class="mini__toko" type="button" data-toko="b"><b>Toko B</b><span>Diskon ' + dB + '%</span><span>Harga ' + rp(harga) + '</span></button>' +
+        '</div>' +
+        '<div class="quiz__res" data-res></div>' +
+      '</div>';
+
+    stage.querySelectorAll('[data-toko]').forEach(b => b.addEventListener('click', () => {
+      if (stage.dataset.dijawab) return;
+      stage.dataset.dijawab = '1';
+      const pilih = b.dataset.toko;
+      const tepat = pilih === murah;
+
+      stage.querySelectorAll('[data-toko]').forEach(x => {
+        x.disabled = true;
+        if (x.dataset.toko === murah) x.classList.add('is-ok');
+        if (x.dataset.toko === pilih && !tepat) x.classList.add('is-no');
+      });
+
+      const res = stage.querySelector('[data-res]');
+      res.className = 'quiz__res is-' + (tepat ? 'ok' : 'no');
+      res.innerHTML = '<b>' + (tepat ? 'Tepat.' : 'Belum tepat.') + '</b><p>Toko A: ' + rp(harga) + ' − ' + dA +
+        '% = ' + rp(akhirA) + '. Toko B: ' + rp(harga) + ' − ' + dB + '% = ' + rp(akhirB) +
+        '. Yang lebih murah Toko ' + murah.toUpperCase() + ', selisih ' + rp(Math.abs(akhirA - akhirB)) + '.</p>';
+      catat(tepat);
+      tawarkanLanjut('Bagian berikutnya');
+    }));
+  }
+
+  /* ---------- Widget dari interaktif.js ---------- */
+  function bagianWidget(stage, jenis) {
+    stage.innerHTML = jenis === 'panah'
+      ? '<div class="mini"><p class="mini__q">Pasangkan tiap anggota A dengan pasangannya di B. Relasi yang semua anggotanya tersambung dan tidak bercabang itu namanya fungsi.</p><figure class="inter" data-widget="panah" data-fungsi="tambah"></figure></div>'
+      : '<div class="mini"><p class="mini__q">Geser sudut kirinya. Berapa pun nilainya, dua sudut ini harus berjumlah 180°.</p><figure class="inter" data-widget="sudut" data-a="' + ri(35, 75) + '"></figure></div>';
+
+    if (window.OwlyInteraktif && window.OwlyInteraktif.mountAll) {
+      window.OwlyInteraktif.mountAll(stage);
+    } else {
+      stage.insertAdjacentHTML('beforeend', '<p class="omega__note">Kegiatan ini butuh interaktif.js.</p>');
+    }
+    tawarkanLanjut('Bagian berikutnya');
+  }
+
+  function selesaiSesi() {
+    const total = sesi.rencana.length, benar = sesi.benar, dinilai = sesi.dinilai;
+    body.innerHTML =
       '<div class="quiz quiz--done">' +
-        '<span class="quiz__badge">' + pantun.selesai + ' / ' + PANTUN.length + '</span>' +
-        '<h3>Rima dan isi sama-sama penting.</h3>' +
-        '<p>Pantun rimanya a–b–a–b. Baris ketiga nyambung sama baris pertama, baris keempat sama baris kedua. Isinya juga harus nyambung.</p>' +
+        '<span class="quiz__badge">' + (dinilai ? benar + ' / ' + dinilai : total) + '</span>' +
+        '<h3>Campuran selesai.</h3>' +
+        '<p>' + total + ' bagian: ' + sesi.rencana.map(j => namaJenis[j]).join(', ') + '. ' +
+          (dinilai ? 'Benar ' + benar + ' dari ' + dinilai + ' soal yang dinilai.' : 'Belum ada soal yang dinilai.') +
+        '</p>' +
         '<div class="quiz__foot">' +
-          '<button class="btn-act btn-act--red" type="button" data-pantun-ulang><span>Ulangi pantun</span>' + icon('arrow-right') + '</button>' +
-          '<button class="btn-act" type="button" data-omega-back2><span>Kegiatan lain</span>' + icon('chev-right') + '</button>' +
+          '<button class="btn-act btn-act--red" type="button" data-acak><span>Acak campuran baru</span>' + icon('arrow-right') + '</button>' +
+          '<button class="btn-act" type="button" data-mode-jump="alpha"><span>Coba Alpha</span>' + icon('chev-right') + '</button>' +
+          '<a class="btn-act" href="latihan.html"><span>Kembali ke pilihan</span>' + icon('chev-right') + '</a>' +
         '</div>' +
       '</div>';
 
-    el('[data-pantun-ulang]').addEventListener('click', () => { pantun = { i: 0, selesai: 0 }; renderPantun(); });
-    el('[data-omega-back2]').addEventListener('click', () => { state.opts = {}; render(); });
+    body.querySelector('[data-acak]').addEventListener('click', () => mulaiSesi());
+    body.querySelector('[data-mode-jump]').addEventListener('click', () => switchMode('alpha'));
   }
 
   /* =========================================================
@@ -450,5 +651,10 @@
     if (e.target.closest('[data-lab-close]')) lab.hidden = true;
   });
 
-  window.OwlyLatihan = { open: open, switchMode: switchMode };
+  window.OwlyLatihan = {
+    open: open,
+    switchMode: switchMode,
+    omegaMulai: mulaiSesi,
+    omegaRencana: () => (sesi ? sesi.rencana.slice() : [])
+  };
 })();
