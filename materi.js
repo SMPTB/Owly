@@ -150,7 +150,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'mtk-2', subject: 'mtk', bab: 'Aljabar', no: '02',
-  intro: `Aljabar memakai huruf untuk mewakili bilangan yang belum diketahui. Aljabar dipakai buat mengubah cerita sehari-hari jadi persamaan, lalu diselesaikan langkah demi langkah.`,
+  intro: `Aljabar memakai huruf untuk mewakili bilangan yang belum diketahui. Aljabar terlalu overhated — Andra`,
   goals: [
     `Menyelesaikan persamaan dan pertidaksamaan linear satu variabel`,
     `Menyelesaikan sistem persamaan linear dua variabel (SPLDV)`,

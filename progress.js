@@ -243,8 +243,10 @@
     /* Rekomendasi latihan: bab (utama) yang masih punya soal belum dikuasai */
     const rcb = rb.qDone < rb.qTotal ? rb : (S.babs.find(b => b.qDone < b.qTotal) || rb);
     const rq = nextQuestionIn(S, rcb);
-    text('[data-rec-title]', 'Balik ke ' + rcb.bab + ', yuk.');
-    text('[data-rec-text]', (rcb.qTotal - rcb.qDone) + ' soal di bab ini belum kamu kuasai. Mulai satu soal aja dulu.');
+    text('[data-rec-title]', 'TKA is still coming…');
+    text('[data-rec-text]', rcb.qTotal > rcb.qDone
+      ? 'damn salah (' + (rcb.qTotal - rcb.qDone) + ')'
+      : 'hurra betul semua');
     setAll('[data-rec-link]', e => { e.href = 'kerjakan.html?mode=alpha&q=' + rq.id; });
 
     /* Target harian */
