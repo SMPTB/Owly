@@ -14,7 +14,8 @@
   const O = window.Owly || { recordAnswer() {} };
   const SUBJ = { mtk: 'Matematika', ind: 'Bahasa Indonesia' };
   const LETTERS = ['A', 'B', 'C', 'D', 'E'];
-  const ALPHA_SIZE = 5;
+  const ALPHA_SIZE = 15;
+  const DELTA_SIZE = 15;
 
   const lab = document.getElementById('lab');
   const body = document.getElementById('labBody');
@@ -192,7 +193,12 @@
   let delta = null;
 
   function startDelta(subject) {
-    const deck = SOAL.filter(q => !subject || q.subject === subject).slice();
+    const pool = SOAL.filter(q => !subject || q.subject === subject);
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+    }
+    const deck = pool.slice(0, Math.min(DELTA_SIZE, pool.length));
     delta = { deck: deck, i: 0, open: false, paham: 0, total: deck.length };
   }
 
@@ -287,7 +293,7 @@
 
   /* =========================================================
      4. OMEGA — campuran acak
-     Tiap kali dibuka, Omega menyusun enam bagian dari tujuh
+     Tiap kali dibuka, Omega menyusun lima belas bagian dari tujuh
      jenis kegiatan: pilihan ganda, flashcard, isi pantun,
      timbangan bruto–netto, dua toko diskon, diagram panah, dan
      sudut berpelurus. Urutannya diacak dan jenis boleh muncul
@@ -318,7 +324,7 @@
   ];
 
   const JENIS = ['pg', 'flash', 'pantun', 'bruto', 'diskon', 'panah', 'sudut'];
-  const PANJANG_SESI = 6;
+  const PANJANG_SESI = 15;
   const namaJenis = {
     pg: 'pilihan ganda', flash: 'flashcard', pantun: 'pantun',
     bruto: 'bruto–netto', diskon: 'diskon', panah: 'diagram panah', sudut: 'sudut: cari x'

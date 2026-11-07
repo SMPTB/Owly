@@ -470,6 +470,164 @@ const SOAL = [
     answer: 0,
     explain: 'Bagas rela kehujanan agar Dita bisa pulang kering, tanpa meminta apa pun. Pilihan lain hanya menanggapi peristiwa, bukan pesan ceritanya.'
   }
+,
+  /* ================= MATEMATIKA · tambahan 2 ================= */
+  {
+    id: 'MTK-022', subject: 'mtk', bab: 'Bilangan', title: 'Diskon lalu pajak',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Sebuah tas berharga Rp250.000 mendapat diskon 20%. Setelah itu, harga yang sudah didiskon dikenai pajak 10%.</p>',
+    question: 'Harga akhir tas tersebut adalah …',
+    options: ['Rp200.000', 'Rp220.000', 'Rp225.000', 'Rp230.000'],
+    answer: 1,
+    explain: 'Diskon 20% dari 250.000 = 50.000, jadi harganya 200.000. Pajak 10% dari 200.000 = 20.000, sehingga harga akhirnya 220.000.'
+  },
+  {
+    id: 'MTK-023', subject: 'mtk', bab: 'Aljabar', title: 'Jumlah dan selisih dua bilangan',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Jumlah dua bilangan adalah 45, sedangkan selisihnya 11.</p>',
+    question: 'Bilangan yang lebih besar adalah …',
+    options: ['17', '22', '28', '34'],
+    answer: 2,
+    explain: 'Misal a + b = 45 dan a − b = 11. Jumlahkan keduanya: 2a = 56, jadi a = 28. Bilangan lainnya 45 − 28 = 17.'
+  },
+  {
+    id: 'MTK-024', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Kerangka kubus dari kawat',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Seutas kawat panjangnya 72 cm dipakai untuk membuat kerangka kubus utuh.</p>',
+    question: 'Panjang rusuk kubus tersebut adalah … cm',
+    options: ['4', '6', '8', '12'],
+    answer: 1,
+    explain: 'Kerangka kubus memerlukan 12 rusuk sama panjang. 72 ÷ 12 = 6 cm.'
+  },
+  {
+    id: 'MTK-025', subject: 'mtk', bab: 'Data dan Peluang', title: 'Modus data tunggal',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Banyak buku yang dibaca 8 siswa dalam sebulan: 4, 5, 5, 6, 7, 7, 7, 8.</p>',
+    question: 'Modus data tersebut adalah …',
+    options: ['5', '6', '7', '8'],
+    answer: 2,
+    explain: 'Nilai 7 muncul tiga kali, paling sering dibanding nilai lain.'
+  },
+  {
+    id: 'MTK-026', subject: 'mtk', bab: 'Bilangan', title: 'Bentuk lain dari pecahan',
+    level: 'Dasar', type: 'multi', stimulus: '',
+    question: 'Manakah yang nilainya sama dengan 3/4?',
+    options: ['0,75', '75%', '6/8', '4/3'],
+    answer: [0, 1, 2],
+    explain: '3/4 = 0,75 = 75%. Pecahan 6/8 disederhanakan menjadi 3/4. Adapun 4/3 lebih besar dari 1, jadi tidak sama.'
+  },
+  {
+    id: 'MTK-027', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Unsur-unsur kubus',
+    level: 'Dasar', type: 'multi', stimulus: '',
+    question: 'Pernyataan yang benar tentang kubus adalah …',
+    options: ['Memiliki 12 rusuk.', 'Semua sisinya berbentuk persegi.', 'Memiliki 8 titik sudut.', 'Memiliki 4 sisi.'],
+    answer: [0, 1, 2],
+    explain: 'Kubus punya 12 rusuk, 6 sisi berbentuk persegi, dan 8 titik sudut. Pernyataan 4 sisi salah.'
+  },
+  {
+    id: 'MTK-028', subject: 'mtk', bab: 'Bilangan', title: 'Perbandingan harga buku',
+    level: 'Sedang', type: 'table',
+    stimulus: '<p>Harga 4 buku tulis yang sama adalah Rp32.000.</p>',
+    question: 'Tentukan Benar atau Salah untuk setiap pernyataan berikut!',
+    cols: ['Benar', 'Salah'],
+    rows: [
+      { t: 'Harga satu buku Rp9.000.', a: 1 },
+      { t: 'Harga 6 buku Rp48.000.', a: 0 },
+      { t: 'Dengan Rp56.000 dapat diperoleh 7 buku.', a: 0 }
+    ],
+    explain: 'Harga satu buku = 32.000 ÷ 4 = 8.000, jadi Rp9.000 salah. Enam buku = 6 × 8.000 = 48.000 (benar). 56.000 ÷ 8.000 = 7 buku (benar).'
+  },
+  {
+    id: 'MTK-029', subject: 'mtk', bab: 'Data dan Peluang', title: 'Rata-rata, median, dan modus',
+    level: 'Menantang', type: 'table',
+    stimulus: '<p>Nilai enam siswa: 7, 8, 8, 9, 9, 10.</p>',
+    question: 'Tentukan Benar atau Salah untuk setiap pernyataan berikut!',
+    cols: ['Benar', 'Salah'],
+    rows: [
+      { t: 'Rata-rata nilainya 8,5.', a: 0 },
+      { t: 'Median nilainya 8,5.', a: 0 },
+      { t: 'Modusnya tunggal, yaitu 9.', a: 1 }
+    ],
+    explain: 'Jumlah nilai 51, dibagi 6 menjadi 8,5. Median = (8 + 9) ÷ 2 = 8,5. Modusnya tidak tunggal karena 8 dan 9 sama-sama muncul dua kali.'
+  },
+
+  /* ================= BAHASA INDONESIA · tambahan 2 ================= */
+  {
+    id: 'IND-020', subject: 'ind', bab: 'Pemahaman Tekstual (Literal)', title: 'Kata baku',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>“Para siswa <b>mempraktekkan</b> gerakan senam di lapangan.”</p>',
+    question: 'Kata baku untuk kata bercetak tebal adalah …',
+    options: ['mempraktikkan', 'mempraktekan', 'memperaktikkan', 'mempraktikan'],
+    answer: 0,
+    explain: 'Bentuk baku menurut KBBI adalah “mempraktikkan”, berasal dari kata dasar praktik.'
+  },
+  {
+    id: 'IND-021', subject: 'ind', bab: 'Pemahaman Inferensial', title: 'Pesan penulis dalam kutipan',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>“Dua jam belajar tanpa jeda bukan tanda rajin. Otak butuh istirahat singkat untuk mengendapkan yang baru dipelajari.”</p>',
+    question: 'Pesan yang ingin disampaikan penulis adalah …',
+    options: [
+      'Belajar harus dilakukan dua jam tanpa henti.',
+      'Istirahat singkat membantu proses belajar.',
+      'Otak tidak perlu dipakai belajar lama.',
+      'Jeda belajar membuat pelajaran cepat lupa.'
+    ],
+    answer: 1,
+    explain: 'Penulis menyebut istirahat singkat membantu otak mengendapkan pelajaran. Teks justru menolak gagasan belajar tanpa jeda.'
+  },
+  {
+    id: 'IND-022', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', title: 'Mengenali kalimat fakta',
+    level: 'Sedang', type: 'multi', stimulus: '',
+    question: 'Kalimat yang termasuk fakta adalah …',
+    options: [
+      '“Air mendidih pada suhu 100 °C di tekanan udara normal.”',
+      '“Menurut saya, sekolah sebaiknya mulai pukul 08.00.”',
+      '“Indonesia memiliki lebih dari 17.000 pulau.”',
+      '“Film itu membosankan sekali.”'
+    ],
+    answer: [0, 2],
+    explain: 'Fakta bisa diperiksa kebenarannya, seperti suhu didih air dan jumlah pulau. Opini berisi penilaian pribadi, terlihat dari “menurut saya” dan “membosankan”.'
+  },
+  {
+    id: 'IND-023', subject: 'ind', bab: 'Pemahaman Inferensial', title: 'Simpulan yang didukung teks',
+    level: 'Menantang', type: 'multi',
+    stimulus: '<p>Kantin sekolah mulai memisahkan sampah organik dan anorganik. Sebulan kemudian, sampah yang dibuang ke TPS berkurang sepertiga. Petugas kebersihan mengaku lebih mudah memilah karena sampah sudah terpisah.</p>',
+    question: 'Simpulan yang didukung oleh teks tersebut adalah …',
+    options: [
+      'Pemisahan sampah mengurangi jumlah sampah yang dibuang.',
+      'Pemisahan sampah memudahkan petugas kebersihan.',
+      'Semua siswa sudah sadar memilah sampah.',
+      'Kantin berhenti menghasilkan sampah.'
+    ],
+    answer: [0, 1],
+    explain: 'Teks menyebut sampah berkurang sepertiga dan petugas lebih mudah memilah. Teks tidak menyatakan semua siswa sadar, dan sampah tidak berhenti sama sekali.'
+  },
+  {
+    id: 'IND-024', subject: 'ind', bab: 'Pemahaman Tekstual (Literal)', title: 'Kesesuaian informasi dengan teks',
+    level: 'Sedang', type: 'table',
+    stimulus: '<p>Kegiatan pramuka diadakan setiap Jumat pukul 14.00. Siswa wajib membawa topi dan tali. Kegiatan berakhir pukul 16.30, dan tidak ada kegiatan pengganti jika hujan.</p>',
+    question: 'Tentukan pernyataan yang sesuai dan tidak sesuai dengan teks!',
+    cols: ['Sesuai', 'Tidak sesuai'],
+    rows: [
+      { t: 'Pramuka dilaksanakan setiap Jumat.', a: 0 },
+      { t: 'Siswa cukup membawa topi.', a: 1 },
+      { t: 'Jika hujan, kegiatan diganti pada hari lain.', a: 1 }
+    ],
+    explain: 'Teks menyebut setiap Jumat (sesuai). Siswa wajib membawa topi dan tali, jadi cukup topi tidak sesuai. Teks menegaskan tidak ada kegiatan pengganti saat hujan (tidak sesuai).'
+  },
+  {
+    id: 'IND-025', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', title: 'Menilai kekuatan alasan',
+    level: 'Sedang', type: 'table',
+    stimulus: '<p><b>Pendapat:</b> Siswa perlu sarapan sebelum ke sekolah.</p><p><b>Alasan A:</b> Penelitian menunjukkan siswa yang sarapan lebih mampu berkonsentrasi.</p><p><b>Alasan B:</b> Pokoknya sarapan itu penting.</p>',
+    question: 'Tentukan kuat atau lemah untuk setiap pernyataan berikut!',
+    cols: ['Kuat', 'Lemah'],
+    rows: [
+      { t: 'Alasan A didukung hasil penelitian.', a: 0 },
+      { t: 'Alasan B hanya berisi ajakan tanpa bukti.', a: 0 },
+      { t: 'Alasan B cukup untuk meyakinkan pembaca.', a: 1 }
+    ],
+    explain: 'Alasan A punya bukti penelitian sehingga kuat. Alasan B tidak punya bukti sehingga lemah dan tidak cukup meyakinkan.'
+  }
 
 ];
 
