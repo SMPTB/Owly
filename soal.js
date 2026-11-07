@@ -316,7 +316,154 @@ const SOAL = [
     ],
     answer: [0, 1, 3],
     explain: 'Teks tidak menyertakan data, alasannya tidak dirinci, dan memakai kata tidak baku "pokoknya". Kalimat-kalimatnya justru pendek, jadi pilihan ketiga bukan kelemahan.'
+  },
+
+  /* ================= MATEMATIKA · tambahan ================= */
+  {
+    id: 'MTK-014', subject: 'mtk', bab: 'Bilangan', title: 'Menyederhanakan bentuk akar',
+    level: 'Dasar', type: 'pg', stimulus: '',
+    question: 'Bentuk sederhana dari 3√12 + 2√27 adalah …',
+    options: ['5√39', '6√3', '12√3', '12√39'],
+    answer: 2,
+    explain: '√12 = 2√3 dan √27 = 3√3. Jadi 3√12 + 2√27 = 3(2√3) + 2(3√3) = 6√3 + 6√3 = 12√3.'
+  },
+  {
+    id: 'MTK-015', subject: 'mtk', bab: 'Bilangan', title: 'Skala pada peta',
+    level: 'Sedang', type: 'pg', stimulus: '',
+    question: 'Jarak dua kota pada peta 6 cm. Peta itu berskala 1 : 250.000. Jarak sebenarnya kedua kota adalah …',
+    options: ['1,5 km', '15 km', '150 km', '1.500 km'],
+    answer: 1,
+    explain: 'Jarak sebenarnya = 6 × 250.000 cm = 1.500.000 cm. Karena 1 km = 100.000 cm, hasilnya 15 km.'
+  },
+  {
+    id: 'MTK-016', subject: 'mtk', bab: 'Aljabar', title: 'Persamaan linear satu variabel',
+    level: 'Dasar', type: 'pg', stimulus: '',
+    question: 'Jika 3(2x − 5) = 4x + 7, nilai x adalah …',
+    options: ['4', '8', '11', '22'],
+    answer: 2,
+    explain: 'Kalikan dulu: 6x − 15 = 4x + 7. Kurangi 4x di kedua ruas: 2x − 15 = 7, lalu 2x = 22, sehingga x = 11.'
+  },
+  {
+    id: 'MTK-017', subject: 'mtk', bab: 'Aljabar', title: 'Nilai fungsi kuadrat',
+    level: 'Menantang', type: 'pg', stimulus: '',
+    question: 'Diketahui f(x) = 2x² − 3x + 1. Nilai f(−2) adalah …',
+    options: ['3', '11', '15', '21'],
+    answer: 2,
+    explain: 'f(−2) = 2(−2)² − 3(−2) + 1 = 2(4) + 6 + 1 = 8 + 6 + 1 = 15.'
+  },
+  {
+    id: 'MTK-018', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Keliling lingkaran',
+    level: 'Dasar', type: 'pg', stimulus: '',
+    question: 'Sebuah lingkaran berdiameter 14 cm. Dengan π = 22/7, kelilingnya adalah …',
+    options: ['22 cm', '44 cm', '88 cm', '154 cm'],
+    answer: 1,
+    explain: 'Keliling = π × d = 22/7 × 14 = 44 cm. Angka 154 cm itu luasnya, bukan kelilingnya.'
+  },
+  {
+    id: 'MTK-019', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Volume tabung',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Sebuah tabung memiliki jari-jari 7 cm dan tinggi 10 cm. Gunakan π = 22/7.</p>',
+    question: 'Volume tabung tersebut adalah …',
+    options: ['154 cm³', '770 cm³', '1.540 cm³', '3.080 cm³'],
+    answer: 2,
+    explain: 'Volume = πr²t = 22/7 × 7² × 10 = 22 × 7 × 10 = 1.540 cm³.'
+  },
+  {
+    id: 'MTK-020', subject: 'mtk', bab: 'Data dan Peluang', title: 'Mencari data yang hilang dari rata-rata',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Rata-rata lima nilai ulangan Bima adalah 78. Empat nilai yang sudah diketahui: 75, 80, 70, dan 85.</p>',
+    question: 'Nilai ulangan kelima Bima adalah …',
+    options: ['75', '80', '85', '90'],
+    answer: 1,
+    explain: 'Jumlah kelima nilai = 5 × 78 = 390. Jumlah empat nilai = 75 + 80 + 70 + 85 = 310. Nilai kelima = 390 − 310 = 80.'
+  },
+  {
+    id: 'MTK-021', subject: 'mtk', bab: 'Data dan Peluang', title: 'Peluang dua dadu',
+    level: 'Sedang', type: 'pg', stimulus: '',
+    question: 'Dua dadu dilempar bersamaan. Peluang munculnya jumlah mata dadu 7 adalah …',
+    options: ['1/12', '1/9', '1/6', '7/36'],
+    answer: 2,
+    explain: 'Ada 36 kemungkinan. Jumlah 7 muncul pada (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) — enam kemungkinan. Jadi peluangnya 6/36 = 1/6.'
+  },
+
+  /* ================= BAHASA INDONESIA · tambahan ================= */
+  {
+    id: 'IND-013', subject: 'ind', bab: 'Pemahaman Tekstual (Literal)', title: 'Informasi tersurat pada pengumuman',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Pendaftaran kelas menulis kreatif dibuka untuk siswa kelas VII–IX. Kelas berlangsung setiap Sabtu pukul 09.00–11.00 di ruang 12. Peserta cukup membawa buku catatan karena laptop disediakan panitia. Kuota hanya 20 orang.</p>',
+    question: 'Barang yang disediakan panitia adalah …',
+    options: ['buku catatan', 'laptop', 'kartu peserta', 'cetakan materi'],
+    answer: 1,
+    explain: 'Teks menyebut peserta cukup membawa buku catatan karena laptop disediakan panitia. Kartu peserta dan cetakan materi tidak disebutkan.'
+  },
+  {
+    id: 'IND-014', subject: 'ind', bab: 'Pemahaman Tekstual (Literal)', title: 'Membaca jadwal pada tabel',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p><b>Jadwal ekstrakurikuler</b></p><table><tr><th>Kegiatan</th><th>Hari</th></tr><tr><td>Basket</td><td>Senin dan Kamis</td></tr><tr><td>Futsal</td><td>Rabu</td></tr><tr><td>Paduan suara</td><td>Jumat</td></tr><tr><td>Tari</td><td>Selasa</td></tr></table>',
+    question: 'Ekstrakurikuler yang berlatih dua kali dalam sepekan adalah …',
+    options: ['basket', 'futsal', 'paduan suara', 'tari'],
+    answer: 0,
+    explain: 'Hanya basket yang tercatat pada dua hari, yaitu Senin dan Kamis. Kegiatan lain masing-masing satu hari.'
+  },
+  {
+    id: 'IND-015', subject: 'ind', bab: 'Pemahaman Inferensial', title: 'Tujuan penulis',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Membawa botol minum sendiri terdengar sederhana, tetapi dampaknya besar. Satu botol yang dipakai ulang setiap hari bisa menggantikan ratusan botol plastik sekali pakai dalam setahun. Mulai besok, coba isi botolmu sebelum berangkat sekolah.</p>',
+    question: 'Tujuan penulis menulis paragraf tersebut adalah …',
+    options: [
+      'menghibur pembaca dengan cerita lucu',
+      'mengajak pembaca mengurangi sampah botol plastik',
+      'menjelaskan cara membuat botol minum',
+      'menilai harga botol plastik di pasaran'
+    ],
+    answer: 1,
+    explain: 'Teks berisi ajakan mengisi botol sendiri dan menyebut dampaknya bagi sampah plastik. Jadi tujuannya mengajak, bukan menghibur atau menjelaskan cara membuat.'
+  },
+  {
+    id: 'IND-016', subject: 'ind', bab: 'Pemahaman Inferensial', title: 'Menyimpulkan sifat tokoh',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Setiap hari Rina membawa bekal dari rumah. Uang jajannya ia tabung, lalu dipakai membeli buku latihan sendiri. Saat temannya tidak punya alat tulis, Rina sering meminjamkan.</p>',
+    question: 'Sifat Rina yang dapat disimpulkan dari teks tersebut adalah …',
+    options: ['boros dan suka pamer', 'hemat dan suka menolong', 'pemalu dan penyendiri', 'ceroboh dan mudah lupa'],
+    answer: 1,
+    explain: 'Rina menabung uang jajan dan membawa bekal (hemat), serta meminjamkan alat tulis ke teman (suka menolong).'
+  },
+  {
+    id: 'IND-017', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', title: 'Majas dalam kalimat',
+    level: 'Dasar', type: 'pg', stimulus: '',
+    question: 'Majas pada kalimat “Angin berbisik di telinga para petani” adalah …',
+    options: ['hiperbola', 'personifikasi', 'metafora', 'litotes'],
+    answer: 1,
+    explain: 'Angin diberi sifat manusia, yaitu berbisik. Itu personifikasi. Hiperbola melebih-lebihkan, metafora membandingkan langsung tanpa kata seperti, dan litotes merendahkan diri.'
+  },
+  {
+    id: 'IND-018', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', title: 'Membedakan fakta dan opini',
+    level: 'Sedang', type: 'pg', stimulus: '',
+    question: 'Kalimat yang berisi opini adalah …',
+    options: [
+      '“SMP Negeri 2 menambah dua kelas pada tahun ajaran ini.”',
+      '“Menurut saya, seragam olahraga sebaiknya dipakai setiap Jumat.”',
+      '“Ujian sekolah dilaksanakan pada 12–16 Mei.”',
+      '“Jumlah siswa kelas IX sebanyak 128 orang.”'
+    ],
+    answer: 1,
+    explain: 'Kalimat opini memuat pendapat dan ditandai frasa “menurut saya” serta kata “sebaiknya”. Tiga kalimat lain berisi data yang bisa dicek kebenarannya.'
+  },
+  {
+    id: 'IND-019', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', title: 'Nilai moral cerita',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Hujan turun deras saat bel pulang berbunyi. Bagas melihat Dita kebingungan karena payungnya tertinggal. Tanpa banyak bicara, Bagas menyerahkan payungnya lalu berlari pulang dengan seragam basah. Ibunya sempat kesal, tetapi Bagas hanya tersenyum.</p>',
+    question: 'Nilai moral yang paling tepat dari cerita tersebut adalah …',
+    options: [
+      'membantu orang lain tanpa mengharap imbalan',
+      'jangan lupa membawa payung saat musim hujan',
+      'pulang sekolah sebaiknya tidak saat hujan',
+      'ibu selalu marah bila anaknya basah'
+    ],
+    answer: 0,
+    explain: 'Bagas rela kehujanan agar Dita bisa pulang kering, tanpa meminta apa pun. Pilihan lain hanya menanggapi peristiwa, bukan pesan ceritanya.'
   }
+
 ];
 
 window.SOAL = SOAL;

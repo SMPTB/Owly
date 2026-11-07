@@ -94,7 +94,7 @@
     opts = opts || {};
     const pool = alphaPool(opts.subject, opts.topic);
     const list = pool.length ? pool : alphaPool();
-    let awal = opts.question ? list.findIndex(q => q.id === opts.question) : 0;
+    let awal = opts.question ? list.findIndex(q => q.id === opts.question) : Math.floor(Math.random() * list.length);
     if (awal < 0) awal = 0;
     const soal = [];
     for (let i = 0; i < Math.min(ALPHA_SIZE, list.length); i++) soal.push(list[(awal + i) % list.length]);
