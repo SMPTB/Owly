@@ -153,6 +153,24 @@ b, strong { font-weight: 600; }
 /* Kutipan James Clear di beranda, bergantian tiap kali halaman dibuka */
 .greeting .greeting__quote { font-size: 14px; font-style: italic; color: var(--text); }
 .greeting .greeting__src { margin-top: 5px; font-size: 11px; color: var(--olive); }
+
+/* ---------- Halaman kerja latihan (kerjakan.html) ---------- */
+.workbar { max-width: 860px; margin: 0 auto; padding: 22px 20px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.workbar__back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.workbar__back:hover { color: var(--text); }
+.workbar__brand { font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
+.work { max-width: 860px; margin: 0 auto; padding: 16px 20px 56px; }
+.work .lab { margin-top: 0; }
+.work .lab__close { text-decoration: none; }
+.lab__fallback { font-size: 14px; color: var(--muted); }
+.lab__fallback a { color: inherit; text-decoration: underline; }
+
+/* ---------- Bank soal: daftar naskah unduhan ---------- */
+.unduh__intro { margin: 0 0 16px; font-size: 14px; color: var(--muted); }
+.unduh .exrow { flex-wrap: wrap; }
+@media (max-width: 640px) {
+  .workbar, .work { padding-left: 16px; padding-right: 16px; }
+}
 .streak {
   background: #2E1A0A; border: 1px solid var(--orange-bd); color: var(--orange);
   border-radius: 100px; padding: 10px 14px; font-size: 13px; font-weight: 600; white-space: nowrap;

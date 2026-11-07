@@ -95,7 +95,7 @@
   $('lhGoals').innerHTML = bab.goals.map(g => '<li>' + g + '</li>').join('');
 
   /* ---------- Isi bab ---------- */
-  const practice = 'bank-soal.html?subject=' + bab.subject + '&topic=' + encodeURIComponent(bab.bab);
+  const practice = 'kerjakan.html?mode=alpha&subject=' + bab.subject + '&topic=' + encodeURIComponent(bab.bab);
   $('lessons').innerHTML = bab.lessons.map((l, i) =>
     '<article class="lesson" id="L-' + l.id + '">' +
       '<span class="lesson__tag">Materi ' + LETTER[i] + '</span>' +

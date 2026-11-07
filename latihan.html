@@ -120,7 +120,7 @@
         <span class="chip chip--amber" data-streak>🌱 Mulai streak-mu hari ini</span>
       </section>
 
-      <!-- Tiga cara latihan: pilih mode, panel di bawahnya yang menjalankannya -->
+      <!-- Tiga cara latihan: tiap kartu membuka halaman latihannya sendiri -->
       <section class="modes" aria-labelledby="modesTitle">
         <div class="modes__head">
           <h2 class="sec-title" id="modesTitle">Tiga cara latihan</h2>
@@ -133,7 +133,7 @@
               <h3>Pilihan ganda</h3>
               <p>Lima soal pilihan ganda. Habis milih, langsung ketahuan salahnya di mana.</p>
             </div>
-            <button class="btn-act" type="button" data-mode="alpha"><span>Kerjakan</span><svg class="icon"><use href="#arrow-right"/></svg></button>
+            <a class="btn-act" href="kerjakan.html?mode=alpha"><span>Kerjakan</span><svg class="icon"><use href="#arrow-right"/></svg></a>
           </article>
           <article class="mode mode--delta">
             <span class="mode__letter" aria-hidden="true">δ</span>
@@ -142,7 +142,7 @@
               <h3>Flashcard</h3>
               <p>Baca soalnya, balik kartunya buat lihat pembahasan. Tandai kalau udah ngerti.</p>
             </div>
-            <button class="btn-act" type="button" data-mode="delta"><span>Balik kartu</span><svg class="icon"><use href="#arrow-right"/></svg></button>
+            <a class="btn-act" href="kerjakan.html?mode=delta"><span>Balik kartu</span><svg class="icon"><use href="#arrow-right"/></svg></a>
           </article>
           <article class="mode mode--omega">
             <span class="mode__letter" aria-hidden="true">ω</span>
@@ -151,32 +151,16 @@
               <h3>Latihan interaktif</h3>
               <p>Isi pantun yang bolong, pasangkan domain–kodomain, atau geser sudut. Belajar sambil main.</p>
             </div>
-            <button class="btn-act" type="button" data-mode="omega"><span>Mulai kegiatan</span><svg class="icon"><use href="#arrow-right"/></svg></button>
+            <a class="btn-act" href="kerjakan.html?mode=omega"><span>Mulai kegiatan</span><svg class="icon"><use href="#arrow-right"/></svg></a>
           </article>
         </div>
       </section>
 
-      <!-- Panel latihan: isinya diatur latihan.js sesuai mode yang dipilih -->
-      <section class="lab" id="lab" hidden>
-        <div class="lab__top">
-          <div class="lab__id">
-            <span class="lab__letter" data-lab-letter aria-hidden="true">α</span>
-            <div><small data-lab-kind>ALPHA</small><h2 data-lab-title>Pilihan ganda</h2></div>
-          </div>
-          <div class="lab__tabs" role="tablist" aria-label="Cara latihan">
-            <button class="pill" type="button" role="tab" data-mode="alpha">Alpha</button>
-            <button class="pill" type="button" role="tab" data-mode="delta">Delta</button>
-            <button class="pill" type="button" role="tab" data-mode="omega">Omega</button>
-          </div>
-          <button class="lab__close" type="button" data-lab-close aria-label="Tutup panel latihan">&times;</button>
-        </div>
-        <div class="lab__body" id="labBody"></div>
-      </section>
 
       <section class="rec-banner">
         <span class="rec-banner__icon"><svg class="icon"><use href="#pencil-line"/></svg></span>
         <div class="rec-banner__text"><small>REKOMENDASI UNTUKMU</small><h2 data-rec-title>Biar Bilangan makin melekat.</h2><p data-rec-text>Mulai dari satu soal dulu.</p></div>
-        <a href="bank-soal.html" class="btn-act btn-act--cream" data-rec-link><span>Mulai latihan</span><svg class="icon"><use href="#arrow-right"/></svg></a>
+        <a href="kerjakan.html?mode=alpha" class="btn-act btn-act--cream" data-rec-link><span>Mulai latihan</span><svg class="icon"><use href="#arrow-right"/></svg></a>
       </section>
 
       <section class="stats-row stats-row--3">
@@ -198,25 +182,25 @@
             <span class="exrow__icon" style="background:#232615;color:#6b7a3a"><svg class="icon"><use href="#sigma"/></svg></span>
             <div class="exrow__info"><b>Taklukkan sistem persamaan</b><span>Matematika · Aljabar · ± 3 menit</span></div>
             <span class="chip ">Sedang</span>
-            <a href="bank-soal.html?q=MTK-004" class="btn-act" data-alpha="MTK-004"><span>Mulai</span><svg class="icon"><use href="#arrow-right"/></svg></a>
+            <a href="kerjakan.html?mode=alpha&q=MTK-004" class="btn-act"><span>Mulai</span><svg class="icon"><use href="#arrow-right"/></svg></a>
           </div>
           <div class="exrow" data-subject="ind">
             <span class="exrow__icon" style="background:#2E210E;color:#C8792D"><svg class="icon"><use href="#align-left"/></svg></span>
             <div class="exrow__info"><b>Temukan ide pokok bacaan</b><span>Bahasa Indonesia · Inferensial · ± 2 menit</span></div>
             <span class="chip ">Dasar</span>
-            <a href="bank-soal.html?q=IND-004" class="btn-act" data-alpha="IND-004"><span>Mulai</span><svg class="icon"><use href="#arrow-right"/></svg></a>
+            <a href="kerjakan.html?mode=alpha&q=IND-004" class="btn-act"><span>Mulai</span><svg class="icon"><use href="#arrow-right"/></svg></a>
           </div>
           <div class="exrow" data-subject="mtk">
             <span class="exrow__icon" style="background:#232615;color:#6b7a3a"><svg class="icon"><use href="#dices"/></svg></span>
             <div class="exrow__info"><b>Peluang dalam keseharian</b><span>Matematika · Data dan Peluang · ± 3 menit</span></div>
             <span class="chip ">Sedang</span>
-            <a href="bank-soal.html?q=MTK-012" class="btn-act" data-alpha="MTK-012"><span>Mulai</span><svg class="icon"><use href="#arrow-right"/></svg></a>
+            <a href="kerjakan.html?mode=alpha&q=MTK-012" class="btn-act"><span>Mulai</span><svg class="icon"><use href="#arrow-right"/></svg></a>
           </div>
           <div class="exrow" data-subject="ind">
             <span class="exrow__icon" style="background:#2E210E;color:#C8792D"><svg class="icon"><use href="#align-left"/></svg></span>
             <div class="exrow__info"><b>Menyimpulkan isi teks</b><span>Bahasa Indonesia · Inferensial · ± 3 menit</span></div>
             <span class="chip ">Sedang</span>
-            <a href="bank-soal.html?q=IND-006" class="btn-act" data-alpha="IND-006"><span>Mulai</span><svg class="icon"><use href="#arrow-right"/></svg></a>
+            <a href="kerjakan.html?mode=alpha&q=IND-006" class="btn-act"><span>Mulai</span><svg class="icon"><use href="#arrow-right"/></svg></a>
           </div>
           </div>
 
@@ -234,7 +218,7 @@
             <div class="field"><label for="topik">Topik</label>
               <select class="select" id="topik"><option value="">Semua topik</option></select></div>
             <div class="divider"></div>
-            <div class="time"><svg class="icon"><use href="#clock"/></svg><span>Latihan dibuka di halaman ini, mulai dari soal yang belum kamu kuasai</span></div>
+            <div class="time"><svg class="icon"><use href="#clock"/></svg><span>Latihan dibuka di halaman tersendiri, mulai dari soal yang belum kamu kuasai</span></div>
             <button type="submit" class="btn-act btn-act--red" style="align-self:flex-start"><span>Buat latihan</span><svg class="icon"><use href="#arrow-right"/></svg></button>
           </form>
           <div class="tip-card"><svg class="icon"><use href="#lightbulb"/></svg><b>Salah itu bagian dari belajar.</b><p>Baca pembahasan setelah latihan. Pahami alasannya, bukan hanya jawabannya.</p></div>
@@ -250,8 +234,6 @@
 <script src="materi.js"></script>
 <script src="progress.js"></script>
 <script src="script.js"></script>
-<script src="interaktif.js"></script>
-<script src="latihan.js"></script>
 <script src="quotes.js"></script>
 </body>
 </html>

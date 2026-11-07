@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Latihan · Ωwly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Ikon yang dipakai halaman ini saja -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="chev-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="chev-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  </defs>
+</svg>
+
+<header class="workbar">
+  <a class="workbar__back" href="latihan.html"><svg class="icon" style="width:16px;height:16px"><use href="#chev-left"/></svg> Latihan soal</a>
+  <span class="workbar__brand">Ωwly</span>
+</header>
+
+<main class="work">
+  <!-- Panel latihan: isinya diatur latihan.js sesuai ?mode= di URL -->
+  <section class="lab lab--page" id="lab">
+    <div class="lab__top">
+      <div class="lab__id">
+        <span class="lab__letter" data-lab-letter aria-hidden="true">α</span>
+        <div><small data-lab-kind>ALPHA</small><h2 data-lab-title>Pilihan ganda</h2></div>
+      </div>
+      <div class="lab__tabs" role="tablist" aria-label="Cara latihan">
+        <button class="pill" type="button" role="tab" data-mode="alpha">Alpha</button>
+        <button class="pill" type="button" role="tab" data-mode="delta">Delta</button>
+        <button class="pill" type="button" role="tab" data-mode="omega">Omega</button>
+      </div>
+      <a class="lab__close" href="latihan.html" data-lab-close aria-label="Kembali ke pilihan latihan">&times;</a>
+    </div>
+    <div class="lab__body" id="labBody"></div>
+  </section>
+</main>
+
+<script src="soal.js"></script>
+<script src="interaktif.js"></script>
+<script src="latihan.js"></script>
+<script src="kerja.js"></script>
+</body>
+</html>

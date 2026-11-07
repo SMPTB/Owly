@@ -136,7 +136,7 @@
     const l = b.lessons.find(x => !read[x.id]);
     if (l) return { kind: 'read', href: 'belajar.html?bab=' + b.mid + '#L-' + l.id };
     const q = nextQuestionIn(S, b);
-    return { kind: 'practice', href: 'bank-soal.html?q=' + q.id };
+    return { kind: 'practice', href: 'kerjakan.html?mode=alpha&q=' + q.id };
   }
   function nextQuestionIn(S, b) {
     const qs = SOAL.filter(q => q.subject === b.subject && q.bab === b.bab);
@@ -245,7 +245,7 @@
     const rq = nextQuestionIn(S, rcb);
     text('[data-rec-title]', 'Biar ' + rcb.bab + ' makin melekat.');
     text('[data-rec-text]', (rcb.qTotal - rcb.qDone) + ' soal di bab ini belum kamu kuasai. Mulai dari satu soal dulu.');
-    setAll('[data-rec-link]', e => { e.href = 'bank-soal.html?q=' + rq.id; });
+    setAll('[data-rec-link]', e => { e.href = 'kerjakan.html?mode=alpha&q=' + rq.id; });
 
     /* Target harian */
     const g1 = S.todayTries >= 5, g2 = S.todayMin >= 15, gc = (g1 ? 1 : 0) + (g2 ? 1 : 0);
@@ -329,7 +329,7 @@
     text('[data-advice-title]', 'Luangkan sedikit waktu untuk ' + SUBJ[low] + '.');
     text('[data-advice-text]', S.tries === 0 ? 'Mulai dari satu soal. Langkah kecil bisa membuat perbedaan.'
       : 'Kamu sudah menguasai ' + S.subj[low].done + ' dari ' + S.subj[low].total + ' soal. Coba 10 menit latihan hari ini.');
-    setAll('[data-advice-link]', e => { e.href = 'bank-soal.html?subject=' + low; });
+    setAll('[data-advice-link]', e => { e.href = 'kerjakan.html?mode=alpha&subject=' + low; });
 
     /* Riwayat latihan terakhir (Latihan) */
     const hl = $('histList');
@@ -342,7 +342,7 @@
         return (i ? '<div class="divider"></div>' : '') +
           '<div class="hist__row"><span class="hist__score ' + (x.ok ? 'is-ok' : 'is-no') + '">' + (x.ok ? '✓' : '✗') + '</span>' +
           '<div class="hist__info"><b>' + q.title + '</b><span>' + SUBJ[q.subject] + ' · ' + (x.ok ? 'Benar' : 'Belum tepat') + ' · ' + when + '</span></div>' +
-          '<a href="bank-soal.html?q=' + q.id + '" class="btn-act"><span>Pembahasan</span><svg class="icon"><use href="#chev-right"/></svg></a></div>';
+          '<a href="kerjakan.html?mode=alpha&q=' + q.id + '" class="btn-act"><span>Pembahasan</span><svg class="icon"><use href="#chev-right"/></svg></a></div>';
       }).join('') : '<p class="empty">Belum ada latihan. Kerjakan soal pertamamu di Bank soal.</p>';
     }
 
@@ -422,13 +422,8 @@
     fill();
     pf.addEventListener('submit', e => {
       e.preventDefault();
-      /* Di halaman Latihan Soal, form ini membuka latihan Alpha di tempat,
-         bukan melempar murid ke Bank Soal. */
-      if (window.OwlyLatihan) {
-        window.OwlyLatihan.open('alpha', { subject: mapel.value, topic: topik.value });
-        return;
-      }
-      let url = 'bank-soal.html?subject=' + mapel.value;
+      /* Form ini membuka halaman latihan Alpha tersendiri. */
+      let url = 'kerjakan.html?mode=alpha&subject=' + mapel.value;
       if (topik.value) url += '&topic=' + encodeURIComponent(topik.value);
       location.href = url;
     });
