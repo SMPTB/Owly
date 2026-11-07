@@ -204,6 +204,38 @@
     return '';
   }
 
+  /* Kartu dengan dua sisi yang sudah ada di DOM, jadi bisa dibalik dengan animasi */
+  function kartuFlash(q, terbuka) {
+    const sisi = (nama, kelas, teks, tip, sembunyi) =>
+      '<span class="flash__face flash__face--' + kelas + '" aria-hidden="' + (sembunyi ? 'true' : 'false') + '">' +
+        '<span class="flash__label">' + nama + '</span>' +
+        '<span class="flash__text">' + teks + '</span>' +
+        '<span class="flash__tip">' + tip + '</span>' +
+      '</span>';
+
+    return '<button class="flash__card' + (terbuka ? ' is-open' : '') + '" type="button" data-flip aria-pressed="' +
+      (terbuka ? 'true' : 'false') + '">' +
+      '<span class="flash__inner">' +
+        sisi('Pertanyaan', 'depan', (q.stimulus ? plain(q.stimulus) + ' ' : '') + q.question,
+             'Klik kartu untuk melihat jawaban', terbuka) +
+        sisi('Pembahasan', 'belakang', q.explain + '<em class="flash__ans">Jawaban: ' + jawaban(q) + '</em>',
+             'Klik untuk kembali ke pertanyaan', !terbuka) +
+      '</span>' +
+    '</button>';
+  }
+
+  /* Klik kartu: balik tanpa menggambar ulang, supaya animasinya tidak terpotong */
+  function pasangBalik(kartu, saatBalik) {
+    kartu.addEventListener('click', () => {
+      const buka = !kartu.classList.contains('is-open');
+      kartu.classList.toggle('is-open', buka);
+      kartu.setAttribute('aria-pressed', buka ? 'true' : 'false');
+      kartu.querySelector('.flash__face--depan').setAttribute('aria-hidden', buka ? 'true' : 'false');
+      kartu.querySelector('.flash__face--belakang').setAttribute('aria-hidden', buka ? 'false' : 'true');
+      if (saatBalik) saatBalik(buka);
+    });
+  }
+
   function renderDelta() {
     if (!delta) startDelta(state.opts.subject);
     const q = delta.deck[delta.i];
@@ -213,22 +245,14 @@
       '<div class="flash">' +
         '<div class="flash__top"><span>Kartu ' + (delta.i + 1) + ' dari ' + delta.deck.length + '</span>' +
           '<span>' + SUBJ[q.subject] + ' · ' + q.bab + '</span></div>' +
-        '<button class="flash__card' + (delta.open ? ' is-open' : '') + '" type="button" data-flip>' +
-          '<span class="flash__label">' + (delta.open ? 'Pembahasan' : 'Pertanyaan') + '</span>' +
-          '<span class="flash__text">' +
-            (delta.open
-              ? q.explain + '<em class="flash__ans">Jawaban: ' + jawaban(q) + '</em>'
-              : (q.stimulus ? plain(q.stimulus) + ' ' : '') + q.question) +
-          '</span>' +
-          '<span class="flash__tip">' + (delta.open ? 'Klik untuk kembali ke pertanyaan' : 'Klik kartu untuk melihat jawaban') + '</span>' +
-        '</button>' +
+        kartuFlash(q, delta.open) +
         '<div class="flash__foot">' +
           '<button class="btn-act" type="button" data-again><span>Ulangi nanti</span></button>' +
           '<button class="btn-act btn-act--red" type="button" data-know><span>Sudah paham</span>' + icon('arrow-right') + '</button>' +
         '</div>' +
       '</div>';
 
-    el('[data-flip]').addEventListener('click', () => { delta.open = !delta.open; renderDelta(); });
+    pasangBalik(el('[data-flip]'), buka => { delta.open = buka; });
     el('[data-know]').addEventListener('click', () => { delta.paham++; majuDelta(); });
     el('[data-again]').addEventListener('click', () => {
       delta.deck.push(delta.deck.splice(delta.i, 1)[0]);
@@ -429,25 +453,9 @@
   function bagianFlash(stage) {
     const id = sesi.antreFlash.length ? sesi.antreFlash.shift() : SOAL[0].id;
     const q = SOAL.find(x => x.id === id) || SOAL[0];
-    let terbuka = false;
 
-    const gambar = () => {
-      stage.innerHTML =
-        '<div class="flash">' +
-          '<button class="flash__card' + (terbuka ? ' is-open' : '') + '" type="button" data-flip>' +
-            '<span class="flash__label">' + (terbuka ? 'Pembahasan' : 'Pertanyaan') + '</span>' +
-            '<span class="flash__text">' +
-              (terbuka
-                ? q.explain + '<em class="flash__ans">Jawaban: ' + jawaban(q) + '</em>'
-                : (q.stimulus ? plain(q.stimulus) + ' ' : '') + q.question) +
-            '</span>' +
-            '<span class="flash__tip">' + (terbuka ? 'Klik untuk balik lagi' : 'Klik kartu untuk lihat jawaban') + '</span>' +
-          '</button>' +
-        '</div>';
-      stage.querySelector('[data-flip]').addEventListener('click', () => { terbuka = !terbuka; gambar(); });
-    };
-
-    gambar();
+    stage.innerHTML = '<div class="flash">' + kartuFlash(q, false) + '</div>';
+    pasangBalik(stage.querySelector('[data-flip]'));
     tawarkanLanjut('Bagian berikutnya');
   }
 

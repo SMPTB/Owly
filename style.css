@@ -1370,9 +1370,14 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .quiz--done .quiz__foot { justify-content: center; }
 
 .flash { display: flex; flex-direction: column; gap: 12px; }
-.flash__card { display: flex; flex-direction: column; gap: 10px; width: 100%; min-height: 180px; padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); color: var(--text); text-align: left; font: inherit; cursor: pointer; }
-.flash__card:hover { border-color: var(--border-2); }
-.flash__card.is-open { background: #232615; border-color: var(--olive-dim); }
+.flash__card { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: var(--text); text-align: left; font: inherit; cursor: pointer; perspective: 1400px; }
+.flash__card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 14px; }
+.flash__inner { display: grid; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2, .7, .3, 1); }
+.flash__card.is-open .flash__inner { transform: rotateY(180deg); }
+.flash__face { grid-area: 1 / 1; display: flex; flex-direction: column; gap: 10px; min-height: 180px; padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flash__card:hover .flash__face--depan { border-color: var(--border-2); }
+.flash__face--belakang { transform: rotateY(180deg); background: #232615; border-color: var(--olive-dim); }
+@media (prefers-reduced-motion: reduce) { .flash__inner { transition: none; } }
 .flash__label { font-size: 9.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--olive); }
 .flash__text { flex: 1; font-size: 14px; line-height: 1.65; }
 .flash__ans { display: block; margin-top: 10px; font-style: normal; font-weight: 500; color: var(--gold); }
