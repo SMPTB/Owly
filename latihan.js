@@ -297,7 +297,7 @@
   const PANJANG_SESI = 6;
   const namaJenis = {
     pg: 'pilihan ganda', flash: 'flashcard', pantun: 'pantun',
-    bruto: 'bruto–netto', diskon: 'diskon', panah: 'diagram panah', sudut: 'sudut berpelurus'
+    bruto: 'bruto–netto', diskon: 'diskon', panah: 'diagram panah', sudut: 'sudut: cari x'
   };
 
   let sesi = null;
@@ -381,7 +381,8 @@
     else if (jenis === 'pantun') bagianPantun(stage);
     else if (jenis === 'bruto') bagianBruto(stage);
     else if (jenis === 'diskon') bagianDiskon(stage);
-    else bagianWidget(stage, jenis);
+    else if (jenis === 'panah') bagianWidget(stage);
+    else bagianSudut(stage);
   }
 
   /* ---------- Pilihan ganda ---------- */
@@ -592,11 +593,9 @@
     }));
   }
 
-  /* ---------- Widget dari interaktif.js ---------- */
-  function bagianWidget(stage, jenis) {
-    stage.innerHTML = jenis === 'panah'
-      ? '<div class="mini"><p class="mini__q">Pasangkan tiap anggota A dengan pasangannya di B. Relasi yang semua anggotanya tersambung dan tidak bercabang itu namanya fungsi.</p><figure class="inter" data-widget="panah" data-fungsi="tambah"></figure></div>'
-      : '<div class="mini"><p class="mini__q">Geser sudut kirinya. Berapa pun nilainya, dua sudut ini harus berjumlah 180°.</p><figure class="inter" data-widget="sudut" data-a="' + ri(35, 75) + '"></figure></div>';
+  /* ---------- Widget diagram panah ---------- */
+  function bagianWidget(stage) {
+    stage.innerHTML = '<div class="mini"><p class="mini__q">Pasangkan tiap anggota A dengan pasangannya di B. Relasi yang semua anggotanya tersambung dan tidak bercabang itu namanya fungsi.</p><figure class="inter" data-widget="panah" data-fungsi="tambah"></figure></div>';
 
     if (window.OwlyInteraktif && window.OwlyInteraktif.mountAll) {
       window.OwlyInteraktif.mountAll(stage);
@@ -604,6 +603,65 @@
       stage.insertAdjacentHTML('beforeend', '<p class="omega__note">Kegiatan ini butuh interaktif.js.</p>');
     }
     tawarkanLanjut('Bagian berikutnya');
+  }
+
+  /* ---------- Sudut: cari x ---------- */
+  function bagianSudut(stage) {
+    let x, b, k, A;
+    do {
+      x = ri(2, 12); b = ri(1, 9); k = ri(2, 8);
+      A = k * (x + b);
+    } while (A < 40 || A > 150);
+
+    const rumus = k + '(x + ' + b + ')';
+
+    stage.innerHTML =
+      '<div class="mini">' +
+        '<p class="mini__q">Dua sudut bertolak belakang besarnya sama. Sudut atas <b>' + A +
+          '°</b>, sudut bawah <b>' + rumus + '°</b>. Berapa nilai x?</p>' +
+        '<svg class="sudutx__fig" viewBox="0 0 220 130" aria-hidden="true">' +
+          '<line x1="18" y1="98" x2="202" y2="32" stroke="currentColor" stroke-opacity=".4" stroke-width="1.5"/>' +
+          '<line x1="18" y1="32" x2="202" y2="98" stroke="currentColor" stroke-opacity=".4" stroke-width="1.5"/>' +
+          '<path d="M92 20h36M110 20v14" stroke="currentColor" stroke-opacity=".3" stroke-width="1.2" fill="none"/>' +
+          '<text x="110" y="12" text-anchor="middle" font-size="11" fill="currentColor">' + A + '°</text>' +
+          '<text x="110" y="124" text-anchor="middle" font-size="11" fill="currentColor">' + rumus + '°</text>' +
+        '</svg>' +
+        '<p class="mini__eq">' + A + ' = ' + rumus + '</p>' +
+        '<div class="mini__jawab">' +
+          '<span class="mini__label">x =</span>' +
+          '<input class="mini__input" type="number" step="1" inputmode="numeric" placeholder="?" aria-label="Nilai x" data-x>' +
+          '<button class="btn-act btn-act--red" type="button" data-cek><span>Cek</span>' + icon('arrow-right') + '</button>' +
+        '</div>' +
+        '<div class="quiz__res" data-res></div>' +
+      '</div>';
+
+    const cek = () => {
+      if (stage.dataset.dijawab) return;
+      const isi = stage.querySelector('[data-x]');
+      const nilai = parseFloat(String(isi.value).replace(',', '.'));
+      const res = stage.querySelector('[data-res]');
+      if (isNaN(nilai)) { isi.focus(); return; }
+
+      if (nilai !== x) {
+        stage.dataset.salah = '1';
+        res.className = 'quiz__res is-no';
+        res.innerHTML = '<b>Belum tepat.</b><p>Kalikan dulu: ' + k + 'x + ' + (k * b) + ' = ' + A +
+          '. Setelah ' + (k * b) + ' dipindah, bagi dengan ' + k + '.</p>';
+        return;
+      }
+
+      stage.dataset.dijawab = '1';
+      isi.disabled = true;
+      stage.querySelector('[data-cek]').disabled = true;
+      res.className = 'quiz__res is-ok';
+      res.innerHTML = '<b>Tepat.</b><p class="mini__steps">' + A + ' = ' + rumus + ' → ' +
+        k + 'x + ' + (k * b) + ' = ' + A + ' → ' + k + 'x = ' + (A - k * b) + ' → x = ' + x + '</p>';
+      catat(!stage.dataset.salah);
+      tawarkanLanjut('Bagian berikutnya');
+    };
+
+    stage.querySelector('[data-cek]').addEventListener('click', cek);
+    stage.querySelector('[data-x]').addEventListener('keydown', e => { if (e.key === 'Enter') cek(); });
   }
 
   function selesaiSesi() {
