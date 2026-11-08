@@ -1462,3 +1462,31 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .mulai__err { min-height: 16px; margin: -4px 0 0; font-size: 11.5px; line-height: 1.4; color: #ff9a8a; }
 .mulai__go { justify-content: center; }
 .mulai__note { margin-top: 4px; font-size: 10.5px; line-height: 1.6; color: var(--muted); }
+
+/* ---------- Skeleton loading (skeleton.js) ---------- */
+.sk-host { position: relative; }
+.sk {
+  position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column;
+  justify-content: center; gap: 10px; padding: 14px; border-radius: inherit;
+  background: var(--surface-1);
+}
+.sk__line, .sk__pill, .sk__block {
+  display: block; position: relative; overflow: hidden;
+  background: var(--surface-2); border-radius: 6px;
+}
+.sk__line { height: 10px; }
+.sk__pill { height: 100%; min-height: 30px; border-radius: 8px; }
+.sk__block { flex: 1; min-height: 60px; border-radius: 10px; }
+.sk__line::after, .sk__pill::after, .sk__block::after {
+  content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(237, 232, 204, .07), transparent);
+  animation: skSweep 1.3s ease-in-out infinite;
+}
+@keyframes skSweep { to { transform: translateX(100%); } }
+.sk--pill { padding: 0; background: transparent; }
+.sk--still .sk__line::after,
+.sk--still .sk__pill::after,
+.sk--still .sk__block::after { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .sk__line::after, .sk__pill::after, .sk__block::after { animation: none; }
+}
