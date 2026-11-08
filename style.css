@@ -166,7 +166,7 @@ b, strong { font-weight: 600; }
 .lab__fallback a { color: inherit; text-decoration: underline; }
 
 /* ---------- Bank soal: daftar naskah unduhan ---------- */
-.unduh { margin-top: 16px; }
+.unduh__intro { margin: 0 0 16px; font-size: 14px; color: var(--muted); }
 .unduh .exrow { flex-wrap: wrap; }
 @media (max-width: 640px) {
   .workbar, .work { padding-left: 16px; padding-right: 16px; }
