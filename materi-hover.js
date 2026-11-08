@@ -33,6 +33,8 @@
   ];
   var UKURAN = [15, 20, 13, 17, 14];
   var PUTARAN = [[18, -24], [-22, 32], [28, 16], [-16, -30], [24, -18]];
+  // Kemiringan lambang supaya terlihat sedikit berdimensi, bukan datar.
+  var MIRING = [[14, -16], [-12, 20], [18, 12], [-16, -14], [10, 22]];
 
   // Sisi kubus beserta jumlah titiknya. Sisi berhadapan berjumlah 7,
   // seperti dadu asli.
@@ -52,7 +54,10 @@
   function buatLambang(teks, i) {
     var el = document.createElement('i');
     el.textContent = teks;
-    el.style.setProperty('--size', UKURAN[i % UKURAN.length] + 'px');
+    el.style.setProperty('--size', UKURAN[i % UKURAN.length] + (teks.length > 1 ? 4 : 0) + 'px');
+    var miring = MIRING[i % MIRING.length];
+    el.style.setProperty('--rx', miring[0] + 'deg');
+    el.style.setProperty('--ry', miring[1] + 'deg');
     taruhDiTepi(el, i);
     return el;
   }

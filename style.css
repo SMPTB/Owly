@@ -572,14 +572,22 @@ b, strong { font-weight: 600; }
   position: absolute; left: var(--x, 0%); top: var(--y, 50%);
   font-style: normal; font-weight: 700; line-height: 1;
   font-size: var(--size, 16px); color: var(--c);
+  /* bayangan bertumpuk = sisi tebal, jadi lambangnya terasa timbul */
+  text-shadow:
+    -1px -1px 0 rgba(237, 232, 204, .16),
+    1px 1px 0 rgba(11, 13, 6, .9),
+    2px 2px 0 rgba(11, 13, 6, .8),
+    3px 3px 0 rgba(11, 13, 6, .65),
+    4px 5px 6px rgba(0, 0, 0, .45);
   opacity: 0;
-  transform: translate(-50%, -50%) scale(.35) rotate(-10deg);
-  transition: transform .3s cubic-bezier(.2, .9, .3, 1.25), opacity .18s ease;
+  transform: translate(-50%, -50%) scale(.4) rotateX(-38deg) rotateY(26deg) rotateZ(-8deg);
+  transition: transform .42s cubic-bezier(.2, .8, .3, 1.2), opacity .2s ease;
 }
 .chapter:hover .pops i,
 .chapter:focus-visible .pops i {
-  opacity: .9;
-  transform: translate(-50%, -50%) translate(var(--dx, 0), var(--dy, 0)) scale(1) rotate(0deg);
+  opacity: .95;
+  transform: translate(-50%, -50%) translate(var(--dx, 0), var(--dy, 0)) scale(1)
+             rotateX(var(--rx, 12deg)) rotateY(var(--ry, -14deg)) rotateZ(0deg);
 }
 /* Dadu 3D di bab peluang: kubus enam sisi, bukan karakter dadu */
 .pops { perspective: 700px; }
