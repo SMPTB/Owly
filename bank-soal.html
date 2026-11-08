@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="gate.js?v=20261107k"></script>
+  <script src="gate.js?v=20261107l"></script>
   <title>Bank Soal · Ωwly</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261107k">
+  <link rel="stylesheet" href="style.css?v=20261107l">
 </head>
 <body>
 
@@ -96,7 +96,6 @@
         <span class="chip">4 naskah</span>
       </section>
 
-      <p class="unduh__intro" data-intro>Arsip Negara</p>
 
       <div class="exlist unduh">
         <div class="exrow">
@@ -136,11 +135,6 @@
 (function () {
   'use strict';
 
-  /* Kalimat pembukanya gonta-ganti tiap halaman dibuka. */
-  var pembuka = ['Doksli Pretest 😂😂', 'Arsip Negara'];
-  var intro = document.querySelector('[data-intro]');
-  if (intro) intro.textContent = pembuka[Math.random() < 0.5 ? 0 : 1];
-
   if (typeof fetch !== 'function') return;
   var tombol = document.querySelectorAll('.unduh a.btn-act[href$=".pdf"]');
   Array.prototype.forEach.call(tombol, function (a) {
@@ -161,9 +155,9 @@
   }
 })();
 </script>
-<script src="soal.js?v=20261107k"></script>
-<script src="materi.js?v=20261107k"></script>
-<script src="progress.js?v=20261107k"></script>
-<script src="script.js?v=20261107k"></script>
+<script src="soal.js?v=20261107l"></script>
+<script src="materi.js?v=20261107l"></script>
+<script src="progress.js?v=20261107l"></script>
+<script src="script.js?v=20261107l"></script>
 </body>
 </html>
