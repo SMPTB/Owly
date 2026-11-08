@@ -548,12 +548,41 @@ b, strong { font-weight: 600; }
 .filter-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
 .chapters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.chapter { --c: var(--olive); --bg: var(--surface-2); background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .15s; }
-.chapter:hover { border-color: var(--c); }
+.chapter {
+  --c: var(--olive); --bg: var(--surface-2);
+  position: relative; z-index: 1;
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px;
+  /* overflow dibiarkan terbuka supaya lambang bisa keluar dari kartu */
+  overflow: visible; display: flex; flex-direction: column;
+  transition: transform .22s cubic-bezier(.2,.8,.3,1), border-color .15s, box-shadow .22s;
+}
+.chapter:hover, .chapter:focus-visible {
+  border-color: var(--c); z-index: 3;
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .38);
+}
+.chapter__head { border-radius: 15px 15px 0 0; }
 .chapter__head { height: 74px; padding: 0 20px; background: var(--bg); display: flex; align-items: center; justify-content: space-between; color: var(--c); }
 .chapter__sym { display: flex; align-items: center; gap: 12px; font-size: 33px; font-weight: 600; line-height: 1; }
 .chapter__sym i { width: 30px; height: 2px; background: var(--c); }
 .chapter__no { font-size: 10px; font-weight: 600; }
+/* Lambang yang memancar keluar kartu saat dihover (diisi materi-hover.js) */
+.pops { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.pops i {
+  position: absolute; top: 36px; left: 48px;
+  font-style: normal; font-weight: 700; line-height: 1;
+  font-size: var(--size, 16px); color: var(--c);
+  opacity: 0; transform: translate(0, 0) scale(.35) rotate(-10deg);
+  transition: transform .28s cubic-bezier(.2, .9, .3, 1.25), opacity .18s ease;
+}
+.chapter:hover .pops i,
+.chapter:focus-visible .pops i {
+  opacity: .85;
+  transform: translate(var(--tx, 0), var(--ty, 0)) scale(1) rotate(0deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .chapter, .pops i { transition: none; }
+}
 .chapter__body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 .chapter__subj { display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; font-weight: 500; color: var(--c); }
 .chapter__title { font-size: 16px; font-weight: 600; line-height: 1.5; }
