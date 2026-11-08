@@ -15,15 +15,20 @@
     'mtk|Bilangan': ['1', '2', '3', '½', '−'],
     'mtk|Aljabar': ['x', 'y', 'a+b', '=', '√'],
     'mtk|Geometri dan Pengukuran': ['△', '□', '○', 'π', '∠'],
-    'mtk|Data dan Peluang': ['▮', '▯', '%', 'P(A)', '≈'],
+    'mtk|Data dan Peluang': ['⚀', '⚂', '⚃', '⚄', '⚅'],   // dadu
     'ind|Pemahaman Tekstual (Literal)': ['Aa', '“ ”', '?', '!', '¶'],
     'ind|Pemahaman Inferensial': ['→', '∴', '?', '…', '↔'],
     'ind|Evaluasi dan Apresiasi Teks': ['★', '✓', '!', '“ ”', '—']
   };
 
-  // Posisi (x, y) relatif terhadap kotak lambang di kiri atas kartu.
+  // Posisi di tepi kartu: x/y dalam persen dari kotak kartu, dx/dy
+  // adalah dorongan keluar supaya lambangnya menggantung di garis tepi.
   var TEMPAT = [
-    [-18, -30], [26, -44], [72, -22], [-24, 40], [58, 46]
+    { x: '0%',   y: '46%', dx: '-10px', dy: '0px' },
+    { x: '100%', y: '24%', dx: '10px',  dy: '0px' },
+    { x: '100%', y: '78%', dx: '10px',  dy: '0px' },
+    { x: '30%',  y: '100%', dx: '0px',  dy: '10px' },
+    { x: '74%',  y: '100%', dx: '0px',  dy: '10px' }
   ];
   var UKURAN = [15, 20, 13, 17, 14];
 
@@ -40,8 +45,10 @@
       var titik = TEMPAT[i % TEMPAT.length];
       var el = document.createElement('i');
       el.textContent = teks;
-      el.style.setProperty('--tx', titik[0] + 'px');
-      el.style.setProperty('--ty', titik[1] + 'px');
+      el.style.setProperty('--x', titik.x);
+      el.style.setProperty('--y', titik.y);
+      el.style.setProperty('--dx', titik.dx);
+      el.style.setProperty('--dy', titik.dy);
       el.style.setProperty('--size', UKURAN[i % UKURAN.length] + 'px');
       el.style.transitionDelay = (i * 28) + 'ms';
       wadah.appendChild(el);
