@@ -598,8 +598,9 @@ b, strong { font-weight: 600; }
 }
 .die__face {
   position: absolute; inset: 0; border-radius: 4px;
-  background-color: #EDE8CC; background-repeat: no-repeat;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .18);
+  /* badan dadu memakai warna zaitun kartu; titiknya krem supaya terbaca */
+  background-color: var(--c); background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .28);
 }
 .die__face--front  { transform: translateZ(calc(var(--size) / 2)); }
 .die__face--back   { transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); }
@@ -612,32 +613,32 @@ b, strong { font-weight: 600; }
 .die__face--right, .die__face--top { filter: brightness(.9); }
 
 /* titik-titik di tiap sisi, ukurannya ikut besar dadu */
-.die--p1 { background-image: radial-gradient(circle at 50% 50%, var(--c) calc(var(--size) * .085), transparent calc(var(--size) * .095)); }
+.die--p1 { background-image: radial-gradient(circle at 50% 50%, var(--pip, #EDE8CC) calc(var(--size) * .085), transparent calc(var(--size) * .095)); }
 .die--p2 { background-image:
-  radial-gradient(circle at 28% 28%, var(--c) calc(var(--size) * .085), transparent calc(var(--size) * .095)),
-  radial-gradient(circle at 72% 72%, var(--c) calc(var(--size) * .085), transparent calc(var(--size) * .095)); }
+  radial-gradient(circle at 28% 28%, var(--pip, #EDE8CC) calc(var(--size) * .085), transparent calc(var(--size) * .095)),
+  radial-gradient(circle at 72% 72%, var(--pip, #EDE8CC) calc(var(--size) * .085), transparent calc(var(--size) * .095)); }
 .die--p3 { background-image:
-  radial-gradient(circle at 26% 26%, var(--c) calc(var(--size) * .08), transparent calc(var(--size) * .09)),
-  radial-gradient(circle at 50% 50%, var(--c) calc(var(--size) * .08), transparent calc(var(--size) * .09)),
-  radial-gradient(circle at 74% 74%, var(--c) calc(var(--size) * .08), transparent calc(var(--size) * .09)); }
+  radial-gradient(circle at 26% 26%, var(--pip, #EDE8CC) calc(var(--size) * .08), transparent calc(var(--size) * .09)),
+  radial-gradient(circle at 50% 50%, var(--pip, #EDE8CC) calc(var(--size) * .08), transparent calc(var(--size) * .09)),
+  radial-gradient(circle at 74% 74%, var(--pip, #EDE8CC) calc(var(--size) * .08), transparent calc(var(--size) * .09)); }
 .die--p4 { background-image:
-  radial-gradient(circle at 28% 28%, var(--c) calc(var(--size) * .078), transparent calc(var(--size) * .088)),
-  radial-gradient(circle at 72% 28%, var(--c) calc(var(--size) * .078), transparent calc(var(--size) * .088)),
-  radial-gradient(circle at 28% 72%, var(--c) calc(var(--size) * .078), transparent calc(var(--size) * .088)),
-  radial-gradient(circle at 72% 72%, var(--c) calc(var(--size) * .078), transparent calc(var(--size) * .088)); }
+  radial-gradient(circle at 28% 28%, var(--pip, #EDE8CC) calc(var(--size) * .078), transparent calc(var(--size) * .088)),
+  radial-gradient(circle at 72% 28%, var(--pip, #EDE8CC) calc(var(--size) * .078), transparent calc(var(--size) * .088)),
+  radial-gradient(circle at 28% 72%, var(--pip, #EDE8CC) calc(var(--size) * .078), transparent calc(var(--size) * .088)),
+  radial-gradient(circle at 72% 72%, var(--pip, #EDE8CC) calc(var(--size) * .078), transparent calc(var(--size) * .088)); }
 .die--p5 { background-image:
-  radial-gradient(circle at 26% 26%, var(--c) calc(var(--size) * .072), transparent calc(var(--size) * .082)),
-  radial-gradient(circle at 74% 26%, var(--c) calc(var(--size) * .072), transparent calc(var(--size) * .082)),
-  radial-gradient(circle at 50% 50%, var(--c) calc(var(--size) * .072), transparent calc(var(--size) * .082)),
-  radial-gradient(circle at 26% 74%, var(--c) calc(var(--size) * .072), transparent calc(var(--size) * .082)),
-  radial-gradient(circle at 74% 74%, var(--c) calc(var(--size) * .072), transparent calc(var(--size) * .082)); }
+  radial-gradient(circle at 26% 26%, var(--pip, #EDE8CC) calc(var(--size) * .072), transparent calc(var(--size) * .082)),
+  radial-gradient(circle at 74% 26%, var(--pip, #EDE8CC) calc(var(--size) * .072), transparent calc(var(--size) * .082)),
+  radial-gradient(circle at 50% 50%, var(--pip, #EDE8CC) calc(var(--size) * .072), transparent calc(var(--size) * .082)),
+  radial-gradient(circle at 26% 74%, var(--pip, #EDE8CC) calc(var(--size) * .072), transparent calc(var(--size) * .082)),
+  radial-gradient(circle at 74% 74%, var(--pip, #EDE8CC) calc(var(--size) * .072), transparent calc(var(--size) * .082)); }
 .die--p6 { background-image:
-  radial-gradient(circle at 28% 24%, var(--c) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
-  radial-gradient(circle at 72% 24%, var(--c) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
-  radial-gradient(circle at 28% 50%, var(--c) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
-  radial-gradient(circle at 72% 50%, var(--c) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
-  radial-gradient(circle at 28% 76%, var(--c) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
-  radial-gradient(circle at 72% 76%, var(--c) calc(var(--size) * .07), transparent calc(var(--size) * .08)); }
+  radial-gradient(circle at 28% 24%, var(--pip, #EDE8CC) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
+  radial-gradient(circle at 72% 24%, var(--pip, #EDE8CC) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
+  radial-gradient(circle at 28% 50%, var(--pip, #EDE8CC) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
+  radial-gradient(circle at 72% 50%, var(--pip, #EDE8CC) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
+  radial-gradient(circle at 28% 76%, var(--pip, #EDE8CC) calc(var(--size) * .07), transparent calc(var(--size) * .08)),
+  radial-gradient(circle at 72% 76%, var(--pip, #EDE8CC) calc(var(--size) * .07), transparent calc(var(--size) * .08)); }
 
 @media (prefers-reduced-motion: reduce) {
   .chapter, .pops i, .pops .die { transition: none; }
