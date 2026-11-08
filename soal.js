@@ -627,8 +627,261 @@ const SOAL = [
       { t: 'Alasan B cukup untuk meyakinkan pembaca.', a: 1 }
     ],
     explain: 'Alasan A punya bukti penelitian sehingga kuat. Alasan B tidak punya bukti sehingga lemah dan tidak cukup meyakinkan.'
-  }
+  },
 
+
+  /* ================= MATEMATIKA · tambahan 3 ================= */
+  {
+    id: 'MTK-030', subject: 'mtk', bab: 'Bilangan', title: 'FPB pada pembagian kue',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Ibu membuat 24 kue lapis dan 36 kue donat. Keduanya akan dimasukkan ke dalam kotak dengan jumlah yang sama banyak untuk setiap jenis kue, tanpa sisa.</p>',
+    question: 'Banyak kotak terbanyak yang dapat dibuat Ibu adalah …',
+    options: ['6', '8', '12', '18'],
+    answer: 2,
+    explain: 'Banyak kotak harus membagi habis 24 dan 36, jadi dicari FPB-nya. 24 = 2³ × 3 dan 36 = 2² × 3², sehingga FPB = 2² × 3 = 12 kotak.'
+  },
+  {
+    id: 'MTK-031', subject: 'mtk', bab: 'Bilangan', title: 'Sifat bilangan berpangkat',
+    level: 'Dasar', type: 'multi', stimulus: '',
+    question: 'Pernyataan yang benar tentang bilangan berpangkat adalah …',
+    options: [
+      '2³ × 2⁴ = 2⁷',
+      '(3²)³ = 3⁵',
+      '5⁰ = 1',
+      '10⁴ : 10² = 10²'
+    ],
+    answer: [0, 2, 3],
+    explain: 'Pangkat dijumlahkan saat dikali (2³ × 2⁴ = 2⁷). Pangkat dikalikan saat dipangkatkan lagi, jadi (3²)³ = 3⁶, bukan 3⁵. Bilangan tak nol berpangkat 0 bernilai 1, dan pangkat dikurangkan saat dibagi (10⁴ : 10² = 10²).'
+  },
+  {
+    id: 'MTK-032', subject: 'mtk', bab: 'Bilangan', title: 'Operasi pecahan dan desimal',
+    level: 'Sedang', type: 'table',
+    stimulus: '<p>Perhatikan operasi bilangan berikut.</p>',
+    question: 'Tentukan Benar atau Salah untuk setiap pernyataan berikut!',
+    cols: ['Benar', 'Salah'],
+    rows: [
+      { t: '3/4 + 0,5 = 1,25', a: 0 },
+      { t: '2/5 dari 150 adalah 60', a: 0 },
+      { t: '1,2 × 0,5 = 6', a: 1 }
+    ],
+    explain: '3/4 = 0,75 sehingga 0,75 + 0,5 = 1,25 (benar). 2/5 × 150 = 60 (benar). 1,2 × 0,5 = 0,6, bukan 6 (salah).'
+  },
+  {
+    id: 'MTK-033', subject: 'mtk', bab: 'Aljabar', title: 'Pemfaktoran bentuk kuadrat',
+    level: 'Sedang', type: 'pg', stimulus: '',
+    question: 'Faktor dari x² − 5x − 24 adalah …',
+    options: ['(x − 8)(x + 3)', '(x − 6)(x + 4)', '(x − 12)(x + 2)', '(x + 8)(x − 3)'],
+    answer: 0,
+    explain: 'Cari dua bilangan yang hasil kalinya −24 dan jumlahnya −5, yaitu −8 dan 3. Jadi x² − 5x − 24 = (x − 8)(x + 3).'
+  },
+  {
+    id: 'MTK-034', subject: 'mtk', bab: 'Aljabar', title: 'Nilai fungsi linear',
+    level: 'Menantang', type: 'multi', stimulus: '<p>Diketahui fungsi f(x) = 2x − 3.</p>',
+    question: 'Pernyataan yang benar tentang fungsi tersebut adalah …',
+    options: ['f(4) = 5', 'f(0) = −3', 'f(−2) = −7', 'f(x) = 7 ketika x = 4'],
+    answer: [0, 1, 2],
+    explain: 'f(4) = 8 − 3 = 5, f(0) = −3, dan f(−2) = −4 − 3 = −7. Adapun f(x) = 7 memberi 2x = 10, jadi x = 5, bukan 4.'
+  },
+  {
+    id: 'MTK-035', subject: 'mtk', bab: 'Aljabar', title: 'Suku barisan geometri',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Sebuah barisan bilangan: 3, 6, 12, 24, …</p>',
+    question: 'Suku ke-6 barisan tersebut adalah …',
+    options: ['48', '72', '96', '192'],
+    answer: 2,
+    explain: 'Rasio barisan = 6 ÷ 3 = 2. Suku ke-6 = 3 × 2⁵ = 3 × 32 = 96.'
+  },
+  {
+    id: 'MTK-036', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Volume prisma segitiga',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Sebuah prisma memiliki alas berbentuk segitiga dengan panjang alas 6 cm dan tinggi 8 cm. Tinggi prisma 15 cm.</p>',
+    question: 'Volume prisma tersebut adalah … cm³',
+    options: ['180', '240', '360', '720'],
+    answer: 2,
+    explain: 'Luas alas = 1/2 × 6 × 8 = 24 cm². Volume prisma = luas alas × tinggi = 24 × 15 = 360 cm³.'
+  },
+  {
+    id: 'MTK-037', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Jumlah sudut segitiga',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Dua sudut sebuah segitiga besarnya 65° dan 48°.</p>',
+    question: 'Besar sudut ketiga segitiga tersebut adalah … °',
+    options: ['57', '63', '67', '77'],
+    answer: 2,
+    explain: 'Jumlah sudut segitiga selalu 180°. Sudut ketiga = 180 − 65 − 48 = 67°.'
+  },
+  {
+    id: 'MTK-038', subject: 'mtk', bab: 'Geometri dan Pengukuran', title: 'Unsur-unsur tabung',
+    level: 'Dasar', type: 'multi', stimulus: '',
+    question: 'Pernyataan yang benar tentang tabung adalah …',
+    options: [
+      'Memiliki dua sisi berbentuk lingkaran.',
+      'Memiliki satu titik sudut.',
+      'Memiliki tiga sisi.',
+      'Selimutnya berbentuk persegi panjang jika dibuka.'
+    ],
+    answer: [0, 2, 3],
+    explain: 'Tabung punya dua sisi lingkaran (alas dan atas) serta satu selimut, sehingga totalnya tiga sisi. Selimut tabung membuka menjadi persegi panjang. Tabung tidak memiliki titik sudut.'
+  },
+  {
+    id: 'MTK-039', subject: 'mtk', bab: 'Data dan Peluang', title: 'Peluang komplemen',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Prakiraan cuaca menyebut peluang hujan besok 0,35.</p>',
+    question: 'Peluang besok <b>tidak</b> hujan adalah …',
+    options: ['0,35', '0,55', '0,65', '0,75'],
+    answer: 2,
+    explain: 'Peluang komplemen = 1 − P(A) = 1 − 0,35 = 0,65. Jumlah peluang hujan dan tidak hujan selalu 1.'
+  },
+  {
+    id: 'MTK-040', subject: 'mtk', bab: 'Data dan Peluang', title: 'Frekuensi harapan',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Sebuah dadu dilempar 120 kali.</p>',
+    question: 'Frekuensi harapan muncul mata 5 adalah … kali',
+    options: ['12', '20', '24', '30'],
+    answer: 1,
+    explain: 'P(5) = 1/6, sehingga frekuensi harapan = 1/6 × 120 = 20 kali.'
+  },
+  {
+    id: 'MTK-041', subject: 'mtk', bab: 'Data dan Peluang', title: 'Membaca ukuran pemusatan',
+    level: 'Sedang', type: 'multi',
+    stimulus: '<p>Nilai delapan siswa: 6, 6, 7, 7, 8, 8, 9, 9.</p>',
+    question: 'Pernyataan yang benar tentang data tersebut adalah …',
+    options: [
+      'Rata-ratanya 7,5.',
+      'Mediannya 7,5.',
+      'Modusnya 8.',
+      'Jangkauannya 3.'
+    ],
+    answer: [0, 1, 3],
+    explain: 'Jumlah nilai 60 dibagi 8 = 7,5. Median = (7 + 8) ÷ 2 = 7,5. Tidak ada modus karena semua nilai muncul dua kali. Jangkauan = 9 − 6 = 3.'
+  },
+  {
+    id: 'MTK-042', subject: 'mtk', bab: 'Data dan Peluang', title: 'Peluang beberapa warna bola',
+    level: 'Menantang', type: 'table',
+    stimulus: '<p>Sebuah kotak berisi 4 bola merah, 5 bola kuning, dan 3 bola putih. Satu bola diambil secara acak.</p>',
+    question: 'Tentukan Benar atau Salah untuk setiap pernyataan berikut!',
+    cols: ['Benar', 'Salah'],
+    rows: [
+      { t: 'Peluang terambil bola merah adalah 1/3.', a: 0 },
+      { t: 'Peluang terambil bukan bola putih adalah 3/4.', a: 0 },
+      { t: 'Peluang terambil bola putih adalah 1/3.', a: 1 }
+    ],
+    explain: 'Jumlah bola 12. Merah 4/12 = 1/3 (benar). Bukan putih = 9/12 = 3/4 (benar). Putih 3/12 = 1/4, bukan 1/3 (salah).'
+  },
+
+  /* ================= BAHASA INDONESIA · tambahan 3 ================= */
+  {
+    id: 'IND-026', subject: 'ind', bab: 'Pemahaman Tekstual (Literal)', title: 'Makna kata pada petunjuk',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>“Bacalah setiap perintah dengan <b>cermat</b> agar tidak ada langkah yang terlewat.”</p>',
+    question: 'Makna kata <i>cermat</i> pada kalimat tersebut adalah …',
+    options: ['dengan tergesa-gesa', 'dengan teliti', 'dengan ragu', 'dengan santai'],
+    answer: 1,
+    explain: 'Konteksnya meminta agar tidak ada langkah yang terlewat, sehingga cermat berarti teliti atau hati-hati.'
+  },
+  {
+    id: 'IND-027', subject: 'ind', bab: 'Pemahaman Tekstual (Literal)', title: 'Menemukan batas waktu pada teks',
+    level: 'Dasar', type: 'pg',
+    stimulus: '<p>Pendaftaran lomba poster dibuka 3–7 Agustus. Karya dikumpulkan paling lambat 10 Agustus di ruang OSIS. Pemenang diumumkan saat upacara 17 Agustus.</p>',
+    question: 'Karya poster paling lambat dikumpulkan pada …',
+    options: ['3 Agustus', '7 Agustus', '10 Agustus', '17 Agustus'],
+    answer: 2,
+    explain: 'Teks menyebut karya dikumpulkan paling lambat 10 Agustus. Tanggal 3–7 Agustus adalah masa pendaftaran, sedangkan 17 Agustus adalah pengumuman pemenang.'
+  },
+  {
+    id: 'IND-028', subject: 'ind', bab: 'Pemahaman Tekstual (Literal)', title: 'Kesesuaian informasi pada teks',
+    level: 'Sedang', type: 'table',
+    stimulus: '<p>Perpustakaan sekolah buka Senin–Jumat pukul 07.00–15.00. Pada Sabtu dan Minggu perpustakaan tutup. Buku yang terlambat dikembalikan dikenai denda Rp500 per hari.</p>',
+    question: 'Tentukan pernyataan yang sesuai dan tidak sesuai dengan teks!',
+    cols: ['Sesuai', 'Tidak sesuai'],
+    rows: [
+      { t: 'Perpustakaan tutup pada akhir pekan.', a: 0 },
+      { t: 'Denda keterlambatan Rp5.000 per hari.', a: 1 },
+      { t: 'Perpustakaan buka delapan jam pada hari sekolah.', a: 0 }
+    ],
+    explain: 'Sabtu dan Minggu tutup (sesuai). Denda Rp500 per hari, bukan Rp5.000 (tidak sesuai). 07.00–15.00 berarti delapan jam (sesuai).'
+  },
+  {
+    id: 'IND-029', subject: 'ind', bab: 'Pemahaman Inferensial', title: 'Ide pokok paragraf',
+    level: 'Sedang', type: 'pg',
+    stimulus: '<p>Menulis jurnal sebelum tidur membantu pelajar mengenali perasaannya. Saat menulis, mereka belajar memilih kata untuk hal yang sulit dijelaskan. Kebiasaan ini juga membuat pikiran lebih tenang sehingga tidur menjadi lebih nyenyak.</p>',
+    question: 'Ide pokok paragraf tersebut adalah …',
+    options: [
+      'Menulis jurnal membantu pelajar mengenali perasaan dan menenangkan pikiran.',
+      'Pelajar harus tidur lebih awal setiap malam.',
+      'Menulis jurnal memerlukan banyak kata baru.',
+      'Tidur nyenyak hanya bisa didapat dengan menulis.'
+    ],
+    answer: 0,
+    explain: 'Kalimat utama menyebut manfaat menulis jurnal bagi perasaan, lalu kalimat berikutnya menjelaskan manfaat lain yang sejalan, yaitu pikiran lebih tenang.'
+  },
+  {
+    id: 'IND-030', subject: 'ind', bab: 'Pemahaman Inferensial', title: 'Menyimpulkan sikap tokoh',
+    level: 'Menantang', type: 'pg',
+    stimulus: '<p>Alya menunda mendaftar lomba sampai hari terakhir. Ia membaca ulang syarat lomba tiga kali. Saat mengumpulkan formulir, tangannya gemetar, tetapi ia tetap melangkah ke meja panitia.</p>',
+    question: 'Sikap Alya yang dapat disimpulkan dari teks tersebut adalah …',
+    options: [
+      'Alya yakin sepenuhnya pada kemampuannya.',
+      'Alya ragu dan gugup, tetapi tetap berusaha.',
+      'Alya tidak berminat mengikuti lomba.',
+      'Alya mengandalkan bantuan panitia.'
+    ],
+    answer: 1,
+    explain: 'Alya menunda, membaca syarat berulang, dan tangannya gemetar — tanda ragu dan gugup. Namun ia tetap mengumpulkan formulir, jadi ia tetap berusaha.'
+  },
+  {
+    id: 'IND-031', subject: 'ind', bab: 'Pemahaman Inferensial', title: 'Simpulan yang didukung data',
+    level: 'Sedang', type: 'multi',
+    stimulus: '<p>Sejak sekolah menyediakan rak sepeda yang aman, siswa yang bersepeda ke sekolah naik dari 40 menjadi 60 orang dalam tiga bulan. Guru juga melaporkan kemacetan di gerbang berkurang.</p>',
+    question: 'Simpulan yang didukung oleh teks tersebut adalah …',
+    options: [
+      'Jumlah siswa yang bersepeda ke sekolah bertambah.',
+      'Rak sepeda yang aman membuat siswa lebih mau bersepeda.',
+      'Semua siswa sekarang bersepeda ke sekolah.',
+      'Kemacetan di gerbang sekolah berkurang.'
+    ],
+    answer: [0, 1, 3],
+    explain: 'Teks menyebut kenaikan 40 menjadi 60, rak yang aman, dan kemacetan berkurang. Teks tidak menyatakan semua siswa bersepeda.'
+  },
+  {
+    id: 'IND-032', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', title: 'Mengenali majas hiperbola',
+    level: 'Dasar', type: 'pg', stimulus: '',
+    question: 'Kalimat yang memakai majas <b>hiperbola</b> adalah …',
+    options: [
+      '“Suaranya menggelegar sampai ke langit.”',
+      '“Angin berbisik di telinga petani.”',
+      '“Wajahnya bersinar seperti bulan.”',
+      '“Ia bekerja seperti kuda.”'
+    ],
+    answer: 0,
+    explain: 'Hiperbola melebih-lebihkan kenyataan, seperti suara yang sampai ke langit. Pilihan lain memakai personifikasi dan perbandingan.'
+  },
+  {
+    id: 'IND-033', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', title: 'Membedakan fakta dan opini',
+    level: 'Sedang', type: 'pg', stimulus: '',
+    question: 'Kalimat yang berisi <b>opini</b> adalah …',
+    options: [
+      '“Perpustakaan sekolah memiliki 4.200 judul buku.”',
+      '“Menurut saya, jam istirahat sebaiknya ditambah lima belas menit.”',
+      '“Kegiatan pramuka dilaksanakan setiap hari Jumat.”',
+      '“Jumlah siswa kelas IX tahun ini 132 orang.”'
+    ],
+    answer: 1,
+    explain: 'Opini berisi pendapat pribadi, ditandai frasa “menurut saya” dan kata “sebaiknya”. Tiga kalimat lain berisi data yang dapat diperiksa.'
+  },
+  {
+    id: 'IND-034', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', title: 'Mengkritik paragraf argumentasi',
+    level: 'Menantang', type: 'multi',
+    stimulus: '<p>Semua siswa wajib mengikuti ekstrakurikuler. Pasti semua setuju karena kegiatan itu bagus.</p>',
+    question: 'Kelemahan paragraf tersebut adalah …',
+    options: [
+      'Menggeneralisasi dengan kata “semua” dan “pasti”.',
+      'Tidak menyertakan data atau bukti pendukung.',
+      'Kalimatnya terlalu panjang dan berbelit.',
+      'Alasannya terlalu umum, yaitu “kegiatan itu bagus”.'
+    ],
+    answer: [0, 1, 3],
+    explain: 'Paragraf memakai kata “semua” dan “pasti” tanpa bukti, tidak menyertakan data, dan alasannya terlalu umum. Kalimatnya justru pendek, jadi pilihan ketiga bukan kelemahan.'
+  }
 ];
 
 window.SOAL = SOAL;
