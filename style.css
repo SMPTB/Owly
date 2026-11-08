@@ -453,6 +453,9 @@ b, strong { font-weight: 600; }
 .btn-act--red:hover { filter: brightness(1.1); border-color: var(--red); }
 .btn-act--cream { background: var(--text); border-color: var(--text); color: var(--red); }
 .btn-act .icon { width: 15px; height: 15px; }
+.btn-act--off { border-style: dashed; background: transparent; color: var(--muted); cursor: default; }
+.btn-act--off:hover { border-color: var(--border); }
+.exrow.is-off .chip { opacity: .5; }
 
 /* ---------- Pil filter ---------- */
 .pills { display: flex; gap: 8px; flex-wrap: wrap; }

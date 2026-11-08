@@ -10,5 +10,6 @@ di sini dengan nama persis seperti berikut:
 | `pretest-tka-numerasi-2026-2027.pdf` | Soal Pretest TKA Numerasi, 2026/2027 |
 | `pretest-tka-literasi-2026-2027.pdf` | Soal Pretest TKA Literasi, 2026/2027 |
 
-Selama file belum ada, tombol Unduh akan membuka halaman kosong. Setelah PDF
-disalin ke folder ini, tautannya langsung bekerja tanpa mengubah HTML.
+Selama berkasnya belum ada, tombolnya berubah jadi tanda “Belum diunggah” dan
+tidak bisa diklik. Setelah PDF disalin ke folder ini, muat ulang halaman dan
+tombol Unduh muncul seperti biasa, tanpa mengubah HTML.
