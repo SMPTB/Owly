@@ -589,6 +589,34 @@ b, strong { font-weight: 600; }
   transform: translate(-50%, -50%) translate(var(--dx, 0), var(--dy, 0)) scale(1)
              rotateX(var(--rx, 12deg)) rotateY(var(--ry, -14deg)) rotateZ(0deg);
 }
+/* Bangun geometri: tiga datar (segitiga, kotak, lingkaran) + dua padat */
+.pops .shp {
+  position: absolute; left: var(--x, 0%); top: var(--y, 50%);
+  width: var(--size, 20px); height: var(--size, 20px);
+  background: linear-gradient(145deg, #87954f, var(--c) 55%, #454f20);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.4) rotateX(-38deg) rotateY(26deg);
+  transition: transform .42s cubic-bezier(.2, .8, .3, 1.2), opacity .2s ease;
+  filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, .45));
+}
+.chapter:hover .pops .shp,
+.chapter:focus-visible .pops .shp {
+  opacity: .95;
+  transform: translate(-50%, -50%) translate(var(--dx, 0), var(--dy, 0)) scale(1)
+             rotateX(var(--rx, 12deg)) rotateY(var(--ry, -14deg));
+}
+.shp--segitiga { clip-path: polygon(50% 1%, 99% 97%, 1% 97%); }
+.shp--kotak { border-radius: 3px; }
+.shp--lingkaran { border-radius: 50%; }
+/* bola: gradien radial memberi kesan cahaya dari kiri atas */
+.shp--bola {
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 26%, #b3bd79, var(--c) 46%, #3a4319 100%);
+  filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, .5));
+}
+/* kubus geometri: sisi polos, hanya garis tepi sebagai rusuk */
+.die--kubus .die__face { box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .32); }
+
 /* Dadu 3D di bab peluang: kubus enam sisi, bukan karakter dadu */
 .pops { perspective: 700px; }
 .pops .die {
@@ -649,7 +677,7 @@ b, strong { font-weight: 600; }
   radial-gradient(circle at 72% 76%, var(--pip, #EDE8CC) calc(var(--size) * .07), transparent calc(var(--size) * .08)); }
 
 @media (prefers-reduced-motion: reduce) {
-  .chapter, .pops i, .pops .die { transition: none; }
+  .chapter, .pops i, .pops .die, .pops .shp { transition: none; }
 }
 .chapter__body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 .chapter__subj { display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; font-weight: 500; color: var(--c); }
