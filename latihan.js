@@ -94,8 +94,11 @@
 
   function startAlpha(opts) {
     opts = opts || {};
-    const pool = alphaPool(opts.subject, opts.topic);
-    const list = pool.length ? pool : alphaPool();
+    /* Kalau bab yang dituju belum punya soal pilihan ganda, turun ke mapelnya
+       saja — jangan pernah jatuh ke campuran dua mapel. */
+    let list = alphaPool(opts.subject, opts.topic);
+    if (!list.length) list = opts.topic ? alphaPool(opts.subject) : list;
+    if (!list.length) list = alphaPool(opts.subject);
     let awal = opts.question ? list.findIndex(q => q.id === opts.question) : Math.floor(Math.random() * list.length);
     if (awal < 0) awal = 0;
     const soal = [];
@@ -140,6 +143,24 @@
     if (!alpha) {
       if (!o.subject && !o.question) { renderAlphaPilih(); return; }
       startAlpha(o);
+    }
+    if (!alpha.list.length) {
+      body.innerHTML =
+        '<div class="quiz quiz--pick">' +
+          '<span class="quiz__badge">α</span>' +
+          '<h3>Belum ada soal di sini.</h3>' +
+          '<p>Mapel ini belum punya soal pilihan ganda. Coba pilih mapel lain atau buka bank soal.</p>' +
+          '<div class="quiz__foot">' +
+            '<button class="btn-act btn-act--red" type="button" data-ganti-mapel><span>Pilih mapel lain</span></button>' +
+            '<a class="btn-act" href="bank-soal.html"><span>Buka bank soal</span></a>' +
+          '</div>' +
+        '</div>';
+      body.querySelector('[data-ganti-mapel]').addEventListener('click', () => {
+        state.opts = {};
+        alpha = null;
+        renderAlpha();
+      });
+      return;
     }
     const q = alpha.list[alpha.i];
     const n = alpha.list.length;
