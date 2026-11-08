@@ -1730,3 +1730,32 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 @media (prefers-reduced-motion: reduce) {
   .roda__wheel, .roda__ball, .roda__track i { transition: none; }
 }
+
+/* Pemilihan mapel sebelum Alpha, dan penanda bab yang dikunci dari materi */
+.quiz--pick { max-width: 660px; }
+.quiz__pilih {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px; margin-top: 14px;
+}
+.pickcard {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  padding: 14px 15px; text-align: left; font: inherit;
+  border: 1px solid rgba(237, 232, 204, .14); border-radius: 12px;
+  background: var(--surface-2); color: var(--text); cursor: pointer;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.pickcard:hover, .pickcard:focus-visible { border-color: var(--olive); transform: translateY(-1px); }
+.pickcard b { font-size: 14px; }
+.pickcard small { font-size: 11px; line-height: 1.5; color: var(--muted); }
+.pickcard span { margin-top: 4px; font-size: 11px; color: var(--gold); font-variant-numeric: tabular-nums; }
+.quiz__lock {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin-bottom: 10px; padding: 9px 12px;
+  border: 1px solid rgba(237, 232, 204, .12); border-radius: 10px;
+  background: var(--surface-2); font-size: 12px; color: var(--muted);
+}
+.quiz__lock b { color: var(--text); }
+.quiz__ganti {
+  flex: none; padding: 2px; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 11px; color: var(--gold); text-decoration: underline;
+}

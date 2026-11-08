@@ -86,6 +86,7 @@
   let alpha = null;
 
   function alphaPool(subject, topic) {
+    if (subject === 'all') subject = '';
     return SOAL.filter(q => q.type === 'pg' &&
       (!subject || q.subject === subject) &&
       (!topic || q.bab === topic));
@@ -102,13 +103,56 @@
     alpha = { list: soal, i: 0, benar: 0, dijawab: false };
   }
 
+  /* Sebelum Alpha mulai: pilih mapelnya dulu, kecuali sudah ditentukan
+     lewat URL (mis. dari tombol "Latihan soal bab ini" di halaman materi). */
+  function renderAlphaPilih() {
+    const jumlah = k => alphaPool(k).length;
+    const PILIH = [
+      ['all', 'Campur keduanya', 'Soal Matematika dan Bahasa Indonesia bergantian'],
+      ['mtk', 'Matematika', 'Bilangan, aljabar, geometri, data dan peluang'],
+      ['ind', 'Bahasa Indonesia', 'Pemahaman teks, inferensi, evaluasi teks']
+    ];
+
+    body.innerHTML =
+      '<div class="quiz quiz--pick">' +
+        '<span class="quiz__badge">α</span>' +
+        '<h3>Mau latihan apa?</h3>' +
+        '<p>Alpha bisa mencampur dua mapel sekaligus, atau fokus ke satu mapel dulu. ' +
+          'Tiap sesi berisi ' + ALPHA_SIZE + ' soal pilihan ganda.</p>' +
+        '<div class="quiz__pilih">' +
+          PILIH.map(k =>
+            '<button class="pickcard" type="button" data-mapel="' + k[0] + '">' +
+              '<b>' + k[1] + '</b><small>' + k[2] + '</small>' +
+              '<span>' + jumlah(k[0]) + ' soal tersedia</span>' +
+            '</button>').join('') +
+        '</div>' +
+      '</div>';
+
+    body.querySelectorAll('[data-mapel]').forEach(b => b.addEventListener('click', () => {
+      state.opts = { subject: b.dataset.mapel };
+      alpha = null;
+      renderAlpha();
+    }));
+  }
+
   function renderAlpha() {
-    if (!alpha) startAlpha(state.opts);
+    const o = state.opts || {};
+    if (!alpha) {
+      if (!o.subject && !o.question) { renderAlphaPilih(); return; }
+      startAlpha(o);
+    }
     const q = alpha.list[alpha.i];
     const n = alpha.list.length;
+    const kunci = o.subject && o.subject !== 'all'
+      ? (o.topic || SUBJ[o.subject] || o.subject)
+      : '';
+    const kunciSub = o.subject && o.subject !== 'all' && o.topic ? SUBJ[o.subject] : '';
 
     body.innerHTML =
       '<div class="quiz">' +
+        (kunci ? '<div class="quiz__lock"><span>Latihan <b>' + kunci + '</b>' +
+          (kunciSub ? ' · ' + kunciSub : '') + '</span>' +
+          '<button type="button" class="quiz__ganti" data-ganti-mapel>Ganti</button></div>' : '') +
         '<div class="quiz__top"><span>Soal ' + (alpha.i + 1) + ' dari ' + n + '</span>' +
           '<span>' + SUBJ[q.subject] + ' · ' + q.bab + ' · ' + q.level + '</span></div>' +
         '<div class="quiz__card">' +
@@ -129,6 +173,13 @@
       const b = e.target.closest('[data-opt]');
       if (!b || alpha.dijawab) return;
       jawabAlpha(parseInt(b.dataset.opt, 10));
+    });
+
+    const ganti = body.querySelector('[data-ganti-mapel]');
+    if (ganti) ganti.addEventListener('click', () => {
+      state.opts = {};
+      alpha = null;
+      renderAlpha();
     });
   }
 
