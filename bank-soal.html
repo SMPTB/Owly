@@ -96,7 +96,7 @@
         <span class="chip">4 naskah</span>
       </section>
 
-      <p class="unduh__intro">Naskah TKA dari sekolah, bentuknya PDF. Unduh dulu, cetak kalau perlu, baru dikerjakan. Kalau tombolnya masih bilang &ldquo;Belum diunggah&rdquo;, berarti berkasnya belum ada di folder <code>soal/</code>.</p>
+      <p class="unduh__intro" data-intro>Arsip Negara</p>
 
       <div class="exlist unduh">
         <div class="exrow">
@@ -135,6 +135,12 @@
    cek dulu, dan begitu berkasnya ditaruh di folder soal/, tombolnya menyala sendiri. */
 (function () {
   'use strict';
+
+  /* Kalimat pembukanya gonta-ganti tiap halaman dibuka. */
+  var pembuka = ['Doksli Pretest 😂😂', 'Arsip Negara'];
+  var intro = document.querySelector('[data-intro]');
+  if (intro) intro.textContent = pembuka[Math.random() < 0.5 ? 0 : 1];
+
   if (typeof fetch !== 'function') return;
   var tombol = document.querySelectorAll('.unduh a.btn-act[href$=".pdf"]');
   Array.prototype.forEach.call(tombol, function (a) {
