@@ -589,6 +589,32 @@ b, strong { font-weight: 600; }
   transform: translate(-50%, -50%) translate(var(--dx, 0), var(--dy, 0)) scale(1)
              rotateX(var(--rx, 12deg)) rotateY(var(--ry, -14deg)) rotateZ(0deg);
 }
+/* Roda roulette di bab peluang: piringan delapan petak yang berputar masuk */
+.pops .roulette {
+  position: absolute; left: var(--x, 0%); top: var(--y, 50%);
+  width: var(--size, 26px); height: var(--size, 26px); border-radius: 50%;
+  background: conic-gradient(
+    var(--c) 0deg 45deg,        #EDE8CC 45deg 90deg,
+    var(--c) 90deg 135deg,      #EDE8CC 135deg 180deg,
+    var(--c) 180deg 225deg,     #EDE8CC 225deg 270deg,
+    var(--c) 270deg 315deg,     #EDE8CC 315deg 360deg);
+  box-shadow: inset 0 0 0 2px rgba(11, 13, 6, .55), 0 4px 7px rgba(0, 0, 0, .5);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.3) rotateX(-38deg) rotateY(26deg) rotateZ(-120deg);
+  transition: transform .62s cubic-bezier(.2, .8, .3, 1.15), opacity .25s ease;
+}
+.chapter:hover .pops .roulette,
+.chapter:focus-visible .pops .roulette {
+  opacity: 1;
+  transform: translate(-50%, -50%) translate(var(--dx, 0), var(--dy, 0)) scale(1)
+             rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotateZ(210deg);
+}
+.roulette__hub {
+  position: absolute; inset: 38%; border-radius: 50%;
+  background: #13150C;
+  box-shadow: 0 0 0 1px rgba(237, 232, 204, .55);
+}
+
 /* Bangun geometri: tiga datar (segitiga, kotak, lingkaran) + dua padat */
 .pops .shp {
   position: absolute; left: var(--x, 0%); top: var(--y, 50%);
@@ -677,7 +703,7 @@ b, strong { font-weight: 600; }
   radial-gradient(circle at 72% 76%, var(--pip, #EDE8CC) calc(var(--size) * .07), transparent calc(var(--size) * .08)); }
 
 @media (prefers-reduced-motion: reduce) {
-  .chapter, .pops i, .pops .die, .pops .shp { transition: none; }
+  .chapter, .pops i, .pops .die, .pops .shp, .pops .roulette { transition: none; }
 }
 .chapter__body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 .chapter__subj { display: flex; justify-content: space-between; align-items: flex-start; font-size: 11px; font-weight: 500; color: var(--c); }

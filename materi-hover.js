@@ -31,7 +31,8 @@
     { x: '100%', y: '24%', dx: '10px',  dy: '0px' },
     { x: '100%', y: '78%', dx: '10px',  dy: '0px' },
     { x: '30%',  y: '100%', dx: '0px',  dy: '10px' },
-    { x: '74%',  y: '100%', dx: '0px',  dy: '10px' }
+    { x: '74%',  y: '100%', dx: '0px',  dy: '10px' },
+    { x: '0%',   y: '76%', dx: '-10px', dy: '0px' }
   ];
   var UKURAN = [15, 20, 13, 17, 14];
   var PUTARAN = [[18, -24], [-22, 32], [28, 16], [-16, -30], [24, -18]];
@@ -94,6 +95,21 @@
     return el;
   }
 
+  // Roda roulette: piringan bergaris-garis yang berputar saat masuk.
+  function buatRoda(i) {
+    var roda = document.createElement('span');
+    roda.className = 'roulette';
+    roda.style.setProperty('--size', '27px');
+    miringkan(roda, i);
+    taruhDiTepi(roda, i);
+
+    var pusat = document.createElement('span');
+    pusat.className = 'roulette__hub';
+    roda.appendChild(pusat);
+
+    return roda;
+  }
+
   function buatBentuk(bentuk, i) {
     if (bentuk.kelas === 'kubus') return buatKubus(i, bentuk.ukuran, true);
 
@@ -115,6 +131,7 @@
 
     if (kunci === KARTU_DADU) {
       for (var d = 0; d < 5; d++) wadah.appendChild(buatKubus(d, UKURAN[d % UKURAN.length] + 6, false));
+      wadah.appendChild(buatRoda(5));
     } else if (kunci === KARTU_GEOMETRI) {
       BENTUK.forEach(function (bentuk, i) {
         wadah.appendChild(buatBentuk(bentuk, i));
