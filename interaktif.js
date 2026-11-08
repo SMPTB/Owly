@@ -1511,10 +1511,18 @@
     update();
   }
 
-  /* ---------- Widget roda putar (peluang sama besar) ----------
-     Delapan sektor sama besar: peluang teoretis tiap sektor 1/8 = 12,5%.
-     Murid memutar roda sendiri dan melihat frekuensi relatif mendekati 12,5%. */
-  const RODA_WARNA = ['#6B7A3A', '#EDE8CC', '#C9B46A', '#8C4040'];
+  /* ---------- Widget roulette (peluang 37 kantong) ----------
+     Roulette Eropa: 0 hijau, 18 merah, 18 hitam. Peluang teoretis
+     merah 18/37, hitam 18/37, nol 1/37 — bukan 50–50, dan sisa 2,7%
+     itulah yang menjelaskan mengapa bandar selalu sedikit untung. */
+  const RODA_URUT = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30,
+    8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+  const RODA_MERAH = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+
+  function rodaWarna(n) {
+    if (n === 0) return '#2F6B45';
+    return RODA_MERAH.indexOf(n) >= 0 ? '#8C4040' : '#14160E';
+  }
 
   function sektorSvg(cx, cy, r, a0, a1) {
     const rad = a => a * Math.PI / 180;
@@ -1524,125 +1532,157 @@
       ' A' + r + ',' + r + ' 0 0 1 ' + x1.toFixed(2) + ',' + y1.toFixed(2) + ' Z';
   }
 
-  function rodaSvg(jumlah) {
-    const R = 92, cx = 100, cy = 100, langkah = 360 / jumlah;
-    let out = '<svg viewBox="0 0 200 200" role="img" aria-label="Roda ' + jumlah + ' sektor sama besar">';
-    for (let i = 0; i < jumlah; i++) {
+  function rodaSvg() {
+    const R = 94, cx = 100, cy = 100, langkah = 360 / RODA_URUT.length;
+    let out = '<svg viewBox="0 0 200 200" role="img" aria-label="Roda roulette Eropa dengan 37 kantong">';
+    RODA_URUT.forEach((n, i) => {
       const tengah = i * langkah - 90;
-      const warna = RODA_WARNA[i % RODA_WARNA.length];
-      const krem = warna === '#EDE8CC';
       out += '<path d="' + sektorSvg(cx, cy, R, tengah - langkah / 2, tengah + langkah / 2) +
-        '" fill="' + warna + '" stroke="#13150C" stroke-width="1.5"/>';
-      const lx = cx + Math.cos(tengah * Math.PI / 180) * 62;
-      const ly = cy + Math.sin(tengah * Math.PI / 180) * 62;
+        '" fill="' + rodaWarna(n) + '" stroke="#0B0D05" stroke-width=".9"/>';
+      const lx = cx + Math.cos(tengah * Math.PI / 180) * 81;
+      const ly = cy + Math.sin(tengah * Math.PI / 180) * 81;
       out += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" text-anchor="middle" ' +
-        'dominant-baseline="central" font-size="16" font-weight="700" fill="' +
-        (krem ? '#1C1F10' : '#EDE8CC') + '">' + (i + 1) + '</text>';
-    }
-    out += '<circle cx="100" cy="100" r="95" fill="none" stroke="#0E1008" stroke-width="3"/>';
+        'dominant-baseline="central" font-size="6.6" font-weight="600" fill="#F3EFD9" opacity=".94" ' +
+        'transform="rotate(' + (tengah + 90).toFixed(1) + ' ' + lx.toFixed(1) + ' ' + ly.toFixed(1) + ')">' +
+        n + '</text>';
+    });
+    out += '<circle cx="100" cy="100" r="97" fill="none" stroke="#0B0D05" stroke-width="3"/>';
+    out += '<circle cx="100" cy="100" r="98.6" fill="none" stroke="rgba(237,232,204,.22)" stroke-width="1"/>';
     return out + '</svg>';
   }
 
   function mountRoulette(host) {
-    const N = clamp(parseInt(host.dataset.sektor, 10) || 8, 4, 12);
-    const hitung = [];
-    for (let i = 0; i < N; i++) hitung.push(0);
+    const N = RODA_URUT.length;
+    const hitung = { merah: 0, hitam: 0, nol: 0 };
+    const KOLOM = ['merah', 'hitam', 'nol'];
+    let total = 0, deg = 0, bola = 0, terakhir = null, tebak = '';
+    let sibuk = false, timer = null;
 
-    let total = 0, deg = 0, sibuk = false, timer = null;
     const kurangi = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    const DUR = kurangi ? 0 : 2300;
-    const TEORI = 100 / N;
-    const SKALA = TEORI * 3;
+    const DUR = kurangi ? 0 : 3000;
+    const SKALA = 60;
 
     host.classList.add('inter', 'inter--roda');
     host.innerHTML =
-      '<figcaption class="inter__cap">Coba sendiri · putar roda peluang</figcaption>' +
+      '<figcaption class="inter__cap">Coba sendiri · roulette merah–hitam</figcaption>' +
       '<div class="roda">' +
         '<div class="roda__stage">' +
-          '<span class="roda__pointer" aria-hidden="true"></span>' +
-          '<div class="roda__wheel" data-wheel>' + rodaSvg(N) + '</div>' +
+          '<div class="roda__wheel" data-wheel>' + rodaSvg() + '</div>' +
+          '<div class="roda__ball" data-ball aria-hidden="true"><i></i></div>' +
           '<span class="roda__hub" aria-hidden="true"></span>' +
         '</div>' +
         '<div class="roda__side">' +
+          '<div class="roda__tebak" role="group" aria-label="Tebakan warna">' +
+            '<button type="button" class="inter__tab roda__pick is-merah" data-pick="merah">Merah</button>' +
+            '<button type="button" class="inter__tab roda__pick is-hitam" data-pick="hitam">Hitam</button>' +
+          '</div>' +
           '<div class="inter__ctl">' +
-            '<button type="button" class="inter__tab roda__btn" data-putar>Putar roda</button>' +
+            '<button type="button" class="inter__tab roda__btn" data-putar>Putar bola</button>' +
             '<button type="button" class="inter__tab roda__btn roda__ulang" data-ulang>Ulangi</button>' +
           '</div>' +
           '<p class="dadu__prob" data-prob role="status" aria-live="polite"></p>' +
         '</div>' +
       '</div>' +
       '<div class="roda__tally">' +
-        hitung.map((_, i) =>
-          '<div class="roda__col" data-kolom="' + (i + 1) + '">' +
-            '<span class="roda__c" data-c>0</span>' +
-            '<span class="roda__track"><i data-bar></i></span>' +
-            '<b class="roda__f">' + (i + 1) + '</b>' +
+        [['merah', 'Merah'], ['hitam', 'Hitam'], ['nol', 'Nol']].map(k =>
+          '<div class="roda__col" data-kolom="' + k[0] + '">' +
+            '<span class="roda__c" data-c="' + k[0] + '">0</span>' +
+            '<span class="roda__track"><i data-bar="' + k[0] + '"></i></span>' +
+            '<b class="roda__f">' + k[1] + '</b>' +
           '</div>').join('') +
       '</div>' +
-      '<p class="inter__hint">Kedelapan sektor sama besar, jadi peluang teoretis tiap sektor 1/' + N + ' ≈ ' +
-        fmt(TEORI) + '%. Putar beberapa kali: batang akan naik-turun, tetapi makin banyak putaran, ' +
-        'tingginya makin mendekati ' + fmt(TEORI) + '%.</p>';
+      '<p class="inter__hint">Roulette Eropa punya 37 kantong: 18 merah, 18 hitam, dan satu nol hijau. ' +
+        'Peluangnya tidak 50–50: merah 18/37 ≈ 48,6%, hitam 18/37 ≈ 48,6%, nol 1/37 ≈ 2,7%. ' +
+        'Sisa 2,7% itulah keuntungan bandar.</p>';
 
     const wheel = host.querySelector('[data-wheel]');
+    const ball = host.querySelector('[data-ball]');
     const prob = host.querySelector('[data-prob]');
-    const kolom = Array.prototype.slice.call(host.querySelectorAll('[data-kolom]'));
-    const bar = kolom.map(k => k.querySelector('[data-bar]'));
-    const angka = kolom.map(k => k.querySelector('[data-c]'));
+    const angka = {}, bar = {};
+    KOLOM.forEach(k => {
+      angka[k] = host.querySelector('[data-c="' + k + '"]');
+      bar[k] = host.querySelector('[data-bar="' + k + '"]');
+    });
+
+    const kategori = n => n === 0 ? 'nol' : (RODA_MERAH.indexOf(n) >= 0 ? 'merah' : 'hitam');
 
     function render(hasil) {
-      hitung.forEach((v, i) => {
-        const rel = total ? v / total * 100 : 0;
-        angka[i].textContent = v;
-        bar[i].style.height = clamp(rel / SKALA * 100, 0, 100) + '%';
-        kolom[i].classList.toggle('is-target', hasil === i + 1);
+      KOLOM.forEach(k => {
+        const rel = total ? hitung[k] / total * 100 : 0;
+        angka[k].textContent = hitung[k];
+        bar[k].style.height = clamp(rel / SKALA * 100, 0, 100) + '%';
       });
       if (!total) {
-        prob.innerHTML = 'Tekan <b>Putar roda</b>. Sebelum memutar, coba tebak dulu: sektor mana yang akan berhenti?';
+        prob.innerHTML = 'Pilih tebakan <b>merah</b> atau <b>hitam</b>, lalu putar bolanya. ' +
+          'Tiga puluh tujuh kantong: apakah benar-benar adil?';
         return;
       }
-      prob.innerHTML =
-        'Roda berhenti di sektor <b>' + hasil + '</b>. Sektor itu keluar <b>' + hitung[hasil - 1] + '</b> dari ' +
-        total + ' putaran = <b>' + fmt(hitung[hasil - 1] / total * 100) + '%</b>' +
-        '<small>peluang teoretis 1/' + N + ' ≈ ' + fmt(TEORI) + '% · frekuensi harapan dalam ' + total +
-        ' putaran ≈ ' + fmt(total / N) + ' kali</small>';
+      const n = hasil == null ? terakhir : hasil;
+      const kat = kategori(n);
+      const nama = n === 0 ? 'nol hijau' : 'kantong ' + kat;
+      let teks = 'Bola berhenti di <b>' + n + '</b> (' + nama + '). Sejauh ini merah ' + hitung.merah +
+        '×, hitam ' + hitung.hitam + '×, nol ' + hitung.nol + '× dari ' + total + ' putaran.';
+      if (tebak) teks += '<small>tebakanmu ' + tebak + ': ' + (tebak === kat ? 'benar' : 'salah') + '</small>';
+      prob.innerHTML = teks;
     }
 
     function putar() {
       if (sibuk) return;
       sibuk = true;
       host.classList.add('is-spin');
-      const hasil = 1 + Math.floor(Math.random() * N);
-      const target = ((360 - (hasil - 1) * (360 / N)) % 360 + 360) % 360;
+      host.classList.remove('is-done');
+
+      const i = Math.floor(Math.random() * N);
+      const hasil = RODA_URUT[i];
+      const langkah = 360 / N;
+
+      const target = ((360 - i * langkah) % 360 + 360) % 360;
       const sekarang = ((deg % 360) + 360) % 360;
       let tambah = (target - sekarang + 360) % 360;
-      if (tambah < 30) tambah += 360;
-      deg += 360 * 4 + tambah;
+      if (tambah < 20) tambah += 360;
+      deg += 360 * 5 + tambah;
       wheel.style.transform = 'rotate(' + deg + 'deg)';
+
+      /* Bola bergerak berlawanan arah, lalu duduk tepat di kantong pemenang. */
+      const sudutAkhir = ((i * langkah + deg) % 360 + 360) % 360;
+      const sisa = ((bola - sudutAkhir) % 360 + 360) % 360;
+      bola = bola - 360 * 3 - sisa;
+      ball.style.transform = 'rotate(' + bola + 'deg)';
 
       const selesai = () => {
         timer = null;
         sibuk = false;
         host.classList.remove('is-spin');
-        hitung[hasil - 1]++;
+        host.classList.add('is-done');
+        terakhir = hasil;
+        hitung[kategori(hasil)]++;
         total++;
         render(hasil);
       };
       if (!DUR) { selesai(); return; }
-      timer = setTimeout(selesai, DUR + 60);
+      timer = setTimeout(selesai, DUR + 80);
     }
 
     function ulang() {
       if (timer) { clearTimeout(timer); timer = null; }
       sibuk = false;
-      host.classList.remove('is-spin');
-      for (let i = 0; i < N; i++) hitung[i] = 0;
-      total = 0;
-      deg = 0;
+      host.classList.remove('is-spin', 'is-done');
+      hitung.merah = hitung.hitam = hitung.nol = 0;
+      total = 0; deg = 0; bola = 0; terakhir = null; tebak = '';
       wheel.style.transform = '';
+      ball.style.transform = '';
+      host.querySelectorAll('[data-pick]').forEach(b => b.classList.remove('is-active'));
       render(0);
     }
 
     host.addEventListener('click', e => {
+      const pick = e.target.closest('[data-pick]');
+      if (pick) {
+        tebak = tebak === pick.dataset.pick ? '' : pick.dataset.pick;
+        host.querySelectorAll('[data-pick]').forEach(b => b.classList.toggle('is-active', b.dataset.pick === tebak));
+        if (total) render(terakhir);
+        return;
+      }
       if (e.target.closest('[data-putar]')) { putar(); return; }
       if (e.target.closest('[data-ulang]')) ulang();
     });

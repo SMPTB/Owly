@@ -544,8 +544,8 @@ const MATERI = [
         mata: 6,
         note: `Grafiknya menampilkan frekuensi relatif mata dadu yang dituju dari semua lemparan: makin banyak lemparan, makin condong ke 16,7% (1/6).`
       }],
-      ['p', `Roda di bawah punya delapan sektor yang sama besar. Peluang teoretis tiap sektor 1/8 = 12,5%, tetapi hasil percobaan bisa jauh dari angka itu kalau putarannya masih sedikit.`],
-      ['roulette', { sektor: 8 }],
+      ['p', `Roulette di bawah punya 37 kantong: 18 merah, 18 hitam, dan satu nol hijau. Tebak warna, putar bolanya, lalu perhatikan bahwa merah dan hitam tidak benar-benar 50–50.`],
+      ['roulette', {}],
       ['ex', `Dari kantong berisi 4 kelereng merah dan 2 putih, diambil satu kelereng tanpa dikembalikan, lalu diambil satu lagi. Berapa peluang keduanya merah?`, [
         `Pengambilan pertama: 4/6.`,
         `Setelah satu merah terambil, tersisa 3 merah dari 5 kelereng: 3/5.`,

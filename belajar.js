@@ -68,8 +68,7 @@
       /* Roda putar peluang: delapan sektor sama besar untuk membandingkan
          peluang teoretis dengan hasil percobaan. */
       case 'roulette': {
-        const r = b[1] || {};
-        return '<figure class="inter" data-widget="roulette" data-sektor="' + (r.sektor || 8) + '"></figure>';
+        return '<figure class="inter" data-widget="roulette"></figure>';
       }
       case 'capit':
         return '<figure class="inter" data-widget="capit"><script type="application/json">' +
