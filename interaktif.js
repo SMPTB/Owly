@@ -1511,7 +1511,146 @@
     update();
   }
 
-  const WIDGETS = { graph: mountGraph, net: mountNet, sorot: mountSorot, dadu: mountDadu, capit: mountCapit, barisan: mountBarisan, sudut: mountSudut, panah: mountPanah };
+  /* ---------- Widget roda putar (peluang sama besar) ----------
+     Delapan sektor sama besar: peluang teoretis tiap sektor 1/8 = 12,5%.
+     Murid memutar roda sendiri dan melihat frekuensi relatif mendekati 12,5%. */
+  const RODA_WARNA = ['#6B7A3A', '#EDE8CC', '#C9B46A', '#8C4040'];
+
+  function sektorSvg(cx, cy, r, a0, a1) {
+    const rad = a => a * Math.PI / 180;
+    const x0 = cx + r * Math.cos(rad(a0)), y0 = cy + r * Math.sin(rad(a0));
+    const x1 = cx + r * Math.cos(rad(a1)), y1 = cy + r * Math.sin(rad(a1));
+    return 'M' + cx + ',' + cy + ' L' + x0.toFixed(2) + ',' + y0.toFixed(2) +
+      ' A' + r + ',' + r + ' 0 0 1 ' + x1.toFixed(2) + ',' + y1.toFixed(2) + ' Z';
+  }
+
+  function rodaSvg(jumlah) {
+    const R = 92, cx = 100, cy = 100, langkah = 360 / jumlah;
+    let out = '<svg viewBox="0 0 200 200" role="img" aria-label="Roda ' + jumlah + ' sektor sama besar">';
+    for (let i = 0; i < jumlah; i++) {
+      const tengah = i * langkah - 90;
+      const warna = RODA_WARNA[i % RODA_WARNA.length];
+      const krem = warna === '#EDE8CC';
+      out += '<path d="' + sektorSvg(cx, cy, R, tengah - langkah / 2, tengah + langkah / 2) +
+        '" fill="' + warna + '" stroke="#13150C" stroke-width="1.5"/>';
+      const lx = cx + Math.cos(tengah * Math.PI / 180) * 62;
+      const ly = cy + Math.sin(tengah * Math.PI / 180) * 62;
+      out += '<text x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" text-anchor="middle" ' +
+        'dominant-baseline="central" font-size="16" font-weight="700" fill="' +
+        (krem ? '#1C1F10' : '#EDE8CC') + '">' + (i + 1) + '</text>';
+    }
+    out += '<circle cx="100" cy="100" r="95" fill="none" stroke="#0E1008" stroke-width="3"/>';
+    return out + '</svg>';
+  }
+
+  function mountRoulette(host) {
+    const N = clamp(parseInt(host.dataset.sektor, 10) || 8, 4, 12);
+    const hitung = [];
+    for (let i = 0; i < N; i++) hitung.push(0);
+
+    let total = 0, deg = 0, sibuk = false, timer = null;
+    const kurangi = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const DUR = kurangi ? 0 : 2300;
+    const TEORI = 100 / N;
+    const SKALA = TEORI * 3;
+
+    host.classList.add('inter', 'inter--roda');
+    host.innerHTML =
+      '<figcaption class="inter__cap">Coba sendiri · putar roda peluang</figcaption>' +
+      '<div class="roda">' +
+        '<div class="roda__stage">' +
+          '<span class="roda__pointer" aria-hidden="true"></span>' +
+          '<div class="roda__wheel" data-wheel>' + rodaSvg(N) + '</div>' +
+          '<span class="roda__hub" aria-hidden="true"></span>' +
+        '</div>' +
+        '<div class="roda__side">' +
+          '<div class="inter__ctl">' +
+            '<button type="button" class="inter__tab roda__btn" data-putar>Putar roda</button>' +
+            '<button type="button" class="inter__tab roda__btn roda__ulang" data-ulang>Ulangi</button>' +
+          '</div>' +
+          '<p class="dadu__prob" data-prob role="status" aria-live="polite"></p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="roda__tally">' +
+        hitung.map((_, i) =>
+          '<div class="roda__col" data-kolom="' + (i + 1) + '">' +
+            '<span class="roda__c" data-c>0</span>' +
+            '<span class="roda__track"><i data-bar></i></span>' +
+            '<b class="roda__f">' + (i + 1) + '</b>' +
+          '</div>').join('') +
+      '</div>' +
+      '<p class="inter__hint">Kedelapan sektor sama besar, jadi peluang teoretis tiap sektor 1/' + N + ' ≈ ' +
+        fmt(TEORI) + '%. Putar beberapa kali: batang akan naik-turun, tetapi makin banyak putaran, ' +
+        'tingginya makin mendekati ' + fmt(TEORI) + '%.</p>';
+
+    const wheel = host.querySelector('[data-wheel]');
+    const prob = host.querySelector('[data-prob]');
+    const kolom = Array.prototype.slice.call(host.querySelectorAll('[data-kolom]'));
+    const bar = kolom.map(k => k.querySelector('[data-bar]'));
+    const angka = kolom.map(k => k.querySelector('[data-c]'));
+
+    function render(hasil) {
+      hitung.forEach((v, i) => {
+        const rel = total ? v / total * 100 : 0;
+        angka[i].textContent = v;
+        bar[i].style.height = clamp(rel / SKALA * 100, 0, 100) + '%';
+        kolom[i].classList.toggle('is-target', hasil === i + 1);
+      });
+      if (!total) {
+        prob.innerHTML = 'Tekan <b>Putar roda</b>. Sebelum memutar, coba tebak dulu: sektor mana yang akan berhenti?';
+        return;
+      }
+      prob.innerHTML =
+        'Roda berhenti di sektor <b>' + hasil + '</b>. Sektor itu keluar <b>' + hitung[hasil - 1] + '</b> dari ' +
+        total + ' putaran = <b>' + fmt(hitung[hasil - 1] / total * 100) + '%</b>' +
+        '<small>peluang teoretis 1/' + N + ' ≈ ' + fmt(TEORI) + '% · frekuensi harapan dalam ' + total +
+        ' putaran ≈ ' + fmt(total / N) + ' kali</small>';
+    }
+
+    function putar() {
+      if (sibuk) return;
+      sibuk = true;
+      host.classList.add('is-spin');
+      const hasil = 1 + Math.floor(Math.random() * N);
+      const target = ((360 - (hasil - 1) * (360 / N)) % 360 + 360) % 360;
+      const sekarang = ((deg % 360) + 360) % 360;
+      let tambah = (target - sekarang + 360) % 360;
+      if (tambah < 30) tambah += 360;
+      deg += 360 * 4 + tambah;
+      wheel.style.transform = 'rotate(' + deg + 'deg)';
+
+      const selesai = () => {
+        timer = null;
+        sibuk = false;
+        host.classList.remove('is-spin');
+        hitung[hasil - 1]++;
+        total++;
+        render(hasil);
+      };
+      if (!DUR) { selesai(); return; }
+      timer = setTimeout(selesai, DUR + 60);
+    }
+
+    function ulang() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      sibuk = false;
+      host.classList.remove('is-spin');
+      for (let i = 0; i < N; i++) hitung[i] = 0;
+      total = 0;
+      deg = 0;
+      wheel.style.transform = '';
+      render(0);
+    }
+
+    host.addEventListener('click', e => {
+      if (e.target.closest('[data-putar]')) { putar(); return; }
+      if (e.target.closest('[data-ulang]')) ulang();
+    });
+
+    render(0);
+  }
+
+  const WIDGETS = { graph: mountGraph, net: mountNet, sorot: mountSorot, dadu: mountDadu, capit: mountCapit, roulette: mountRoulette, barisan: mountBarisan, sudut: mountSudut, panah: mountPanah };
   /* Pasang semua widget di dalam root. Dipanggil sekali saat halaman siap,
      lalu bisa dipanggil lagi untuk widget yang disisipkan belakangan
      (mis. kegiatan Omega di halaman Latihan Soal). */

@@ -65,6 +65,12 @@
         return '<figure class="inter" data-widget="dadu" data-mata="' + (d.mata || 6) + '">' +
           (d.note ? '<p class="dadu__note">' + d.note + '</p>' : '') +
         '</figure>';
+      /* Roda putar peluang: delapan sektor sama besar untuk membandingkan
+         peluang teoretis dengan hasil percobaan. */
+      case 'roulette': {
+        const r = b[1] || {};
+        return '<figure class="inter" data-widget="roulette" data-sektor="' + (r.sektor || 8) + '"></figure>';
+      }
       case 'capit':
         return '<figure class="inter" data-widget="capit"><script type="application/json">' +
           JSON.stringify(b[1] || {}).replace(/</g, '\\u003c') + '</script></figure>';
