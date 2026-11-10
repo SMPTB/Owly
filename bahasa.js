@@ -357,6 +357,7 @@
       b.classList.toggle('is-active', b.dataset.bhs === bahasa);
       b.setAttribute('aria-pressed', b.dataset.bhs === bahasa ? 'true' : 'false');
     });
+    geserSakelar();
 
     document.documentElement.lang = bahasa === 'en' ? 'en' : 'id';
     document.title = bahasa === 'en' ? judulInggris() : judulAsli;
@@ -378,6 +379,18 @@
     document.dispatchEvent(new CustomEvent('owly-bahasa', { detail: { bahasa: bahasa } }));
   }
 
+  /* pil olive digeser ke tombol yang sedang aktif */
+  function geserSakelar() {
+    const kotak = document.querySelector('.switch-bahasa');
+    if (!kotak) return;
+    const aktif = kotak.querySelector('button.is-active');
+    const pil = kotak.querySelector('.switch-bahasa__pil');
+    if (!aktif || !pil) return;
+    pil.style.width = aktif.offsetWidth + 'px';
+    pil.style.transform = 'translateX(' + aktif.offsetLeft + 'px)';
+    kotak.classList.add('is-siap');
+  }
+
   function buatSwitch() {
     const bar = document.querySelector('.topbar__actions');
     if (!bar || bar.querySelector('.switch-bahasa')) return;
@@ -386,7 +399,8 @@
     kotak.setAttribute('data-no-translate', '');
     kotak.setAttribute('role', 'group');
     kotak.setAttribute('aria-label', 'Bahasa / Language');
-    kotak.innerHTML = '<button type="button" data-bhs="id" aria-pressed="false">ID</button>' +
+    kotak.innerHTML = '<span class="switch-bahasa__pil" aria-hidden="true"></span>' +
+      '<button type="button" data-bhs="id" aria-pressed="false">ID</button>' +
       '<button type="button" data-bhs="en" aria-pressed="false">EN</button>';
     const pembatas = bar.querySelector('.divider-v');
     bar.insertBefore(kotak, pembatas || bar.firstChild);
@@ -394,6 +408,7 @@
       const b = e.target.closest('[data-bhs]');
       if (b) setBahasa(b.dataset.bhs);
     });
+    window.addEventListener('resize', geserSakelar);
   }
 
   function mulai() {
