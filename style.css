@@ -1810,3 +1810,25 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .modal__aksi { display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px; }
 .cek { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
 .cek input { width: 15px; height: 15px; accent-color: #8C4040; }
+
+/* =========================================================
+   TIMER LATIHAN (kerjakan.html)
+   ========================================================= */
+.timer { position: relative; display: flex; align-items: center; }
+.timer__btn { min-width: 76px; font-variant-numeric: tabular-nums; text-align: center; }
+.timer__btn.is-active { background: var(--olive); color: #13150C; border-color: var(--olive); }
+.timer.is-habis .timer__btn { background: #8C4040; color: #EDE8CC; border-color: #8C4040; }
+.timer__panel {
+  position: absolute; top: calc(100% + 8px); right: 0; width: 262px; z-index: 30;
+  background: var(--surface-1); border: 1px solid var(--border-2); border-radius: 14px;
+  padding: 16px; display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.45);
+}
+.timer__panel[hidden] { display: none; }
+.timer__label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.timer__presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.timer__presets .pill { font-size: 11px; padding: 6px 9px; }
+.timer__row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.timer__input { width: 66px; padding: 8px 10px; }
+.timer__aksi { display: flex; gap: 8px; }
+.timer__note { font-size: 11px; line-height: 1.6; color: var(--olive); }
