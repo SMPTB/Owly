@@ -251,7 +251,8 @@
     { pola: /^\+(\d+) menit dari minggu lalu$/, ganti: m => '+' + m[1] + ' minutes from last week' },
     { pola: /^(\d+) kegiatan belajar$/, ganti: m => m[1] + ' study activities' },
     { pola: /^(\d+) hari belajar minggu ini\. Sesi pendek juga dihitung\.$/, ganti: m => m[1] + ' study day this week. Short sessions count too.' },
-    { pola: /^(\d+) hari belajar minggu ini\.$/, ganti: m => m[1] + ' study day this week.' }
+    { pola: /^(\d+) hari belajar minggu ini\.$/, ganti: m => m[1] + ' study day this week.' },
+    { pola: /^(\d+) dari (\d+) materi dibaca · (\d+) dari (\d+) soal$/, ganti: m => m[1] + ' of ' + m[2] + ' sections read · ' + m[3] + ' of ' + m[4] + ' questions' }
   ];
 
   const asliTeks = new WeakMap();
