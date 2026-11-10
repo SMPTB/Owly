@@ -165,28 +165,28 @@
       label: 'Kubus',
       faces: () => boxFaces(4, 4, 4),
       pivot: [2, 2, 2],
-      flat: 'jaring-jaring (kubus)',
+      flat: 'Jaring-jaring kubus: 6 persegi berukuran sama.',
       space: 'Kubus · rusuk 4 cm · volume 64 cm³'
     },
     balok: {
       label: 'Balok',
       faces: () => boxFaces(6, 5, 4),
       pivot: [3, 2.5, 2],
-      flat: 'jaring-jaring (balok)',
+      flat: 'Jaring-jaring balok: 3 pasang persegi panjang.',
       space: 'Balok · 6 × 5 × 4 cm · volume 120 cm³'
     },
     prisma: {
       label: 'Prisma segitiga',
       faces: () => prismFaces(4, 3, 6),
       pivot: [2, 3, 1.5],
-      flat: 'jaring-jaring (prisma segitiga)',
+      flat: 'Jaring-jaring prisma segitiga: 2 segitiga + 3 persegi panjang.',
       space: 'Prisma segitiga · alas 4 cm, tinggi 3 cm · volume 36 cm³'
     },
     tabung: {
       label: 'Tabung',
       faces: () => cylinderFaces(2, 4),
       pivot: [0, 2, 2],
-      flat: 'jaring-jaring (tabung)',
+      flat: 'Jaring-jaring tabung: 1 persegi panjang (selimut) + 2 lingkaran.',
       space: 'Tabung · jari-jari 2 cm, tinggi 4 cm · volume 50,3 cm³'
     },
     limas: {
@@ -194,7 +194,7 @@
       faces: () => pyramidFaces(6, 4),
       pivot: [3, 3, 4 / 3],
       elev: 16,   /* kamera sedikit lebih tinggi supaya alas limas terlihat */
-      flat: 'jaring-jaring (limas)',
+      flat: 'Jaring-jaring limas: 1 persegi + 4 segitiga.',
       space: 'Limas · alas 6 cm, tinggi 4 cm · volume 48 cm³'
     }
   };

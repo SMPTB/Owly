@@ -137,7 +137,7 @@ const MATERI_EN = {
    ================================================================ */
 'mtk-2': {
   bab: 'Algebra',
-  intro: `Algebra uses letters for numbers we do not know yet. Algebra gets way too much hate, says Andra.`,
+  intro: `Algebra uses letters for numbers we do not know yet. You use it to turn everyday stories into equations, then solve them step by step.`,
   goals: [
     `Solve linear equations and inequalities in one variable`,
     `Solve systems of two linear equations in two variables`,
