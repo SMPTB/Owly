@@ -212,6 +212,13 @@
     ,'Kebiasaan baikmu mulai tumbuh.': 'Your good habits are taking root.'
     ,'Hal kecil yang patut dirayakan': 'Small wins worth celebrating'
     ,'Belum diraih · Kerjakan satu soal di Bank soal': 'Not earned yet · Answer one question in the Question bank'
+    ,'Langkah pertama': 'First step'
+    ,'Bab pertamamu selesai': 'Your first chapter done'
+    ,'Mulai konsisten': 'Getting consistent'
+    ,'Makin paham': 'Sharper understanding'
+    ,'Akurasi latihan di atas 75%': 'Practice accuracy above 75%'
+    ,'Belum diraih': 'Not earned yet'
+    ,'Capai akurasi di atas 75% (min. 5 percobaan)': 'Reach accuracy above 75% (min. 5 attempts)'
   };
 
   const BULAN = {
