@@ -67,6 +67,8 @@
     ramah: 'friendly', rajin: 'diligent', malas: 'lazy', pintar: 'smart',
     penting: 'important', umum: 'general', khusus: 'special',
     kalimat: 'sentence', bahasa: 'language', arti: 'meaning',
+    matematika: 'mathematics', inggris: 'english', indonesia: 'indonesia',
+    sains: 'science', olahraga: 'sport', seni: 'art',
     terjemahan: 'translation', cerita: 'story', berita: 'news',
     surat: 'letter', angka: 'number', hitung: 'count', jumlah: 'total',
     tambah: 'add', kurang: 'subtract', bagi: 'divide', kali: 'times',
@@ -142,6 +144,8 @@
 
   /* ---------- frasa ---------- */
   const FRASA = {
+    'bahasa inggris': 'english',
+    'bahasa indonesia': 'indonesian',
     'terima kasih': 'thank you',
     'terima kasih banyak': 'thank you very much',
     'sama sama': 'you are welcome',
