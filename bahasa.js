@@ -165,6 +165,7 @@
     { pola: /^(\d+) dari (\d+) langkah selesai$/, ganti: m => m[1] + ' of ' + m[2] + ' steps done' },
     { pola: /^(\d+) dari (\d+) target belajar hari ini selesai\.$/, ganti: m => m[1] + ' of ' + m[2] + ' daily targets done.' },
     { pola: /^(\d+) soal tersisa$/, ganti: m => m[1] + ' questions left' },
+    { pola: /^(\d+) langkah tersisa$/, ganti: m => m[1] + ' steps left' },
     { pola: /^(\d+) soal$/, ganti: m => m[1] + ' questions' },
     { pola: /^(\d+) bab$/, ganti: m => m[1] + ' chapters' },
     { pola: /^(\d+) kegiatan(?: · (\d+) menit belajar)?$/, ganti: m => m[1] + ' activities' + (m[2] ? ' · ' + m[2] + ' minutes of study' : '') },
@@ -188,16 +189,28 @@
     return String(s).replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
-  function terjemahInti(inti) {
-    if (KATA[inti]) return KATA[inti];
+  function cocokAturan(inti) {
     for (const r of ATURAN) {
       const m = inti.match(r.pola);
       if (m) return r.ganti(m);
     }
+    return null;
+  }
+
+  function terjemahInti(inti) {
+    if (KATA[inti]) return KATA[inti];
+    const aturan = cocokAturan(inti);
+    if (aturan) return aturan;
     const bagian = inti.split(' · ');
     if (bagian.length > 1) {
-      const hasil = bagian.map(b => KATA[b.trim()] || b.trim());
-      if (hasil.some((b, i) => b !== bagian[i].trim())) return hasil.join(' · ');
+      let berubah = false;
+      const hasil = bagian.map(b => {
+        const t = b.trim();
+        const h = KATA[t] || cocokAturan(t);
+        if (h) { berubah = true; return h; }
+        return t;
+      });
+      if (berubah) return hasil.join(' · ');
     }
     return null;
   }
