@@ -188,6 +188,23 @@
     'Belum ada streak': 'No streak yet',
     'Belajar 3 hari berturut-turut': 'Study 3 days in a row',
     'Habis itu baca pembahasannya, biar tahu kenapa jawabannya begitu.': 'Then read the explanation, so you know why the answer works that way.'
+    ,'Latihan soal': 'Practice questions'
+    ,'Atur waktu latihan': 'Set practice time'
+    ,'Pilih menit, lalu tekan Mulai. Waktu berhenti sendiri di nol.': 'Pick the minutes, then press Start. The timer stops by itself at zero.'
+    ,'pilihan ganda': 'multiple choice'
+    ,'Minggu ini ·': 'This week ·'
+    ,'Bab selesai': 'Chapters done'
+    ,'Semua materi dibaca dan semua soal dikuasai': 'Every material read and every question mastered'
+    ,'Konsistensi minggu ini': 'Consistency this week'
+    ,'Total waktu belajar ·': 'Total study time ·'
+    ,'Ingatkan aku 10 menit sebelum jadwal dimulai.': 'Remind me 10 minutes before the schedule starts.'
+    ,'Perubahan hanya berlaku untuk profil belajarmu.': 'Changes only apply to your study profile.'
+    ,'Profilmu sudah lengkap': 'Your profile is complete'
+    ,'Data belajarmu disimpan di perangkat ini saja dan tidak dikirim ke mana pun.': 'Your study data stays on this device and is never sent anywhere.'
+    ,'Hapus data belajar di perangkat ini': 'Delete study data on this device'
+    ,'bab selesai': 'chapters done'
+    ,'Belum ada hari belajar minggu ini.': 'No study days this week yet.'
+    ,'Mulai belajar untuk mengisi grafik': 'Start studying to fill the chart'
   };
 
   const BULAN = {
@@ -218,7 +235,11 @@
     { pola: /^(\d+) ([A-Za-z]+) – (\d+) ([A-Za-z]+)$/, ganti: m => (BULAN[m[2]] && BULAN[m[4]]) ? m[1] + ' ' + BULAN[m[2]] + ' – ' + m[3] + ' ' + BULAN[m[4]] : null },
     { pola: /^(\d+) ([A-Za-z]+)$/, ganti: m => BULAN[m[2]] ? m[1] + ' ' + BULAN[m[2]] : null },
     { pola: /^(\d+) hari berturut-turut$/, ganti: m => m[1] + ' day in a row' },
-    { pola: /^(\d+) hari belajar berturut-turut$/, ganti: m => m[1] + ' study days in a row' }
+    { pola: /^(\d+) hari belajar berturut-turut$/, ganti: m => m[1] + ' study days in a row' },
+    { pola: /^\+(\d+) menit dari minggu lalu$/, ganti: m => '+' + m[1] + ' minutes from last week' },
+    { pola: /^(\d+) kegiatan belajar$/, ganti: m => m[1] + ' study activities' },
+    { pola: /^(\d+) hari belajar minggu ini\. Sesi pendek juga dihitung\.$/, ganti: m => m[1] + ' study day this week. Short sessions count too.' },
+    { pola: /^(\d+) hari belajar minggu ini\.$/, ganti: m => m[1] + ' study day this week.' }
   ];
 
   const asliTeks = new WeakMap();
