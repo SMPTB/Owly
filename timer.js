@@ -29,7 +29,9 @@
   };
 
   akar.innerHTML =
-    '<button class="pill timer__btn" type="button" aria-expanded="false" aria-controls="timerPanel">Timer</button>' +
+    '<button class="pill timer__btn" type="button" aria-expanded="false" aria-controls="timerPanel">' +
+      '<svg class="icon timer__icon" aria-hidden="true"><use href="#clock"/></svg>' +
+      '<span data-sisa>Timer</span></button>' +
     '<div class="timer__panel" id="timerPanel" hidden>' +
       '<p class="timer__label">Atur waktu latihan</p>' +
       '<div class="timer__presets">' +
@@ -48,16 +50,17 @@
     '</div>';
 
   const btn = akar.querySelector('.timer__btn');
+  const label = akar.querySelector('[data-sisa]');
   const panel = akar.querySelector('#timerPanel');
   const input = akar.querySelector('#timerMenit');
   const btnJeda = akar.querySelector('[data-jeda]');
   const catatan = akar.querySelector('[data-catatan]');
 
   function gambar() {
-    btn.textContent = jalan || sisa > 0 ? fmt(sisa) : 'Timer';
+    label.textContent = jalan || sisa > 0 ? fmt(sisa) : 'Timer';
     btn.classList.toggle('is-active', jalan);
     akar.classList.toggle('is-jalan', jalan);
-    akar.classList.toggle('is-habis', !jalan && sisa === 0 && akhir > 0 && btn.textContent === '00:00');
+    akar.classList.toggle('is-habis', !jalan && sisa === 0 && akhir > 0 && label.textContent === '00:00');
     btnJeda.hidden = !jalan;
     if (jalan) btnJeda.textContent = 'Jeda';
   }
@@ -125,7 +128,7 @@
     hentikan();
     sisa = 0;
     akhir = 0;
-    btn.textContent = 'Timer';
+    label.textContent = 'Timer';
     catatan.textContent = 'Pilih menit, lalu tekan Mulai. Waktu berhenti sendiri di nol.';
     btnJeda.textContent = 'Jeda';
     btnJeda.hidden = true;
