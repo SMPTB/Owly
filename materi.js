@@ -26,7 +26,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'mtk-1', subject: 'mtk', bab: 'Bilangan', no: '01',
-  intro: `Bilangan ada di mana-mana: harga barang, suhu udara, takaran resep, sampai jarak di peta. Di bab ini kamu mengenal jenis-jenis bilangan dan cara menghitungnya dengan tepat.`,
+  intro: `Harga barang, suhu udara, takaran resep, jarak di peta. Semuanya angka. Bab ini soal jenis-jenis bilangan dan cara menghitungnya tanpa salah tanda.`,
   goals: [
     `Mengoperasikan bilangan bulat dan pecahan dengan benar`,
     `Menggunakan sifat bilangan berpangkat dan mengenali bilangan irasional`,
@@ -150,7 +150,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'mtk-2', subject: 'mtk', bab: 'Aljabar', no: '02',
-  intro: `Aljabar memakai huruf untuk mewakili bilangan yang belum diketahui. Aljabar terlalu overhated — Andra`,
+  intro: `Aljabar memakai huruf untuk bilangan yang belum diketahui. Aljabar terlalu overhated, kata Andra.`,
   goals: [
     `Menyelesaikan persamaan dan pertidaksamaan linear satu variabel`,
     `Menyelesaikan sistem persamaan linear dua variabel (SPLDV)`,
@@ -305,7 +305,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'mtk-3', subject: 'mtk', bab: 'Geometri dan Pengukuran', no: '03',
-  intro: `Dari bentuk atap rumah sampai ukuran tangki air, geometri membantu kita memahami bentuk dan mengukurnya dengan tepat. Bab ini mengajakmu bermain dengan sudut, segitiga, lingkaran, transformasi, dan bangun ruang.`,
+  intro: `Atap rumah, tangki air, layang-layang di lapangan. Semuanya bentuk yang bisa diukur. Isi bab ini: sudut, segitiga, lingkaran, transformasi, dan bangun ruang.`,
   goals: [
     `Menghitung besar sudut dan menggunakan teorema Pythagoras`,
     `Menghitung keliling, luas, dan juring lingkaran serta memahami kesebangunan`,
@@ -468,7 +468,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'mtk-4', subject: 'mtk', bab: 'Data dan Peluang', no: '04',
-  intro: `Berita, hasil survei, dan prakiraan cuaca penuh dengan data dan kemungkinan. Bab ini melatihmu membaca data dengan cermat dan menghitung peluang.`,
+  intro: `Berita, hasil survei, prakiraan cuaca: semuanya angka dan kemungkinan. Bab ini soal membaca data dan menghitung peluang.`,
   goals: [
     `Membaca dan memilih penyajian data yang sesuai`,
     `Menghitung mean, median, dan modus`,
@@ -576,7 +576,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'ind-1', subject: 'ind', bab: 'Pemahaman Tekstual (Literal)', no: '01',
-  intro: `Sebelum menafsirkan sebuah teks, kita perlu memahami apa yang tertulis di dalamnya. Bab ini melatihmu menemukan informasi yang disebutkan langsung, memahami makna kata, dan membaca detail dengan teliti.`,
+  intro: `Sebelum menafsirkan teks, pahami dulu apa yang benar-benar tertulis. Bab ini soal informasi yang disebut langsung, makna kata, dan detail kecil yang sering kelewat.`,
   goals: [
     `Menemukan informasi tersurat dalam teks`,
     `Menentukan makna kata dan istilah berdasarkan konteks`,
@@ -666,7 +666,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'ind-2', subject: 'ind', bab: 'Pemahaman Inferensial', no: '02',
-  intro: `Tidak semua hal ditulis langsung. Kadang kita harus menghubungkan beberapa informasi untuk menemukan maknanya. Bab ini melatihmu menyimpulkan, menemukan ide pokok, dan menelusuri sebab-akibat.`,
+  intro: `Nggak semua hal ditulis langsung. Kadang dua-tiga informasi harus disambung dulu sebelum maknanya kelihatan. Bab ini soal menyimpulkan, ide pokok, dan sebab-akibat.`,
   goals: [
     `Menyimpulkan isi teks dengan menggabungkan beberapa informasi`,
     `Menentukan ide pokok dan gagasan pendukung paragraf`,
@@ -766,7 +766,7 @@ const MATERI = [
    ================================================================ */
 {
   id: 'ind-3', subject: 'ind', bab: 'Evaluasi dan Apresiasi Teks', no: '03',
-  intro: `Pembaca yang baik tidak hanya memahami, tetapi juga menilai. Di bab ini kamu belajar menilai kekuatan argumen, membedakan teks sastra dan nonsastra, serta menanggapi pesan penulis dengan alasan yang jelas.`,
+  intro: `Paham isi teks itu baru setengah jalan. Sisanya: menilai. Bab ini soal menguji kekuatan argumen, membedakan teks sastra dan nonsastra, dan menanggapi pesan penulis pakai alasan.`,
   goals: [
     `Menilai argumen berdasarkan alasan dan bukti`,
     `Membedakan ragam sastra dan nonsastra serta mengenali unsur puisi dan cerpen`,
