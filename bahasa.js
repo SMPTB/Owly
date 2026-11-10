@@ -260,6 +260,9 @@
 
   const asliTeks = new WeakMap();
   const asliAtribut = new WeakMap();
+  const GLYPH = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&*+=<>';
+  const sedangAcak = new WeakMap();
+  let animasi = false;
   let bahasa = 'id';
   let sibuk = false;
 
@@ -318,6 +321,34 @@
     return !el || !el.closest || !!el.closest(LEWATI);
   }
 
+  /* teks lama diacak dulu, lalu huruf barunya muncul satu per satu */
+  function acakKe(node, ke) {
+    const lama = sedangAcak.get(node);
+    if (lama) clearTimeout(lama.timer);
+    const info = { ke: ke, timer: 0 };
+    sedangAcak.set(node, info);
+    const panjang = ke.length;
+    const langkah = Math.min(8, Math.max(3, Math.ceil(panjang / 5)));
+    const huruf = () => GLYPH[Math.floor(Math.random() * GLYPH.length)];
+    let i = 0;
+    node.nodeValue = ke.replace(/\S/g, huruf);
+    const tick = () => {
+      if (sedangAcak.get(node) !== info) return;
+      i++;
+      if (!node.isConnected || i >= langkah) {
+        node.nodeValue = ke;
+        sedangAcak.delete(node);
+        return;
+      }
+      const jelas = Math.floor((panjang * i) / langkah);
+      let s = ke.slice(0, jelas);
+      for (let j = jelas; j < panjang; j++) s += ke[j] === ' ' ? ' ' : huruf();
+      node.nodeValue = s;
+      info.timer = setTimeout(tick, 26 + Math.random() * 22);
+    };
+    info.timer = setTimeout(tick, 30);
+  }
+
   function terapkan() {
     if (!document.body) return;
     sibuk = true;
@@ -337,7 +368,12 @@
       if (!asliTeks.has(n)) asliTeks.set(n, n.nodeValue);
       const asal = asliTeks.get(n);
       const baru = bahasa === 'en' ? terjemahTeks(asal) : asal;
-      if (n.nodeValue !== baru) n.nodeValue = baru;
+      if (n.nodeValue === baru) return;
+      if (animasi && baru.trim().length > 1) {
+        acakKe(n, baru);
+      } else if (!sedangAcak.has(n)) {
+        n.nodeValue = baru;
+      }
     });
 
     document.querySelectorAll('[placeholder], [aria-label], [title]').forEach(el => {
@@ -375,7 +411,10 @@
   function setBahasa(baru) {
     bahasa = baru === 'en' ? 'en' : 'id';
     try { localStorage.setItem(KUNCI, bahasa); } catch (e) { /* abaikan */ }
+    const tenang = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    animasi = !tenang;
     terapkan();
+    animasi = false;
     document.dispatchEvent(new CustomEvent('owly-bahasa', { detail: { bahasa: bahasa } }));
   }
 
