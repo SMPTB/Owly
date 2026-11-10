@@ -17,6 +17,10 @@
 
   /* ---------- kamus antarmuka ---------- */
   const KATA = {
+    'Selamat pagi': 'Good morning',
+    'Selamat siang': 'Good afternoon',
+    'Selamat sore': 'Good afternoon',
+    'Selamat malam': 'Good evening',
     'Beranda': 'Home',
     'Materi Pembelajaran': 'Learning Materials',
     'Latihan Soal': 'Practice',
@@ -292,11 +296,14 @@
     buatSwitch();
     terapkan();
     const pengamat = new MutationObserver(() => {
-      if (sibuk) return;
       clearTimeout(mulai.tunda);
-      mulai.tunda = setTimeout(terapkan, 140);
+      mulai.tunda = setTimeout(terapkan, 120);
     });
     pengamat.observe(document.body, { childList: true, subtree: true });
+
+    /* sebagian teks baru digambar setelah DOMContentLoaded */
+    [300, 900, 1800].forEach(ms => setTimeout(terapkan, ms));
+    window.addEventListener('load', () => setTimeout(terapkan, 200));
   }
 
   window.OwlyBahasa = { set: setBahasa, sekarang: () => bahasa };
