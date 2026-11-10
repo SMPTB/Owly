@@ -1833,3 +1833,30 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .timer__input { width: 66px; padding: 8px 10px; }
 .timer__aksi { display: flex; gap: 8px; }
 .timer__note { font-size: 11px; line-height: 1.6; color: var(--olive); }
+
+/* =========================================================
+   PENERJEMAH (penerjemah.html)
+   ========================================================= */
+.trans { display: flex; flex-direction: column; gap: 18px; }
+.trans__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.trans__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.trans__area { min-height: 172px; resize: vertical; font: inherit; line-height: 1.7; padding: 14px; }
+.trans__out {
+  min-height: 172px; border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface-2); padding: 14px; line-height: 1.75; font-size: 14px;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.trans__ph { color: var(--muted); }
+.trans__unknown {
+  background: transparent; color: inherit; border-bottom: 2px dotted var(--orange, #c87c3a);
+  text-decoration: none; cursor: help;
+}
+.trans__aksi { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.trans__catatan { font-size: 11px; color: var(--olive); }
+.trans__contoh { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; color: var(--muted); }
+.trans__contoh .pill { font-size: 11px; padding: 6px 10px; }
+.trans__note { font-size: 11px; line-height: 1.7; color: var(--olive); }
+.page-head__sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+@media (max-width: 860px) {
+  .trans__grid { grid-template-columns: 1fr; }
+}
