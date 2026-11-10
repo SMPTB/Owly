@@ -10,8 +10,8 @@
 
   const KUNCI = 'owly-bahasa-v1';
   const LEWATI = [
-    '#labBody', '#lessons', '.lesson-head', '.chapter',
-    '.quiz', 'script', 'style', 'svg', 'textarea', '[data-no-translate]'
+    '#labBody', '#lessons',
+    'script', 'style', 'svg', 'textarea', '[data-no-translate]'
   ].join(',');
 
   /* ---------- kamus antarmuka ---------- */
@@ -211,6 +211,12 @@
     ,'Akurasi latihan di atas 75%': 'Practice accuracy above 75%'
     ,'Belum diraih': 'Not earned yet'
     ,'Capai akurasi di atas 75% (min. 5 percobaan)': 'Reach accuracy above 75% (min. 5 attempts)'
+    ,'Bilangan': 'Numbers'
+    ,'Aljabar': 'Algebra'
+    ,'Bilangan bulat, rasional, berpangkat, irasional, dan perbandingan': 'Integers, rationals, exponents, irrationals, and proportion'
+    ,'Persamaan, SPLDV, bentuk aljabar, relasi dan fungsi, serta barisan dan deret': 'Equations, systems of linear equations, algebraic forms, relations and functions, sequences and series'
+    ,'Sudut, segitiga, lingkaran, transformasi, dan bangun ruang': 'Angles, triangles, circles, transformations, and solids'
+    ,'Tabel, diagram, ukuran pemusatan, dan peluang': 'Tables, charts, measures of centre, and probability'
   };
 
   const BULAN = {
@@ -365,6 +371,7 @@
     bahasa = baru === 'en' ? 'en' : 'id';
     try { localStorage.setItem(KUNCI, bahasa); } catch (e) { /* abaikan */ }
     terapkan();
+    document.dispatchEvent(new CustomEvent('owly-bahasa', { detail: { bahasa: bahasa } }));
   }
 
   function buatSwitch() {
