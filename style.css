@@ -158,7 +158,31 @@ b, strong { font-weight: 600; }
 .bell__dot { position: absolute; top: 1px; right: 2px; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
 .divider-v { width: 1px; height: 30px; background: var(--border); }
 
-.user { display: flex; align-items: center; gap: 10px; color: var(--olive); }
+.user {
+  display: flex; align-items: center; gap: 10px; color: var(--olive);
+  position: relative; cursor: pointer; padding: 5px 8px; margin: -5px -8px;
+  border-radius: 12px; transition: background .15s;
+}
+.user:hover, .user.is-open { background: var(--surface-2); }
+.user:focus-visible { outline: 2px solid var(--olive); outline-offset: 2px; }
+.user > .icon { transition: transform .15s; }
+.user.is-open > .icon { transform: rotate(180deg); }
+
+.user-menu {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 30;
+  min-width: 186px; padding: 6px; display: none; flex-direction: column; gap: 2px;
+  background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .45);
+}
+.user-menu.is-open { display: flex; }
+.user-menu a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: 9px;
+  font-size: 12.5px; color: var(--text); text-decoration: none;
+  transition: background .15s;
+}
+.user-menu a:hover { background: var(--surface-2); }
+.user-menu .icon { width: 16px; height: 16px; color: var(--olive); }
 .avatar { width: 37px; height: 37px; border-radius: 50%; background: var(--red); color: var(--text); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
 .user__info { display: flex; flex-direction: column; gap: 3px; }
 .user__info span { color: var(--text); font-size: 12px; }
@@ -403,7 +427,8 @@ b, strong { font-weight: 600; }
 @media (max-width: 680px) {
   .topbar { height: 68px; gap: 10px; }
   .crumbs__parent, .crumbs > .icon { display: none; }
-  .search, .divider-v { display: none; }
+  .divider-v, .user__info { display: none; }
+  .user-menu { right: -4px; }
   .topbar__actions { gap: 14px; }
 
   .greeting h1 { font-size: 24px; }

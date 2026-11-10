@@ -14,7 +14,56 @@ toggleBtn.addEventListener('click', () => setMenu(!sidebar.classList.contains('i
 backdrop.addEventListener('click', () => setMenu(false));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
 
-// 2) Pilih tanggal di kalender pekan
+// 2) Menu singkat saat profil mini di kanan atas diklik
+const profil = document.querySelector('.user');
+if (profil) {
+  profil.setAttribute('role', 'button');
+  profil.setAttribute('tabindex', '0');
+  profil.setAttribute('aria-haspopup', 'true');
+  profil.setAttribute('aria-expanded', 'false');
+
+  const menuProfil = document.createElement('div');
+  menuProfil.className = 'user-menu';
+  menuProfil.setAttribute('role', 'menu');
+  menuProfil.innerHTML = [
+    ['progres.html', 'chart', 'Progres'],
+    ['profile.html', 'sliders', 'Pengaturan'],
+    ['jadwal.html', 'calendar-days', 'Jadwal']
+  ].map(([href, ikon, teks]) =>
+    '<a href="' + href + '" role="menuitem">' +
+      '<svg class="icon"><use href="#' + ikon + '"/></svg>' + teks +
+    '</a>'
+  ).join('');
+  profil.appendChild(menuProfil);
+
+  function setProfil(open) {
+    menuProfil.classList.toggle('is-open', open);
+    profil.classList.toggle('is-open', open);
+    profil.setAttribute('aria-expanded', open);
+  }
+
+  profil.addEventListener('click', e => {
+    if (e.target.closest('.user-menu')) return;
+    setProfil(!profil.classList.contains('is-open'));
+  });
+  profil.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setProfil(!profil.classList.contains('is-open'));
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!profil.contains(e.target)) setProfil(false);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && profil.classList.contains('is-open')) {
+      setProfil(false);
+      profil.focus();
+    }
+  });
+}
+
+// 3) Pilih tanggal di kalender pekan
 const days = document.querySelectorAll('#week .day');
 days.forEach(day => {
   day.addEventListener('click', () => {
