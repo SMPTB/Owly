@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="gate.js?v=20261108b"></script>
+  <script src="gate.js?v=20261108c"></script>
   <title>Beranda · Ωwly</title>
 
   <!-- Font Inter (400, 500, 600, 700) dari Google Fonts -->
@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=20261108b">
+  <link rel="stylesheet" href="style.css?v=20261108c">
 
 </head>
 <body>
@@ -321,36 +321,20 @@
           <section class="panel">
             <div class="panel__head">
               <h3>Jadwal belajar</h3>
-              <button class="add-btn" aria-label="Tambah jadwal"><svg class="icon"><use href="#plus"/></svg></button>
+              <a class="add-btn" href="jadwal.html?tambah=1" aria-label="Tambah jadwal"><svg class="icon"><use href="#plus"/></svg></a>
             </div>
 
             <div class="row cal-nav">
-              <b data-calmonth>Oktober 2026</b>
+              <b data-calmonth>November 2026</b>
               <span><svg class="icon"><use href="#chev-left"/></svg><svg class="icon"><use href="#chev-right"/></svg></span>
             </div>
 
-            <!-- Kalender satu pekan. Klik tanggal untuk memilih (lihat script.js) -->
-            <div class="week" id="week">
-              <button class="day"><small>S</small><b>12</b></button>
-              <button class="day"><small>S</small><b>13</b></button>
-              <button class="day is-active"><small>R</small><b>14</b></button>
-              <button class="day"><small>K</small><b>15</b></button>
-              <button class="day"><small>J</small><b>16</b></button>
-              <button class="day"><small>S</small><b>17</b></button>
-              <button class="day"><small>M</small><b>18</b></button>
-            </div>
+            <!-- Kalender pekan ini. Klik tanggal untuk melihat jadwal hari itu. -->
+            <div class="week" id="week"></div>
 
-            <div class="row row--small agenda-label"><b data-todaylabel>Hari ini, 14 Oktober</b><span>3 kegiatan</span></div>
+            <div class="row row--small agenda-label"><b data-todaylabel>Hari ini</b><span data-agenda-count>Belum ada kegiatan</span></div>
 
-            <ul class="agenda">
-              <li><time>16.00</time><i style="background:#7a1e1e"></i>
-                <div><b>Relasi dan fungsi</b><span>Matematika · 20 menit</span></div>
-                <svg class="icon agenda__play"><use href="#circle-play"/></svg></li>
-              <li><time>17.00</time><i style="background:#c87c3a"></i>
-                <div><b>Ide pokok &amp; simpulan</b><span>B. Indonesia · 15 menit</span></div></li>
-              <li><time>19.00</time><i style="background:#5c6b2e"></i>
-                <div><b>Review soal hari ini</b><span>Latihan mandiri · 15 menit</span></div></li>
-            </ul>
+            <ul class="agenda" id="agendaList"></ul>
 
             <a href="jadwal.html" class="btn-wide">Lihat semua jadwal</a>
           </section>
@@ -371,10 +355,11 @@
   </div>
 </div>
 
-<script src="soal.js?v=20261108b"></script>
-<script src="materi.js?v=20261108b"></script>
-<script src="progress.js?v=20261108b"></script>
-<script src="script.js?v=20261108b"></script>
-<script src="quotes.js?v=20261108b"></script>
+<script src="soal.js?v=20261108c"></script>
+<script src="materi.js?v=20261108c"></script>
+<script src="progress.js?v=20261108c"></script>
+<script src="script.js?v=20261108c"></script>
+<script src="jadwal.js?v=20261108c"></script>
+<script src="quotes.js?v=20261108c"></script>
 </body>
 </html>
