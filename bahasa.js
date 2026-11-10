@@ -206,6 +206,12 @@
     ,'Belum ada hari belajar minggu ini.': 'No study days this week yet.'
     ,'Mulai belajar untuk mengisi grafik': 'Start studying to fill the chart'
     ,'Semua soal dalam satu bab dikuasai': 'Every question in a chapter mastered'
+    ,'Luangkan sedikit waktu untuk Matematika.': 'Make a little time for Mathematics.'
+    ,'Mulai dari satu soal. Langkah kecil bisa membuat perbedaan.': 'Start with one question. Small steps add up.'
+    ,'Buka bank soal': 'Open the question bank'
+    ,'Kebiasaan baikmu mulai tumbuh.': 'Your good habits are taking root.'
+    ,'Hal kecil yang patut dirayakan': 'Small wins worth celebrating'
+    ,'Belum diraih · Kerjakan satu soal di Bank soal': 'Not earned yet · Answer one question in the Question bank'
   };
 
   const BULAN = {
@@ -268,7 +274,7 @@
     if (KATA[inti]) return KATA[inti];
     const aturan = cocokAturan(inti);
     if (aturan) return aturan;
-    const awalan = inti.match(/^([^\p{L}\p{N}]+)([\s\S]+)$/u);
+    const awalan = inti.match(/^([^\p{L}\p{N}]+?)([\s\S]+)$/u);
     if (awalan) {
       const sisa = awalan[2].trim();
       const h = KATA[sisa] || cocokAturan(sisa);
