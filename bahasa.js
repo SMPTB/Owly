@@ -2,8 +2,8 @@
    bahasa.js — sakelar bahasa ID / EN untuk seluruh halaman
    - Tombol ID / EN muncul di bilah atas setiap halaman.
    - Pilihan disimpan di localStorage ('owly-bahasa-v1').
-   - Hanya antarmuka yang diterjemahkan. Teks materi, soal, dan
-     isi panel Penerjemah dibiarkan apa adanya.
+   - Hanya antarmuka yang diterjemahkan. Teks materi dan soal
+     dibiarkan apa adanya.
    ========================================================= */
 (function () {
   'use strict';
@@ -11,7 +11,6 @@
   const KUNCI = 'owly-bahasa-v1';
   const LEWATI = [
     '#labBody', '#lessons', '.lesson-head', '.chapter',
-    '.trans__grid', '.trans__contoh', '.trans__note',
     '.quiz', 'script', 'style', 'svg', 'textarea', '[data-no-translate]'
   ].join(',');
 
@@ -26,7 +25,6 @@
     'Latihan Soal': 'Practice',
     'Bank Soal': 'Question Bank',
     'Bank soal': 'Question bank',
-    'Penerjemah': 'Translator',
     'Jadwal Belajar': 'Study Schedule',
     'Jadwal belajar': 'Study schedule',
     'Progres Belajar': 'Learning Progress',
@@ -142,12 +140,6 @@
     'Memuat…': 'Loading…',
     'Unduh': 'Download',
     'Pilihan ganda': 'Multiple choice',
-    'Penerjemah kata dan frasa.': 'Word and phrase translator.',
-    'Terjemahkan': 'Translate',
-    'Salin hasil': 'Copy result',
-    'Tukar bahasa': 'Swap languages',
-    'Indonesia → Inggris': 'Indonesian → English',
-    'Inggris → Indonesia': 'English → Indonesian',
     'Bahasa Inggris': 'English',
     'Huruf': 'Letter',
     'Belum dimulai': 'Not started',
