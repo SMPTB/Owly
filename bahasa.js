@@ -166,7 +166,35 @@
     'Lihat sejauh mana langkahmu dan rayakan kemajuan kecil.': 'See how far you have come and celebrate the small wins.',
     'Lihat sejauh mana langkahmu.': 'See how far you have come.',
     'Siap belajar dengan pengalaman yang lebih personal.': 'Ready to study with a more personal experience.',
-    'Materi dan soal adalah contoh konseptual untuk belajar, bukan kurikulum atau soal resmi TKA.': 'Materials and questions are conceptual examples for study, not the official TKA curriculum or exam.'
+    'Materi dan soal adalah contoh konseptual untuk belajar, bukan kurikulum atau soal resmi TKA.': 'Materials and questions are conceptual examples for study, not the official TKA curriculum or exam.',
+    'Nggak harus cepat, yang penting konsisten.': 'Slow is fine, steady is what counts.',
+    'Luangkan 20 menit untuk dirimu hari ini.': 'Set aside 20 minutes for yourself today.',
+    'Sedikit demi sedikit, jadi bisa.': 'Little by little, it adds up.',
+    'Waktu kecil, kebiasaan baik.': 'Small habits, started young.',
+    'Kamu sudah menyelesaikan': 'You have finished',
+    'dari': 'of',
+    'bab. Teruskan langkah baikmu,': 'chapters. Keep up the good work,',
+    'sudah selesai': 'done',
+    'Naskah soal di halaman ini berasal dari sekolah, bukan buatan Ωwly.': 'The questions on this page come from school, not made by Ωwly.',
+    'Waktu Indonesia Barat': 'Western Indonesia Time',
+    'Pekan ini': 'This week',
+    'Belum ada kegiatan hari ini. Tambah lewat tombol Tambah jadwal.': 'No activities today yet. Add one with the Add schedule button.',
+    'Belum ada latihan. Kerjakan soal pertamamu di Bank soal.': 'No practice yet. Answer your first question in the Question bank.',
+    'Latihan dibuka di halaman tersendiri, mulai dari soal yang belum kamu kuasai': 'Practice opens on its own page, starting with the questions you have not mastered yet',
+    'Data dan Peluang': 'Data and Probability',
+    'Geometri dan Pengukuran': 'Geometry and Measurement',
+    'Pemahaman Inferensial': 'Inferential Comprehension',
+    'Mulai streak-mu hari ini': 'Start your streak today',
+    'Belum ada streak': 'No streak yet',
+    'Belajar 3 hari berturut-turut': 'Study 3 days in a row'
+  };
+
+  const BULAN = {
+    Januari: 'January', Februari: 'February', Maret: 'March', April: 'April',
+    Mei: 'May', Juni: 'June', Juli: 'July', Agustus: 'August',
+    September: 'September', Oktober: 'October', November: 'November', Desember: 'December',
+    Jan: 'Jan', Feb: 'Feb', Mar: 'Mar', Apr: 'Apr', Jun: 'Jun', Jul: 'Jul',
+    Agu: 'Aug', Sep: 'Sep', Okt: 'Oct', Nov: 'Nov', Des: 'Dec'
   };
 
   const ATURAN = [
@@ -184,7 +212,12 @@
     { pola: /^(\d+) \/ (\d+) menit$/, ganti: m => m[1] + ' / ' + m[2] + ' min' },
     { pola: /^(\d+) menit lagi menuju targetmu\.$/, ganti: m => m[1] + ' minutes to go until your target.' },
     { pola: /^BAB (\d+)$/, ganti: m => 'CHAPTER ' + m[1] },
-    { pola: /^Menampilkan (\d+) dari (\d+) bab pembelajaran$/, ganti: m => 'Showing ' + m[1] + ' of ' + m[2] + ' chapters' }
+    { pola: /^Menampilkan (\d+) dari (\d+) bab pembelajaran$/, ganti: m => 'Showing ' + m[1] + ' of ' + m[2] + ' chapters' },
+    { pola: /^(\d+)[–-](\d+) ([A-Za-z]+)$/, ganti: m => BULAN[m[3]] ? m[1] + '–' + m[2] + ' ' + BULAN[m[3]] : null },
+    { pola: /^(\d+) ([A-Za-z]+) – (\d+) ([A-Za-z]+)$/, ganti: m => (BULAN[m[2]] && BULAN[m[4]]) ? m[1] + ' ' + BULAN[m[2]] + ' – ' + m[3] + ' ' + BULAN[m[4]] : null },
+    { pola: /^(\d+) ([A-Za-z]+)$/, ganti: m => BULAN[m[2]] ? m[1] + ' ' + BULAN[m[2]] : null },
+    { pola: /^(\d+) hari berturut-turut$/, ganti: m => m[1] + ' day in a row' },
+    { pola: /^(\d+) hari belajar berturut-turut$/, ganti: m => m[1] + ' study days in a row' }
   ];
 
   const asliTeks = new WeakMap();
@@ -212,6 +245,13 @@
     if (KATA[inti]) return KATA[inti];
     const aturan = cocokAturan(inti);
     if (aturan) return aturan;
+    const awalan = inti.match(/^([^\p{L}\p{N}]+)([\s\S]+)$/u);
+    if (awalan) {
+      const sisa = awalan[2].trim();
+      const h = KATA[sisa] || cocokAturan(sisa);
+      if (h) return awalan[1].trim() + ' ' + h;
+    }
+
     const bagian = inti.split(/( · | • )/);
     if (bagian.length > 1) {
       let berubah = false;
