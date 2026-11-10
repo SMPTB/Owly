@@ -1860,3 +1860,22 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 @media (max-width: 860px) {
   .trans__grid { grid-template-columns: 1fr; }
 }
+
+/* =========================================================
+   SAKELAR BAHASA (ID / EN)
+   ========================================================= */
+.switch-bahasa {
+  display: inline-flex; align-items: center; padding: 3px; gap: 2px;
+  border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2);
+}
+.switch-bahasa button {
+  border: 0; background: transparent; color: var(--muted); font: inherit;
+  font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  padding: 4px 9px; border-radius: 999px; cursor: pointer; line-height: 1.4;
+  transition: background .15s, color .15s;
+}
+.switch-bahasa button:hover { color: var(--cream, inherit); }
+.switch-bahasa button.is-active { background: var(--olive); color: #13150C; }
+@media (max-width: 720px) {
+  .switch-bahasa { order: -1; }
+}
