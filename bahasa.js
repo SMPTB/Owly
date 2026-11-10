@@ -260,7 +260,8 @@
 
   const asliTeks = new WeakMap();
   const asliAtribut = new WeakMap();
-  const GLYPH = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&*+=<>';
+  const HURUF_BESAR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const HURUF_KECIL = 'abcdefghijklmnopqrstuvwxyz';
   const sedangAcak = new WeakMap();
   let animasi = false;
   let bahasa = 'id';
@@ -321,7 +322,19 @@
     return !el || !el.closest || !!el.closest(LEWATI);
   }
 
-  /* teks lama diacak dulu, lalu huruf barunya muncul satu per satu */
+  /* huruf acak ikut besar kecilnya, tanda baca dan spasi dibiarkan */
+  function susunAcak(teks, jelas) {
+    let hasil = '';
+    for (let j = 0; j < teks.length; j++) {
+      const c = teks[j];
+      if (j < jelas || !/[a-z]/i.test(c)) { hasil += c; continue; }
+      const bank = c === c.toUpperCase() ? HURUF_BESAR : HURUF_KECIL;
+      hasil += bank[Math.floor(Math.random() * bank.length)];
+    }
+    return hasil;
+  }
+
+  /* teks baru muncul satu per satu, sisanya masih acak */
   function acakKe(node, ke) {
     const lama = sedangAcak.get(node);
     if (lama) clearTimeout(lama.timer);
@@ -329,9 +342,8 @@
     sedangAcak.set(node, info);
     const panjang = ke.length;
     const langkah = Math.min(8, Math.max(3, Math.ceil(panjang / 5)));
-    const huruf = () => GLYPH[Math.floor(Math.random() * GLYPH.length)];
     let i = 0;
-    node.nodeValue = ke.replace(/\S/g, huruf);
+    node.nodeValue = susunAcak(ke, 0);
     const tick = () => {
       if (sedangAcak.get(node) !== info) return;
       i++;
@@ -340,10 +352,7 @@
         sedangAcak.delete(node);
         return;
       }
-      const jelas = Math.floor((panjang * i) / langkah);
-      let s = ke.slice(0, jelas);
-      for (let j = jelas; j < panjang; j++) s += ke[j] === ' ' ? ' ' : huruf();
-      node.nodeValue = s;
+      node.nodeValue = susunAcak(ke, Math.floor((panjang * i) / langkah));
       info.timer = setTimeout(tick, 26 + Math.random() * 22);
     };
     info.timer = setTimeout(tick, 30);
