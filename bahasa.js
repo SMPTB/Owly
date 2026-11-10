@@ -205,6 +205,7 @@
     ,'bab selesai': 'chapters done'
     ,'Belum ada hari belajar minggu ini.': 'No study days this week yet.'
     ,'Mulai belajar untuk mengisi grafik': 'Start studying to fill the chart'
+    ,'Semua soal dalam satu bab dikuasai': 'Every question in a chapter mastered'
   };
 
   const BULAN = {
