@@ -205,16 +205,17 @@
     if (KATA[inti]) return KATA[inti];
     const aturan = cocokAturan(inti);
     if (aturan) return aturan;
-    const bagian = inti.split(' · ');
+    const bagian = inti.split(/( · | • )/);
     if (bagian.length > 1) {
       let berubah = false;
       const hasil = bagian.map(b => {
+        if (b === ' · ' || b === ' • ') return b;
         const t = b.trim();
         const h = KATA[t] || cocokAturan(t);
         if (h) { berubah = true; return h; }
         return t;
       });
-      if (berubah) return hasil.join(' · ');
+      if (berubah) return hasil.join('');
     }
     return null;
   }
