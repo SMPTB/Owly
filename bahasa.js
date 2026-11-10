@@ -186,7 +186,8 @@
     'Pemahaman Inferensial': 'Inferential Comprehension',
     'Mulai streak-mu hari ini': 'Start your streak today',
     'Belum ada streak': 'No streak yet',
-    'Belajar 3 hari berturut-turut': 'Study 3 days in a row'
+    'Belajar 3 hari berturut-turut': 'Study 3 days in a row',
+    'Habis itu baca pembahasannya, biar tahu kenapa jawabannya begitu.': 'Then read the explanation, so you know why the answer works that way.'
   };
 
   const BULAN = {
