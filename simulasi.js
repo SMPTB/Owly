@@ -35,6 +35,14 @@
     detak = null;
   }
 
+  function aturSub() {
+    const teks = document.querySelector('[data-tka-sub]');
+    if (!teks) return;
+    if (!s) { teks.textContent = 'Pilih mapel · 70 menit'; return; }
+    const label = s.pilihan === 'mtk' ? 'Matematika' : s.pilihan === 'ind' ? 'Bahasa Indonesia' : 'Bahasa Indonesia + Matematika';
+    teks.textContent = label + ' · ' + s.soal.length + ' soal · 70 menit';
+  }
+
   function tampilkanBar(on) {
     if (tombolKumpul) tombolKumpul.hidden = !on;
     if (kotakWaktu) kotakWaktu.hidden = !on;
@@ -66,27 +74,34 @@
     hentikanDetak();
     s = null;
     i = 0;
+    T.hapus();
     tampilkanBar(false);
     body.innerHTML =
       '<section class="tka__intro">' +
         '<p class="eyebrow eyebrow--olive">SIMULASI TKA</p>' +
-        '<h1>Uji kesiapanmu dalam satu duduk.</h1>' +
-        '<p class="tka__lead">55 soal pilihan ganda: 30 Bahasa Indonesia lalu 25 Matematika, disusun dari Bank Soal. Waktunya 70 menit dan tidak bisa dijeda.</p>' +
+        '<h1>Mau simulasi mapel apa?</h1>' +
+        '<p class="tka__lead">Pilih satu mapel dulu. Soalnya disusun dari Bank Soal, waktunya 70 menit dan tidak bisa dijeda.</p>' +
+        '<div class="tka__pilih">' +
+          '<button class="tka__pick" type="button" data-pilih="ind"><b>Bahasa Indonesia</b><span>30 soal · 70 menit</span></button>' +
+          '<button class="tka__pick" type="button" data-pilih="mtk"><b>Matematika</b><span>25 soal · 70 menit</span></button>' +
+        '</div>' +
         '<ul class="tka__aturan">' +
           '<li>Waktu terus berjalan walau halaman ditutup atau ponsel dimatikan.</li>' +
           '<li>Keluar di tengah ujian bukan berarti bebas: jawabanmu tetap tersimpan dan waktu tetap dihitung.</li>' +
           '<li>Saat waktu habis, jawaban dikumpulkan otomatis dan hasilnya muncul di notifikasi.</li>' +
         '</ul>' +
         '<div class="tka__aksi">' +
-          '<button class="btn-act btn-act--red" type="button" data-mulai><span>Mulai simulasi</span></button>' +
           '<a class="btn-act" href="latihan.html"><span>Kembali ke latihan</span></a>' +
         '</div>' +
       '</section>';
-    body.querySelector('[data-mulai]').addEventListener('click', () => {
-      s = T.mulai();
-      i = 0;
-      render();
+    body.querySelectorAll('[data-pilih]').forEach(b => {
+      b.addEventListener('click', () => {
+        s = T.mulai(b.dataset.pilih);
+        i = 0;
+        render();
+      });
     });
+    aturSub();
   }
 
   /* ---------- Soal ---------- */
@@ -180,6 +195,7 @@
 
     st.dilihat = true;
     T.simpan(st);
+    aturSub();
     tampilkanBar(false);
 
     const nilai = Math.round(h.benar / h.total * 100);
@@ -190,8 +206,8 @@
         '<h1>' + (h.benar >= h.total * 0.7 ? 'Bekalmu sudah kuat.' : h.benar >= h.total * 0.4 ? 'Sudah ada dasarnya.' : 'Masih ada ruang untuk naik.') + '</h1>' +
         '<p class="tka__lead">' + T.pesanHasil(st) + '</p>' +
         '<div class="tka__rinci">' +
-          barisRinci('Bahasa Indonesia', h.ind.benar, h.ind.total) +
-          barisRinci('Matematika', h.mtk.benar, h.mtk.total) +
+          (h.ind.total ? barisRinci('Bahasa Indonesia', h.ind.benar, h.ind.total) : '') +
+          (h.mtk.total ? barisRinci('Matematika', h.mtk.benar, h.mtk.total) : '') +
           barisRinci('Soal dijawab', h.dijawab, h.total) +
         '</div>' +
         '<p class="tka__nilai">Nilai ' + nilai + ' dari 100.</p>' +
@@ -203,9 +219,8 @@
       '</section>';
 
     body.querySelector('[data-ulang]').addEventListener('click', () => {
-      s = T.mulai();
       i = 0;
-      render();
+      renderAwal();
     });
   }
 
@@ -255,6 +270,7 @@
 
     s.keluar = false;
     T.simpan(s);
+    aturSub();
     tampilkanBar(true);
     renderSoal();
     pasangDetak();

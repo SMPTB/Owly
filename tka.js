@@ -1,8 +1,9 @@
 /* =========================================================
    tka.js — mesin Simulasi TKA
-   55 soal pilihan ganda: 30 Bahasa Indonesia lalu 25 Matematika,
-   diambil dari Bank Soal. Kalau koleksinya kurang, soal cadangan
-   bergaya TKA dibuat di sini supaya jumlahnya tetap 55.
+   Bisa dipilih per mapel: Bahasa Indonesia 30 soal atau Matematika
+   25 soal, diambil dari Bank Soal. Tanpa pilihan, keduanya digabung
+   jadi 55 soal (30 lalu 25). Kalau koleksinya kurang, soal cadangan
+   bergaya TKA dibuat di sini supaya jumlahnya tetap penuh.
 
    Batas waktu memakai jam asli (akhir = mulai + 70 menit), bukan
    hitungan detik di layar. Menutup halaman tidak menghentikannya.
@@ -163,11 +164,11 @@
   }
 
   /* ---------- Menyusun satu set soal ---------- */
-  function susunSoal() {
+  function susunSoal(pilihan) {
     const bank = window.SOAL || [];
     const semua = [];
 
-    BAGIAN.forEach(bagian => {
+    BAGIAN.filter(b => !pilihan || pilihan === 'semua' || b[0] === pilihan).forEach(bagian => {
       const subject = bagian[0], jumlah = bagian[1];
       const tersedia = bank.filter(q => q.type === 'pg' && q.subject === subject && q.options && q.options.length >= 3);
       /* satu teks soal hanya boleh muncul sekali, walau di bank ada beberapa id */
@@ -203,14 +204,21 @@
     try { localStorage.setItem(KUNCI, JSON.stringify(s)); } catch (e) { /* penyimpanan penuh */ }
   }
 
-  function mulai() {
+  function hapus() {
+    try { localStorage.removeItem(KUNCI); } catch (e) { /* diblokir */ }
+  }
+
+  /* pilihan: 'ind' (30 soal), 'mtk' (25 soal), atau kosong untuk keduanya */
+  function mulai(pilihan) {
+    const bagian = pilihan === 'ind' || pilihan === 'mtk' ? pilihan : 'semua';
     const sekarang = Date.now();
     const s = {
       v: 1,
       id: sekarang,
+      pilihan: bagian,
       mulai: sekarang,
       akhir: sekarang + DURASI,
-      soal: susunSoal(),
+      soal: susunSoal(bagian),
       jawab: {},
       selesai: false,
       keluar: false,
@@ -359,6 +367,7 @@
     KUNCI, MENIT, TOTAL, DURASI,
     ambil: baca,
     simpan: simpan,
+    hapus: hapus,
     mulai: mulai,
     selesaikan: selesaikan,
     notifikasi: notifikasi,
