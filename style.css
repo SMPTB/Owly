@@ -1984,8 +1984,9 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 
 @media (max-width: 900px) {
   .tka { grid-template-columns: 1fr; }
-  .tka__nav { position: static; order: -1; }
+  .tka__nav { position: static; }
   .tka__grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .tka__kumpul { display: none; }
   .tka-bar { flex-wrap: wrap; gap: 10px; }
   .tka-bar__mid { order: 3; width: 100%; margin-right: 0; }
 }
