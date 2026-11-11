@@ -104,6 +104,43 @@
     aturSub();
   }
 
+  /* ---------- Badan soal per jenis ---------- */
+  function tabelHtml(q, dipilih) {
+    const jawab = dipilih && typeof dipilih === 'object' && !Array.isArray(dipilih) ? dipilih : {};
+    return '<div class="tka__tabelwrap"><table class="tka__tabel">' +
+      '<thead><tr><th scope="col">Pernyataan</th>' +
+        q.cols.map(c => '<th scope="col">' + c + '</th>').join('') +
+      '</tr></thead><tbody>' +
+      q.rows.map((r, k) =>
+        '<tr><td>' + r.t + '</td>' +
+          q.cols.map((c, j) =>
+            '<td><button class="tka__pilihbulat' + (jawab[k] === j ? ' is-pilih' : '') + '" type="button" role="radio"' +
+              ' aria-checked="' + (jawab[k] === j ? 'true' : 'false') + '"' +
+              ' aria-label="' + c + ' untuk pernyataan ' + (k + 1) + '"' +
+              ' data-baris="' + k + '" data-kolom="' + j + '"><i></i></button></td>').join('') +
+        '</tr>').join('') +
+      '</tbody></table></div>' +
+      '<p class="tka__hint">Pilih satu kolom untuk tiap pernyataan.</p>';
+  }
+
+  function opsiHtml(q, dipilih) {
+    if (q.type === 'multi') {
+      const pilih = Array.isArray(dipilih) ? dipilih : [];
+      return '<div class="tka__opts tka__opts--multi" role="group" aria-label="Pilihan jawaban, boleh lebih dari satu">' +
+        q.options.map((o, k) =>
+          '<button class="tka__opt' + (pilih.indexOf(k) >= 0 ? ' is-pilih' : '') + '" type="button" role="checkbox"' +
+            ' aria-checked="' + (pilih.indexOf(k) >= 0 ? 'true' : 'false') + '" data-opt="' + k + '">' +
+            '<b>' + LETTERS[k] + '</b><span>' + o + '</span></button>').join('') +
+        '</div><p class="tka__hint">Boleh pilih lebih dari satu.</p>';
+    }
+    return '<div class="tka__opts" role="radiogroup" aria-label="Pilihan jawaban">' +
+      q.options.map((o, k) =>
+        '<button class="tka__opt' + (dipilih === k ? ' is-pilih' : '') + '" type="button" role="radio"' +
+          ' aria-checked="' + (dipilih === k ? 'true' : 'false') + '" data-opt="' + k + '">' +
+          '<b>' + LETTERS[k] + '</b><span>' + o + '</span></button>').join('') +
+      '</div>';
+  }
+
   /* ---------- Soal ---------- */
   function renderSoal() {
     const q = s.soal[i];
@@ -118,12 +155,7 @@
         '<article class="tka__card">' +
           (q.stimulus ? '<div class="tka__stimulus">' + q.stimulus + '</div>' : '') +
           '<p class="tka__q">' + q.question + '</p>' +
-          '<div class="tka__opts" role="radiogroup" aria-label="Pilihan jawaban">' +
-            q.options.map((o, k) =>
-              '<button class="tka__opt' + (dipilih === k ? ' is-pilih' : '') + '" type="button" role="radio"' +
-                ' aria-checked="' + (dipilih === k ? 'true' : 'false') + '" data-opt="' + k + '">' +
-                '<b>' + LETTERS[k] + '</b><span>' + o + '</span></button>').join('') +
-          '</div>' +
+          (q.type === 'table' ? tabelHtml(q, dipilih) : opsiHtml(q, dipilih)) +
         '</article>' +
         '<div class="tka__foot">' +
           '<button class="btn-act" type="button" data-prev' + (i === 0 ? ' disabled' : '') + '><span>Sebelumnya</span></button>' +
@@ -138,7 +170,7 @@
         '<p class="tka__navlabel">Nomor soal</p>' +
         '<div class="tka__grid">' +
           s.soal.map((_, k) =>
-            '<button class="tka__cell' + (s.jawab[k] != null ? ' is-done' : '') + (k === i ? ' is-now' : '') +
+            '<button class="tka__cell' + (T.terjawab(s.soal[k], s.jawab[k]) ? ' is-done' : '') + (k === i ? ' is-now' : '') +
             '" type="button" data-nav="' + k + '" aria-label="Soal ' + (k + 1) + '">' + (k + 1) + '</button>').join('') +
         '</div>' +
         '<p class="tka__legend"><i class="tka__legend-done"></i> sudah dijawab</p>' +
@@ -147,7 +179,10 @@
       '</aside>';
 
     body.querySelectorAll('[data-opt]').forEach(b => {
-      b.addEventListener('click', () => pilih(Number(b.dataset.opt)));
+      b.addEventListener('click', () => pilihOpsi(Number(b.dataset.opt)));
+    });
+    body.querySelectorAll('[data-kolom]').forEach(b => {
+      b.addEventListener('click', () => pilihTabel(Number(b.dataset.baris), Number(b.dataset.kolom)));
     });
 
     const prev = body.querySelector('[data-prev]');
@@ -170,17 +205,30 @@
     }
   }
 
-  function pilih(k) {
+  function pilihOpsi(k) {
     if (!s || s.selesai) return;
-    s.jawab[i] = k;
+    const q = s.soal[i];
+    if (q.type === 'multi') {
+      const kini = Array.isArray(s.jawab[i]) ? s.jawab[i].slice() : [];
+      const pos = kini.indexOf(k);
+      if (pos >= 0) kini.splice(pos, 1);
+      else kini.push(k);
+      s.jawab[i] = kini;
+    } else {
+      s.jawab[i] = k;
+    }
     T.simpan(s);
-    body.querySelectorAll('[data-opt]').forEach(b => {
-      const on = Number(b.dataset.opt) === k;
-      b.classList.toggle('is-pilih', on);
-      b.setAttribute('aria-checked', on ? 'true' : 'false');
-    });
-    const sel = body.querySelector('[data-nav="' + i + '"]');
-    if (sel) sel.classList.add('is-done');
+    renderSoal();
+  }
+
+  function pilihTabel(baris, kolom) {
+    if (!s || s.selesai) return;
+    const lama = s.jawab[i];
+    const kini = lama && typeof lama === 'object' && !Array.isArray(lama) ? Object.assign({}, lama) : {};
+    kini[baris] = kolom;
+    s.jawab[i] = kini;
+    T.simpan(s);
+    renderSoal();
   }
 
   /* ---------- Hasil ---------- */
@@ -234,7 +282,7 @@
 
   function tanyaKumpul() {
     if (!s || s.selesai) return;
-    const terjawab = s.soal.filter((q, k) => s.jawab[k] != null).length;
+    const terjawab = s.soal.filter((q, k) => T.terjawab(q, s.jawab[k])).length;
     const kosong = s.soal.length - terjawab;
 
     const lapis = document.createElement('div');

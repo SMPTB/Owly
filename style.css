@@ -2001,3 +2001,20 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .tka__pick span { font-size: 11px; color: var(--muted); }
 .tka__pick:hover { background: var(--surface-2); border-color: var(--olive); }
 @media (max-width: 560px) { .tka__pilih { grid-template-columns: 1fr; } }
+
+/* Tabel Benar/Salah di Simulasi TKA */
+.tka__tabelwrap { overflow-x: auto; }
+.tka__tabel { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.tka__tabel th, .tka__tabel td { padding: 10px 12px; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--border); }
+.tka__tabel thead th { font-size: 9.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--olive-dim); border-bottom: 1px solid var(--border-2); }
+.tka__tabel thead th:not(:first-child) { width: 84px; text-align: center; }
+.tka__tabel tbody td:not(:first-child) { text-align: center; }
+.tka__tabel tbody tr:last-child td { border-bottom: 0; }
+.tka__tabel tbody tr:hover { background: rgba(237, 232, 204, .02); }
+.tka__pilihbulat { width: 22px; height: 22px; display: inline-grid; place-items: center; padding: 0; background: none; border: 1px solid var(--border-2); border-radius: 50%; }
+.tka__pilihbulat i { width: 10px; height: 10px; border-radius: 50%; background: transparent; }
+.tka__pilihbulat:hover { border-color: var(--olive); }
+.tka__pilihbulat.is-pilih { background: var(--surface-2); border-color: var(--olive); }
+.tka__pilihbulat.is-pilih i { background: var(--gold); }
+.tka__hint { font-size: 11px; color: var(--muted); }
+.tka__opts--multi .tka__opt b { color: var(--gold); }

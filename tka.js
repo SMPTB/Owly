@@ -19,6 +19,8 @@
   const DURASI = MENIT * 60 * 1000;
   const BAGIAN = [['ind', 30], ['mtk', 25]];
   const TOTAL = BAGIAN.reduce((n, b) => n + b[1], 0);
+  /* pilihan ganda, pilihan ganda banyak jawaban, dan tabel Benar/Salah */
+  const JENIS = ['pg', 'multi', 'table'];
 
   const pad = n => String(n).padStart(2, '0');
   const acakDaftar = a => {
@@ -170,7 +172,8 @@
 
     BAGIAN.filter(b => !pilihan || pilihan === 'semua' || b[0] === pilihan).forEach(bagian => {
       const subject = bagian[0], jumlah = bagian[1];
-      const tersedia = bank.filter(q => q.type === 'pg' && q.subject === subject && q.options && q.options.length >= 3);
+      const tersedia = bank.filter(q => JENIS.indexOf(q.type) >= 0 && q.subject === subject &&
+        (q.type === 'table' ? q.rows && q.rows.length : q.options && q.options.length >= 3));
       /* satu teks soal hanya boleh muncul sekali, walau di bank ada beberapa id */
       const teksAda = new Set();
       const unik = acakDaftar(tersedia).filter(q => {
@@ -181,8 +184,12 @@
       });
       const ambil = unik.slice(0, Math.min(jumlah, unik.length)).map(q => ({
         id: q.id, subject: q.subject || subject, bab: q.bab || '', title: q.title || '',
-        level: q.level || '', stimulus: q.stimulus || '', question: q.question,
-        options: q.options.slice(), answer: q.answer, explain: q.explain || ''
+        level: q.level || '', type: q.type, stimulus: q.stimulus || '', question: q.question,
+        options: q.options ? q.options.slice() : null,
+        answer: q.type === 'multi' ? q.answer.slice() : q.answer,
+        cols: q.cols ? q.cols.slice() : null,
+        rows: q.rows ? q.rows.map(r => ({ t: r.t, a: r.a })) : null,
+        explain: q.explain || ''
       }));
       if (ambil.length < jumlah) ambil.push.apply(ambil, buatCadangan(subject, jumlah - ambil.length));
       semua.push.apply(semua, ambil);
@@ -232,6 +239,25 @@
   const simpan = s => tulis(s);
   const sisaDetik = s => (s ? Math.max(0, (s.akhir - Date.now()) / 1000) : 0);
 
+  /* jawaban bisa berupa nomor (pg), daftar nomor (multi), atau objek baris (table) */
+  function terjawab(q, v) {
+    if (!q || v == null) return false;
+    if (q.type === 'multi') return Array.isArray(v) && v.length > 0;
+    if (q.type === 'table') return typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length > 0;
+    return true;
+  }
+
+  function benar(q, v) {
+    if (!terjawab(q, v)) return false;
+    if (q.type === 'multi') {
+      return v.map(Number).sort().join(',') === q.answer.map(Number).sort().join(',');
+    }
+    if (q.type === 'table') {
+      return q.rows.every((r, k) => Number(v[k]) === r.a);
+    }
+    return Number(v) === q.answer;
+  }
+
   function selesaikan(s, alasan) {
     if (!s || s.selesai) return s;
     const hitung = { benar: 0, dijawab: 0, ind: { benar: 0, total: 0 }, mtk: { benar: 0, total: 0 } };
@@ -239,9 +265,9 @@
       const kelompok = q.subject === 'ind' ? hitung.ind : hitung.mtk;
       kelompok.total++;
       const pilih = s.jawab[k];
-      if (pilih == null) return;
+      if (!terjawab(q, pilih)) return;
       hitung.dijawab++;
-      if (pilih === q.answer) {
+      if (benar(q, pilih)) {
         hitung.benar++;
         kelompok.benar++;
       }
@@ -368,6 +394,7 @@
     ambil: baca,
     simpan: simpan,
     hapus: hapus,
+    terjawab: terjawab,
     mulai: mulai,
     selesaikan: selesaikan,
     notifikasi: notifikasi,
