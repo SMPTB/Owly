@@ -4,8 +4,9 @@
    hitungan mundur, tetap akurat walau tab sempat tidak aktif
    karena memakai selisih waktu, bukan tambah-kurang per detik.
 
-   Tidak ada bunyi atau notifikasi: sisa waktu hanya tampil
-   di tombol dan panel.
+   Saat waktu habis, tombol berubah warna dan bel kecil berbunyi
+   tiga kali. Bunyinya dibuat lewat Web Audio, jadi tidak ada
+   file suara yang perlu diunduh.
    ========================================================= */
 (function () {
   'use strict';
@@ -27,6 +28,46 @@
     const s = d % 60;
     return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
   };
+
+  /* ---------- Bunyi bel ---------- */
+  let audio = null;
+
+  /* dibangun saat tombol Mulai diklik supaya browser mengizinkan suara */
+  function siapkanAudio() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audio) {
+      try { audio = new AC(); } catch (e) { return null; }
+    }
+    if (audio.state === 'suspended') audio.resume();
+    return audio;
+  }
+
+  function nada(ac, mulai, frekuensi, durasi, volume) {
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = frekuensi;
+    gain.gain.setValueAtTime(0.0001, mulai);
+    gain.gain.exponentialRampToValueAtTime(volume, mulai + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, mulai + durasi);
+    osc.connect(gain);
+    gain.connect(ac.destination);
+    osc.start(mulai);
+    osc.stop(mulai + durasi + 0.05);
+  }
+
+  /* tiga kali bunyi, tiap bunyi dua nada seperti bel kecil */
+  function dering() {
+    const ac = siapkanAudio();
+    if (!ac) return;
+    const t0 = ac.currentTime + 0.03;
+    for (let i = 0; i < 3; i++) {
+      const t = t0 + i * 0.45;
+      nada(ac, t, 880, 0.42, 0.18);
+      nada(ac, t, 1318.5, 0.3, 0.07);
+    }
+  }
 
   akar.innerHTML =
     '<button class="pill timer__btn" type="button" aria-expanded="false" aria-controls="timerPanel">' +
@@ -57,10 +98,11 @@
   const catatan = akar.querySelector('[data-catatan]');
 
   function gambar() {
-    label.textContent = jalan || sisa > 0 ? fmt(sisa) : 'Timer';
+    const habis = !jalan && sisa === 0 && akhir > 0;
+    label.textContent = habis ? '00:00' : (jalan || sisa > 0 ? fmt(sisa) : 'Timer');
     btn.classList.toggle('is-active', jalan);
     akar.classList.toggle('is-jalan', jalan);
-    akar.classList.toggle('is-habis', !jalan && sisa === 0 && akhir > 0 && label.textContent === '00:00');
+    akar.classList.toggle('is-habis', habis);
     btnJeda.hidden = !jalan;
     if (jalan) btnJeda.textContent = 'Jeda';
   }
@@ -76,6 +118,7 @@
     sisa = 0;
     gambar();
     catatan.textContent = 'Waktu habis. Sesi latihan tetap bisa dilanjutkan.';
+    dering();
   }
 
   function tik() {
@@ -92,6 +135,7 @@
     input.value = String(n);
     sisa = n * 60;
     akhir = Date.now() + sisa * 1000;
+    siapkanAudio();
     hentikan();
     jalan = true;
     detak = setInterval(tik, 250);
@@ -152,6 +196,11 @@
 
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); mulai(parseInt(input.value, 10) || menit); }
+  });
+
+  /* kembali ke tab: hitung ulang sisa waktu supaya belnya tepat */
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && jalan) tik();
   });
 
   document.addEventListener('click', e => {
