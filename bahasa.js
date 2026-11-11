@@ -220,6 +220,15 @@
     ,'Persamaan, SPLDV, bentuk aljabar, relasi dan fungsi, serta barisan dan deret': 'Equations, systems of linear equations, algebraic forms, relations and functions, sequences and series'
     ,'Sudut, segitiga, lingkaran, transformasi, dan bangun ruang': 'Angles, triangles, circles, transformations, and solids'
     ,'Tabel, diagram, ukuran pemusatan, dan peluang': 'Tables, charts, measures of centre, and probability'
+    ,'Empat cara latihan': 'Four ways to practise'
+    ,'Simulasi TKA': 'TKA simulation'
+    ,'SIMULASI TKA': 'TKA SIMULATION'
+    ,'Mulai simulasi': 'Start simulation'
+    ,'Simulasi TKA belum selesai': 'TKA simulation still running'
+    ,'Hasil Simulasi TKA': 'TKA simulation result'
+    ,'Lihat hasil': 'See result'
+    ,'Tutup': 'Close'
+    ,'30 soal Bahasa Indonesia dan 25 soal Matematika dalam 70 menit. Waktunya tidak bisa dijeda.': '30 Indonesian and 25 Mathematics questions in 70 minutes. The clock cannot be paused.'
   };
 
   const BULAN = {
@@ -255,7 +264,11 @@
     { pola: /^(\d+) kegiatan belajar$/, ganti: m => m[1] + ' study activities' },
     { pola: /^(\d+) hari belajar minggu ini\. Sesi pendek juga dihitung\.$/, ganti: m => m[1] + ' study day this week. Short sessions count too.' },
     { pola: /^(\d+) hari belajar minggu ini\.$/, ganti: m => m[1] + ' study day this week.' },
-    { pola: /^(\d+) dari (\d+) materi dibaca · (\d+) dari (\d+) soal$/, ganti: m => m[1] + ' of ' + m[2] + ' sections read · ' + m[3] + ' of ' + m[4] + ' questions' }
+    { pola: /^(\d+) dari (\d+) materi dibaca · (\d+) dari (\d+) soal$/, ganti: m => m[1] + ' of ' + m[2] + ' sections read · ' + m[3] + ' of ' + m[4] + ' questions' },
+    { pola: /^Sisa waktu (\d{2}:\d{2})\. Waktunya tetap berjalan walau halaman ini ditutup\.$/, ganti: m => 'Time left ' + m[1] + '. The clock keeps running even when this page is closed.' },
+    { pola: /^Kamu keluar dari simulasi TKA\. Hasilmu (\d+) dari (\d+)\.$/, ganti: m => 'You left the TKA simulation. Your result is ' + m[1] + ' of ' + m[2] + '.' },
+    { pola: /^Waktu 70 menit habis dan jawabanmu terkumpul otomatis\. Hasilmu (\d+) dari (\d+)\.$/, ganti: m => 'The 70 minutes ran out and your answers were submitted automatically. Your result is ' + m[1] + ' of ' + m[2] + '.' },
+    { pola: /^Kamu mengumpulkan lebih awal\. Hasilmu (\d+) dari (\d+)\.$/, ganti: m => 'You submitted early. Your result is ' + m[1] + ' of ' + m[2] + '.' }
   ];
 
   const asliTeks = new WeakMap();
