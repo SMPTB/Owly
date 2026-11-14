@@ -33,8 +33,9 @@
   /* Ungu */
   --purple:    #9B7FC7;
 
-  /* Butiran kertas: dipakai latar halaman, sidebar, dan bilah menu */
-  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+  /* Grid titik untuk sidebar, seirama dengan grid latar halaman */
+  --dots: radial-gradient(rgba(237, 232, 204, .10) 1px, rgba(237, 232, 204, 0) 1.5px);
+  --dots-size: 22px 22px;
 
   --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --sidebar-w: 216px;
@@ -94,11 +95,17 @@ b, strong { font-weight: 600; }
 /* ---------- Sidebar ---------- */
 .sidebar {
   width: var(--sidebar-w); flex: none;
-  /* Kembali ke butiran kertas yang sama dengan latar halaman */
-  background-color: var(--surface-1);
-  background-image: var(--grain);
-  background-size: 160px 160px;
-  border-right: 1px solid var(--border);
+  /* Kaca tembus pandang: titik tipis + aksen merah di tepi atas dan bawah */
+  background-color: rgba(28, 31, 16, .62);
+  background-image:
+    radial-gradient(120% 62% at 108% -12%, rgba(122, 30, 30, .52), rgba(122, 30, 30, 0) 62%),
+    radial-gradient(110% 56% at -10% 112%, rgba(122, 30, 30, .30), rgba(122, 30, 30, 0) 64%),
+    var(--dots);
+  background-size: auto, auto, var(--dots-size);
+  border-right: 1px solid rgba(122, 30, 30, .55);
+  box-shadow: inset -1px 0 0 rgba(237, 232, 204, .05);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
   padding: 28px 18px 24px;
   display: flex; flex-direction: column; gap: 30px;
   position: sticky; top: 0; height: 100vh; overflow-y: auto;
@@ -110,7 +117,7 @@ b, strong { font-weight: 600; }
 .app-id__logo { width: 29px; height: 27px; object-fit: contain; }
 .app-id__name { font-size: 20px; font-weight: 700; }
 
-.level { background-color: var(--surface-2); background-image: var(--grain); background-size: 160px 160px; border-radius: 10px; padding: 13px; display: flex; flex-direction: column; gap: 9px; }
+.level { background: var(--surface-2); border-radius: 10px; padding: 13px; display: flex; flex-direction: column; gap: 9px; }
 .level__row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
 
 .menu { display: flex; flex-direction: column; gap: 6px; }
@@ -122,12 +129,12 @@ b, strong { font-weight: 600; }
 }
 .menu__item .icon { color: var(--olive); }
 .menu__item:hover { background: var(--surface-2); color: var(--text); }
-.menu__item.is-active { background: var(--red); color: var(--text); font-weight: 600; }
+.menu__item.is-active { background: var(--red); color: var(--text); font-weight: 600; box-shadow: 0 0 24px -8px rgba(122, 30, 30, .85); }
 .menu__item.is-active .icon { color: var(--text); }
 .menu__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text); margin-left: 2px; }
 
 .reminder {
-  background-color: var(--surface-2); background-image: var(--grain); background-size: 160px 160px;
+  background: var(--surface-2);
   border: 1px solid var(--border-2); border-radius: 16px;
   padding: 16px; display: flex; flex-direction: column; gap: 12px;
 }
@@ -141,7 +148,7 @@ b, strong { font-weight: 600; }
 /* ---------- Bilah atas ---------- */
 .topbar {
   height: 84px; padding: 0 32px;
-  background-color: var(--surface-1); background-image: var(--grain); background-size: 160px 160px;
+  background: var(--surface-1);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   position: sticky; top: 0; z-index: 5;
@@ -181,7 +188,7 @@ b, strong { font-weight: 600; }
 .user-menu {
   position: absolute; top: calc(100% + 10px); right: 0; z-index: 30;
   min-width: 186px; padding: 6px; display: none; flex-direction: column; gap: 2px;
-  background-color: var(--surface-1); background-image: var(--grain); background-size: 160px 160px;
+  background: var(--surface-1);
   border: 1px solid var(--border); border-radius: 14px;
   box-shadow: 0 16px 34px rgba(0, 0, 0, .45);
 }
@@ -2186,7 +2193,12 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .naskah-nav__btns .btn-act[disabled]:hover { border-color: var(--border); }
 @media (max-width: 520px) { .naskah-nav__btns { flex-wrap: wrap; } .naskah-nav__btns .btn-act { flex: 1 1 45%; } .naskah-nav__btns [data-naskah-periksa] { flex: 1 1 100%; } }
 
-/* Kontras tinggi: matikan butiran agar teks tetap jelas */
+/* Tanpa backdrop-filter: naikkan kepekatan supaya teks tetap terbaca */
+@supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
+  .sidebar { background-color: rgba(28, 31, 16, .93); }
+}
+
+/* Kontras tinggi: matikan tekstur dan transparansi */
 @media (prefers-contrast: more) {
-  .sidebar, .topbar, .level, .reminder { background-image: none; }
+  .sidebar { background-image: none; background-color: var(--surface-1); backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
