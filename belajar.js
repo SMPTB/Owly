@@ -201,7 +201,80 @@
     window.onstorage = renderToc;
 
     renderToc();
-    if (location.hash && $(location.hash.slice(1))) $(location.hash.slice(1)).scrollIntoView();
+    lompatKeKata();
+  }
+
+  /* ---------- Datang dari pencarian: gulir halus + sorot kata ---------- */
+  function kataDicari() {
+    return (new URLSearchParams(location.search).get('q') || '').trim();
+  }
+
+  /* Bagian yang dituju: ?L=nama-bagian (dari pencarian) atau #L-nama-bagian. */
+  function bagianTujuan() {
+    const bagian = new URLSearchParams(location.search).get('L');
+    if (bagian) return $('L-' + bagian);
+    return location.hash ? $(location.hash.slice(1)) : null;
+  }
+
+  /* Bungkus kemunculan pertama kata di dalam kotak dengan <mark>. */
+  function tandaiKata(kotak, kata) {
+    if (!kotak || !kata) return null;
+    const pola = new RegExp(kata.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const jalan = document.createTreeWalker(kotak, NodeFilter.SHOW_TEXT);
+    let simpul = null;
+
+    while (jalan.nextNode()) {
+      const n = jalan.currentNode;
+      if (!n.nodeValue || !n.nodeValue.trim()) continue;
+      if (n.parentElement && n.parentElement.closest('button, summary, script, style')) continue;
+      pola.lastIndex = 0;
+      if (pola.test(n.nodeValue)) { simpul = n; break; }
+    }
+    if (!simpul) return null;
+
+    const asal = simpul.nodeValue;
+    const potongan = document.createDocumentFragment();
+    let terakhir = 0;
+    let m;
+    pola.lastIndex = 0;
+
+    while ((m = pola.exec(asal))) {
+      if (m.index > terakhir) {
+        potongan.appendChild(document.createTextNode(asal.slice(terakhir, m.index)));
+      }
+      const mark = document.createElement('mark');
+      mark.className = 'cari-mark cari-lompat';
+      mark.textContent = m[0];
+      potongan.appendChild(mark);
+      terakhir = m.index + m[0].length;
+    }
+    if (terakhir < asal.length) {
+      potongan.appendChild(document.createTextNode(asal.slice(terakhir)));
+    }
+
+    simpul.parentNode.replaceChild(potongan, simpul);
+    return kotak.querySelector('mark.cari-lompat');
+  }
+
+  function lompatKeKata() {
+    const kata = kataDicari();
+    const sasaran = bagianTujuan();
+    const halus = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    if (!kata) {
+      if (sasaran) sasaran.scrollIntoView();
+      return;
+    }
+
+    const kotak = sasaran || $('lessons');
+    const tanda = tandaiKata(kotak, kata);
+    const tujuan = tanda || sasaran;
+    if (!tujuan) return;
+
+    /* tunggu satu bingkai supaya tata letak sesudah menyorot sudah tenang */
+    requestAnimationFrame(() => {
+      tujuan.scrollIntoView({ behavior: halus ? 'smooth' : 'auto', block: 'center' });
+    });
   }
 
   gambar();
