@@ -30,6 +30,86 @@
     return new RegExp(kata.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
   }
 
+  /* ---------- 1a. Istilah dua bahasa ----------
+     Isi materi berbahasa Indonesia, tetapi antarmuka bisa beralih ke
+     Inggris. Setiap kata di satu keluarga dianggap sama, jadi "algebra"
+     menemukan "aljabar" dan sebaliknya. */
+  const ISTILAH = [
+    ['bilangan', 'angka', 'number', 'numbers', 'numeral', 'whole'],
+    ['aljabar', 'algebra', 'algebraic'],
+    ['geometri', 'geometry', 'geometric'],
+    ['pengukuran', 'measurement', 'measure', 'measuring'],
+    ['pecahan', 'fraction', 'fractions'],
+    ['desimal', 'decimal', 'decimals'],
+    ['persen', 'percent', 'percentage'],
+    ['perbandingan', 'rasio', 'ratio', 'proportion', 'comparison'],
+    ['peluang', 'probability', 'chance'],
+    ['statistika', 'statistik', 'statistics', 'statistic'],
+    ['persamaan', 'equation', 'equations'],
+    ['pertidaksamaan', 'inequality', 'inequalities'],
+    ['variabel', 'variable', 'variables'],
+    ['konstanta', 'constant'],
+    ['koefisien', 'coefficient'],
+    ['fungsi', 'function'],
+    ['grafik', 'chart', 'graph'],
+    ['tabel', 'table'],
+    ['sudut', 'angle', 'angles'],
+    ['segitiga', 'triangle'],
+    ['lingkaran', 'circle'],
+    ['bangun', 'shape', 'shapes'],
+    ['pangkat', 'eksponen', 'exponent', 'power'],
+    ['akar', 'root', 'roots'],
+    ['faktor', 'factor', 'factors'],
+    ['kelipatan', 'multiple', 'multiples'],
+    ['prima', 'prime'],
+    ['positif', 'positive'],
+    ['negatif', 'negative'],
+    ['garis', 'line'],
+    ['penjumlahan', 'addition'],
+    ['pengurangan', 'subtraction'],
+    ['perkalian', 'multiplication'],
+    ['pembagian', 'division'],
+    ['rata-rata', 'average', 'mean'],
+    ['luas', 'area'],
+    ['keliling', 'perimeter'],
+    ['volume', 'volume'],
+    ['teks', 'text', 'passage'],
+    ['bacaan', 'reading'],
+    ['paragraf', 'paragraph'],
+    ['kalimat', 'sentence'],
+    ['kesimpulan', 'conclusion'],
+    ['sinonim', 'synonym'],
+    ['antonim', 'antonym'],
+    ['metafora', 'metaphor'],
+    ['puisi', 'poem', 'poetry'],
+    ['cerita', 'story'],
+    ['tokoh', 'character'],
+    ['latar', 'setting'],
+    ['opini', 'opinion'],
+    ['fakta', 'fact'],
+    ['argumen', 'argument'],
+    ['struktur', 'structure']
+  ];
+
+  const SINONIM = (() => {
+    const peta = new Map();
+    ISTILAH.forEach(kel => kel.forEach(kata => {
+      const ada = peta.get(kata) || new Set();
+      kel.forEach(saudara => ada.add(saudara));
+      peta.set(kata, ada);
+    }));
+    return peta;
+  })();
+
+  /* semua bentuk kata yang dianggap sama (termasuk bentuk jamak Inggris) */
+  function varian(kata) {
+    const set = new Set([kata]);
+    const tambah = k => { if (SINONIM.has(k)) SINONIM.get(k).forEach(w => set.add(w)); };
+    tambah(kata);
+    tambah(kata.replace(/ies$/, 'y').replace(/e?s$/, ''));
+    return Array.from(set);
+  }
+
   /* ---------- 1. Bilah cari di bilah atas ---------- */
   function buatBilah() {
     const bar = $('.topbar__actions');
@@ -50,15 +130,32 @@
     const pembatas = bar.querySelector('.divider-v');
     bar.insertBefore(form, sakelar || pembatas || bar.firstChild);
 
+    const input = form.elements.q;
+    const buka = () => { form.classList.add('is-buka'); input.focus(); };
+
+    /* bilah mulai sebagai ikon; klik di mana pun pada bilah membukanya */
+    form.addEventListener('click', e => {
+      if (form.classList.contains('is-buka')) return;
+      e.preventDefault();
+      buka();
+    });
+    input.addEventListener('focus', () => form.classList.add('is-buka'));
+    input.addEventListener('blur', () => {
+      if (!input.value.trim()) form.classList.remove('is-buka');
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { input.value = ''; input.blur(); }
+    });
+
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const isi = form.elements.q.value.trim();
-      if (!isi) { form.elements.q.focus(); return; }
+      const isi = input.value.trim();
+      if (!isi) { input.focus(); return; }
       location.href = 'cari.html?q=' + encodeURIComponent(isi);
     });
 
     const q = param('q');
-    if (q && document.getElementById('cariList')) form.elements.q.value = q;
+    if (q && document.getElementById('cariList')) input.value = q;
   }
 
   /* ---------- 2. Kumpulkan teks materi ---------- */
@@ -156,26 +253,37 @@
   }
 
   function cariDokumen(q) {
-    const tokens = String(q).toLowerCase().split(/\s+/).filter(Boolean);
-    if (!tokens.length) return [];
+    const kata = String(q).toLowerCase().split(/\s+/).filter(Boolean);
+    if (!kata.length) return [];
+
+    /* satu kelompok per kata yang diketik; kelompok boleh cocok lewat
+       padanan bahasanya (algebra ≙ aljabar) */
+    const grup = kata.map(varian);
+    const sorot = Array.from(new Set(grup.reduce((a, g) => a.concat(g), [])))
+      .sort((a, b) => b.length - a.length);
 
     return dokumen(q).map(d => {
       const teks = d.teks.toLowerCase();
       const judul = d.judul.toLowerCase();
+      const label = d.label.toLowerCase();
+      const isi = d.isi.toLowerCase();
       let jumlah = 0;
       let cocok = true;
 
-      tokens.forEach(t => {
-        const n = teks.split(t).length - 1;
+      grup.forEach(g => {
+        let n = 0;
+        g.forEach(v => { n += teks.split(v).length - 1; });
         if (!n) { cocok = false; return; }
-        jumlah += n + (judul.includes(t) ? 4 : 0) + (d.label.toLowerCase().includes(t) ? 2 : 0);
+        jumlah += n;
+        if (g.some(v => judul.includes(v))) jumlah += 4;
+        if (g.some(v => label.includes(v))) jumlah += 2;
       });
 
       if (!cocok) return null;
 
       /* cuplikan diambil dari isi bagian, bukan judulnya, supaya tidak berulang */
-      const sumber = d.isi && tokens.some(t => d.isi.toLowerCase().includes(t)) ? d.isi : d.teks;
-      return Object.assign({}, d, { jumlah: jumlah, cuplikan: cuplikan(sumber, tokens) });
+      const sumber = d.isi && grup.some(g => g.some(v => isi.includes(v))) ? d.isi : d.teks;
+      return Object.assign({}, d, { jumlah: jumlah, cuplikan: cuplikan(sumber, sorot) });
     }).filter(Boolean).sort((a, b) => b.jumlah - a.jumlah);
   }
 

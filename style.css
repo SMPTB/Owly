@@ -38,6 +38,7 @@
   --dots-size: 22px 22px;
 
   --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "EB Garamond", Garamond, "Adobe Garamond Pro", "Iowan Old Style", Georgia, serif;
   --sidebar-w: 216px;
 }
 
@@ -553,15 +554,27 @@ b, strong { font-weight: 600; }
 .field-search input::placeholder { color: var(--olive-dim); }
 
 /* ---------- Pencarian materi: bilah atas + halaman hasil ---------- */
+/* Awalnya hanya ikon; melebar jadi kotak saat diklik/difokus */
 .cari-bilah {
-  width: 208px; height: 40px; padding: 0 12px; border-radius: 10px; min-width: 0;
+  width: 40px; height: 40px; padding: 0; border-radius: 10px; min-width: 0;
   background: var(--surface-2); border: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-  transition: border-color .15s;
+  display: flex; align-items: center; justify-content: center; gap: 0;
+  overflow: hidden; cursor: text;
+  transition: width .22s ease, padding .22s ease, gap .22s ease, border-color .15s;
 }
-.cari-bilah:focus-within { border-color: var(--olive); }
-.cari-bilah .icon { width: 16px; height: 16px; color: var(--olive); }
-.cari-bilah input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--text); font: inherit; font-size: 12px; }
+.cari-bilah .icon { flex: none; width: 16px; height: 16px; color: var(--olive); }
+.cari-bilah input {
+  flex: 0 0 0; width: 0; min-width: 0; padding: 0; border: 0; background: none; outline: 0;
+  color: var(--text); font: inherit; font-size: 12px; opacity: 0;
+  transition: opacity .16s ease;
+}
+.cari-bilah.is-buka,
+.cari-bilah:focus-within {
+  width: 208px; padding: 0 12px; gap: 8px; justify-content: flex-start;
+  border-color: var(--olive);
+}
+.cari-bilah.is-buka input,
+.cari-bilah:focus-within input { flex: 1 1 auto; width: auto; opacity: 1; }
 .cari-bilah input::placeholder { color: var(--olive-dim); }
 .cari-bilah input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
 
@@ -601,17 +614,18 @@ b, strong { font-weight: 600; }
   color: var(--muted); font-size: 13px; text-align: center;
 }
 
-@media (max-width: 1180px) { .cari-bilah { width: 176px; } }
-@media (max-width: 900px)  { .cari-bilah { width: 186px; } }
+@media (max-width: 1180px) { .cari-bilah.is-buka, .cari-bilah:focus-within { width: 176px; } }
+@media (max-width: 900px)  { .cari-bilah.is-buka, .cari-bilah:focus-within { width: 186px; } }
 @media (max-width: 680px) {
   /* bilah cari ikut menyusut agar tidak mendorong avatar keluar layar */
   .topbar { gap: 10px; }
   .topbar__actions { flex: 1; min-width: 0; justify-content: flex-end; gap: 10px; }
   .crumbs { flex: 0 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .user > .icon { display: none; }
-  .cari-bilah { flex: 1 1 auto; width: auto; min-width: 0; padding: 0 10px; }
-  /* bilah terlalu sempit untuk placeholder: sisakan ikon kaca pembesar saja */
-  .cari-bilah input::placeholder { color: transparent; }
+  .cari-bilah.is-buka, .cari-bilah:focus-within { flex: 1 1 auto; width: auto; min-width: 0; padding: 0 10px; }
+  /* saat bilah dibuka, sakelar bahasa menyingkir supaya kotak cari dapat ruang */
+  .topbar__actions:focus-within .switch-bahasa,
+  .topbar__actions:focus-within .divider-v { display: none; }
 }
 
 .select, .input {
@@ -1225,12 +1239,69 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 /* =========================================================
    HALAMAN BELAJAR (belajar.html): materi bacaan per bab
    ========================================================= */
-.lesson-head { display: flex; flex-direction: column; gap: 12px; }
+.lesson-head { display: flex; flex-direction: column; gap: 22px; }
 .lesson-head .link { align-self: flex-start; }
-.lesson-head__tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.lesson-head h1 { font-size: 32px; font-weight: 700; line-height: 1.25; }
-.lesson-head > p { font-size: 14px; line-height: 1.7; color: var(--muted); max-width: 760px; }
-.goals { max-width: 760px; }
+
+/* Kepala bab: judul serif besar dengan garis rambut di kiri,
+   kode bab di kanan atas, lalu pengantar dan label kecil. */
+.lesson-head__mast { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px; }
+.lesson-head__title {
+  position: relative; min-width: 0;
+  padding-left: 26px; border-left: 1px solid rgba(237, 232, 204, .3);
+}
+.lesson-head h1 {
+  font-family: var(--serif); font-size: clamp(46px, 6.6vw, 88px); font-weight: 500;
+  line-height: .95; letter-spacing: -.005em; color: var(--text);
+}
+.lesson-head__sub {
+  font-family: var(--serif); font-size: 20px; line-height: 1.3;
+  color: var(--muted); margin: 20px 0 0 24px;
+}
+.lesson-head__label {
+  font-family: var(--serif); font-style: italic; font-size: 15px;
+  color: var(--gold); margin: 10px 0 0 24px;
+}
+.lesson-head__code { flex: none; padding-top: 12px; font-size: 12px; letter-spacing: .05em; color: var(--muted); }
+.lesson-head > p {
+  font-family: var(--font); font-size: 15px; line-height: 1.8; color: var(--text);
+  max-width: 68ch; margin-left: 26px;
+}
+
+/* Etimologi: bagan asal-usul kata, garis tipis seperti catatan kamus */
+.etim { display: flex; flex-direction: column; gap: 13px; margin-left: 26px; max-width: 68ch; }
+.etim__label { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--gold); }
+.etim__chain { display: flex; align-items: flex-start; flex-wrap: wrap; row-gap: 14px; }
+
+.etim__step { display: flex; flex-direction: column; gap: 4px; }
+.etim__lang {
+  align-self: flex-start; font-size: 10px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--olive); background: rgba(237, 232, 204, .09);
+  border-radius: 3px; padding: 3px 7px; line-height: 1.3;
+}
+.etim__step b { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.25; }
+.etim__step i { font-size: 11.5px; font-style: italic; color: var(--muted); line-height: 1.4; max-width: 11ch; }
+
+/* penghubung: satu path SVG, jadi garis dan panahnya menyambung mulus */
+.etim__arrow {
+  flex: none; display: flex; align-items: center;
+  margin: 30px 4px 0; color: rgba(237, 232, 204, .42);
+}
+.etim__arrow svg { display: block; }
+
+/* panah + kata masa kini bergerak bersama saat baris terlipat */
+.etim__tail { display: flex; align-items: flex-start; }
+/* terpaksa turun baris (layar sempit): tanpa panah, rata di bawah leluhur */
+.etim__tail.is-turun { flex-basis: 100%; }
+.etim__tail.is-turun .etim__arrow { display: none; }
+.etim__tail.is-turun .etim__step--now { padding-top: 0; }
+
+/* kata masa kini: tanpa label bahasa di atas, keterangan di bawah */
+.etim__step--now { gap: 2px; padding-top: 21px; }
+.etim__step--now b { font-size: 14.5px; }
+.etim__step--now i { font-size: 11.5px; }
+
+.etim__teks { font-size: 13.5px; line-height: 1.75; color: var(--muted); margin: 0; max-width: 62ch; }
+.goals { max-width: 760px; margin-left: 26px; }
 .goals h4 { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: var(--gold); }
 .goals ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; display: flex; flex-direction: column; gap: 2px; }
 .goals ul { list-style: disc; }
@@ -1302,7 +1373,15 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
   .toc-wrap { position: static; order: -1; width: 100%; }
 }
 @media (max-width: 680px) {
-  .lesson-head h1 { font-size: 26px; }
+  .lesson-head { gap: 18px; }
+  .lesson-head__mast { flex-direction: column-reverse; gap: 12px; }
+  .lesson-head h1 { font-size: clamp(36px, 11vw, 52px); }
+  .lesson-head__sub { font-size: 17px; margin: 14px 0 0 16px; }
+  .lesson-head__label { margin: 8px 0 0 16px; }
+  .lesson-head__code { padding-top: 0; }
+  .lesson-head > p, .goals, .etim { margin-left: 0; }
+  .etim__arrow { margin-top: 29px; margin-left: 4px; margin-right: 4px; }
+  .etim__step--now { padding-top: 2px; }
   .lesson { padding: 20px; }
   .lesson h2 { font-size: 20px; }
 }
@@ -2234,7 +2313,6 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .quiz__card,
 .tka__card,
 .tka__pick,
-.id-card,
 .streak-card,
 .tip-card,
 .summary-card,
@@ -2256,6 +2334,14 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 /* Kepala bab ikut tembus pandang, bukan blok padat */
 .chapter__head { background-color: rgba(35, 38, 21, .58); background-image: none; }
 .subject:hover { border-color: var(--c); box-shadow: inset 0 1px 0 rgba(237, 232, 204, .05), 0 16px 30px rgba(0, 0, 0, .35); }
+/* Kartu identitas di Profile tetap padat (merah), hanya bergaris lebih muda */
+.id-card {
+  background: var(--red);
+  background-image: none;
+  border: 1px solid #A2463E;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
 
 /* Tanpa backdrop-filter: naikkan kepekatan supaya teks tetap terbaca */
 @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
@@ -2264,7 +2350,7 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
   .subject, .chapter, .naskah-card, .panel, .practice, .stat, .box, .exlist, .hist,
   .form-card, .qlist, .preview__card, .form-box, .link-card, .board, .next-card,
   .today-card, .chart-card, .subj-card, .target-card, .badges, .lesson, .toc,
-  .mode, .lab, .collection, .quiz__card, .tka__card, .tka__pick, .id-card,
+  .mode, .lab, .collection, .quiz__card, .tka__card, .tka__pick,
   .streak-card, .tip-card, .summary-card, .goal, .complete, .advice,
   .week-summary, .cari-item { background-color: var(--surface-1); }
 }
@@ -2276,11 +2362,22 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
   .subject, .chapter, .naskah-card, .panel, .practice, .stat, .box, .exlist, .hist,
   .form-card, .qlist, .preview__card, .form-box, .link-card, .board, .next-card,
   .today-card, .chart-card, .subj-card, .target-card, .badges, .lesson, .toc,
-  .mode, .lab, .collection, .quiz__card, .tka__card, .tka__pick, .id-card,
+  .mode, .lab, .collection, .quiz__card, .tka__card, .tka__pick,
   .streak-card, .tip-card, .summary-card, .goal, .complete, .advice,
   .week-summary, .cari-item {
     background-image: none; background-color: var(--surface-1);
     backdrop-filter: none; -webkit-backdrop-filter: none;
   }
   .chapter__head { background-color: var(--surface-2); }
+}
+
+/* Menu profil (dropdown avatar): padat, dengan grid titik tipis */
+.user-menu {
+  background-color: var(--surface-1);
+  background-image: radial-gradient(rgba(237, 232, 204, .07) 1px, rgba(237, 232, 204, 0) 1.5px);
+  background-size: var(--dots-size);
+  border-color: rgba(122, 30, 30, .45);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .45);
 }

@@ -27,16 +27,29 @@
       jawaban: 'Jawaban:', tugas: 'Tugas', tandai: 'Tandai selesai dibaca',
       sudah: '✓ Sudah dibaca (klik untuk batal)', penutup: 'Penutup', rangkuman: 'Rangkuman',
       latihan: 'Latihan soal bab ini', berikut: 'Bab berikutnya', toc: 'Di halaman ini',
-      dari: 'dari', dibaca: 'materi dibaca', subj: { mtk: 'Matematika', ind: 'Bahasa Indonesia' }
+      dari: 'dari', dibaca: 'materi dibaca', subj: { mtk: 'Matematika', ind: 'Bahasa Indonesia' },
+      pengantar: 'Pengantar', bab: 'Bab', etimologi: 'Etimologi'
     },
     en: {
       materi: 'Lesson', contoh: 'Worked example', langkah: 'Show the working',
       jawaban: 'Answer:', tugas: 'Task', tandai: 'Mark as read',
       sudah: '✓ Read (click to undo)', penutup: 'Wrap-up', rangkuman: 'Summary',
       latihan: 'Practise this chapter', berikut: 'Next chapter', toc: 'On this page',
-      dari: 'of', dibaca: 'sections read', subj: { mtk: 'Mathematics', ind: 'Bahasa Indonesia' }
+      dari: 'of', dibaca: 'sections read', subj: { mtk: 'Mathematics', ind: 'Bahasa Indonesia' },
+      pengantar: 'An Introduction', bab: 'Chapter', etimologi: 'Etymology'
     }
   };
+
+  /* Kode ringkas di kepala bab, mis. MTK-02-9 (mapel–bab–kelas). */
+  function kodeBab(b) {
+    let kelas = '';
+    try {
+      const d = JSON.parse(localStorage.getItem('owly-progress-v1') || 'null');
+      const cocok = d && d.profile && /kelas\s*(\d+)/i.exec(d.profile.grade || '');
+      if (cocok) kelas = cocok[1];
+    } catch (e) { /* tanpa profil: kode tanpa kelas */ }
+    return [b.subject === 'mtk' ? 'MTK' : 'IND', b.no].concat(kelas ? [kelas] : []).join('-');
+  }
 
   function bahasaAktif() {
     try { return localStorage.getItem('owly-bahasa-v1') === 'en' ? 'en' : 'id'; } catch (e) { return 'id'; }
@@ -137,6 +150,78 @@
     }
   }
 
+  /* Asal-usul kata kunci bab (etimologi.js). */
+  function gambarEtimologi(b) {
+    const semua = window.ETIMOLOGI || {};
+    const isi = semua[b.id] ? (semua[b.id][bahasa] || semua[b.id].id) : null;
+    const kotak = $('lhEtim');
+    if (!kotak) return;
+    if (!isi) { kotak.hidden = true; kotak.innerHTML = ''; return; }
+
+    kotak.hidden = false;
+    /* garis penghubung digambar sebagai satu path SVG supaya mulus */
+    const panah = lebar => '<span class="etim__arrow" aria-hidden="true">' +
+      '<svg width="' + lebar + '" height="10" viewBox="0 0 ' + lebar + ' 10" fill="none">' +
+        '<path d="M0.6 5H' + (lebar - 0.6) + '" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>' +
+        '<path d="M' + (lebar - 6) + ' 1.8L' + (lebar - 0.6) + ' 5L' + (lebar - 6) + ' 8.2" stroke="currentColor" ' +
+          'stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg></span>';
+
+    const rantai = isi.rantai || [];
+    const kini = rantai[rantai.length - 1] || ['', ''];
+    const leluhur = rantai.slice(0, -1);
+
+    kotak.innerHTML =
+      '<figcaption class="etim__label">' + T.etimologi + '</figcaption>' +
+      '<div class="etim__chain">' +
+        leluhur.map((r, i) =>
+          (i ? panah(26) : '') +
+          '<span class="etim__step"><span class="etim__lang">' + r[0] + '</span>' +
+          '<b>' + r[1] + '</b>' + (r[2] ? '<i>' + r[2] + '</i>' : '') + '</span>'
+        ).join('') +
+        '<span class="etim__tail">' + panah(34) +
+          '<span class="etim__step etim__step--now">' +
+            '<b>' + kini[1] + '</b><i>' + kini[0] + '</i>' +
+          '</span>' +
+        '</span>' +
+      '</div>' +
+      '<p class="etim__teks">' + isi.teks + '</p>';
+
+    letakkanEkor();
+  }
+
+  /* Bila kata masa kini terpaksa turun baris, panahnya dibuang supaya tidak
+     menggantung sendiri, lalu kata itu diratakan di bawah leluhur terakhir. */
+  function letakkanEkor() {
+    const kotak = $('lhEtim');
+    const tail = kotak && kotak.querySelector('.etim__tail');
+    if (!tail) return;
+
+    const langkah = kotak.querySelectorAll('.etim__step:not(.etim__step--now)');
+    const terakhir = langkah[langkah.length - 1];
+    const baris = kotak.querySelector('.etim__chain');
+    if (!terakhir || !baris) { tail.style.paddingLeft = ''; tail.classList.remove('is-turun'); return; }
+
+    /* kelas is-turun memaksa baris baru, jadi dilepas dulu sebelum mengukur */
+    tail.classList.remove('is-turun');
+    tail.style.paddingLeft = '';
+
+    const kotakAkhir = terakhir.getBoundingClientRect();
+    const turun = tail.getBoundingClientRect().top > kotakAkhir.top + 4;
+
+    if (turun) {
+      tail.classList.add('is-turun');
+      tail.style.paddingLeft =
+        Math.max(0, Math.round(kotakAkhir.left - baris.getBoundingClientRect().left)) + 'px';
+    }
+  }
+
+  /* tata letak baru belum tentu siap saat event resize dipanggil */
+  const tundaEkor = () => requestAnimationFrame(letakkanEkor);
+  window.addEventListener('resize', tundaEkor);
+  /* huruf web bisa mengubah lebar kata sesudah gambar pertama */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(tundaEkor);
+
   function gambar() {
     bahasa = bahasaAktif();
     T = TEKS[bahasa];
@@ -145,10 +230,12 @@
     /* ---------- Kepala halaman ---------- */
     document.title = bab.bab + ' · Ωwly';
     $('crumbLast').textContent = bab.bab;
-    $('lhSubject').textContent = T.subj[bab.subject];
-    $('lhNo').textContent = 'BAB ' + bab.no;
     $('lhTitle').textContent = bab.bab;
+    $('lhSub').textContent = T.pengantar;
+    $('lhLabel').textContent = T.subj[bab.subject] + ' · ' + T.bab + ' ' + bab.no;
+    $('lhCode').textContent = kodeBab(bab);
     $('lhIntro').textContent = bab.intro;
+    gambarEtimologi(bab);
     $('lhGoals').innerHTML = bab.goals.map(g => '<li>' + g + '</li>').join('');
 
     /* ---------- Isi bab ---------- */
