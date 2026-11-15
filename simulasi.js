@@ -35,14 +35,6 @@
     detak = null;
   }
 
-  function aturSub() {
-    const teks = document.querySelector('[data-tka-sub]');
-    if (!teks) return;
-    if (!s) { teks.textContent = 'Pilih mapel · 70 menit'; return; }
-    const label = s.pilihan === 'mtk' ? 'Matematika' : s.pilihan === 'ind' ? 'Bahasa Indonesia' : 'Bahasa Indonesia + Matematika';
-    teks.textContent = label + ' · ' + s.soal.length + ' soal · 70 menit';
-  }
-
   function tampilkanBar(on) {
     if (tombolKumpul) tombolKumpul.hidden = !on;
     if (kotakWaktu) kotakWaktu.hidden = !on;
@@ -78,9 +70,7 @@
     tampilkanBar(false);
     body.innerHTML =
       '<section class="tka__intro">' +
-        '<p class="eyebrow eyebrow--olive">SIMULASI TKA</p>' +
         '<h1>Mau simulasi mapel apa?</h1>' +
-        '<p class="tka__lead">Pilih satu mapel dulu. Soalnya disusun dari Bank Soal, waktunya 70 menit dan tidak bisa dijeda.</p>' +
         '<div class="tka__pilih">' +
           '<button class="tka__pick" type="button" data-pilih="ind"><b>Bahasa Indonesia</b><span>30 soal · 70 menit</span></button>' +
           '<button class="tka__pick" type="button" data-pilih="mtk"><b>Matematika</b><span>25 soal · 70 menit</span></button>' +
@@ -101,7 +91,6 @@
         render();
       });
     });
-    aturSub();
   }
 
   /* ---------- Badan soal per jenis ---------- */
@@ -243,7 +232,6 @@
 
     st.dilihat = true;
     T.simpan(st);
-    aturSub();
     tampilkanBar(false);
 
     const nilai = Math.round(h.benar / h.total * 100);
@@ -318,7 +306,6 @@
 
     s.keluar = false;
     T.simpan(s);
-    aturSub();
     tampilkanBar(true);
     renderSoal();
     pasangDetak();

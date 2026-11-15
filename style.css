@@ -148,8 +148,15 @@ b, strong { font-weight: 600; }
 /* ---------- Bilah atas ---------- */
 .topbar {
   height: 84px; padding: 0 32px;
-  background: var(--surface-1);
-  border-bottom: 1px solid var(--border);
+  /* Sama seperti sidebar: tembus pandang, grid titik, aksen merah */
+  background-color: rgba(28, 31, 16, .62);
+  background-image:
+    radial-gradient(80% 190% at 100% 0%, rgba(122, 30, 30, .45), rgba(122, 30, 30, 0) 64%),
+    var(--dots);
+  background-size: auto, var(--dots-size);
+  border-bottom: 1px solid rgba(122, 30, 30, .45);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   position: sticky; top: 0; z-index: 5;
 }
@@ -188,9 +195,13 @@ b, strong { font-weight: 600; }
 .user-menu {
   position: absolute; top: calc(100% + 10px); right: 0; z-index: 30;
   min-width: 186px; padding: 6px; display: none; flex-direction: column; gap: 2px;
-  background: var(--surface-1);
-  border: 1px solid var(--border); border-radius: 14px;
+  background-color: rgba(28, 31, 16, .82);
+  background-image: var(--dots);
+  background-size: var(--dots-size);
+  border: 1px solid rgba(122, 30, 30, .35); border-radius: 14px;
   box-shadow: 0 16px 34px rgba(0, 0, 0, .45);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
 }
 .user-menu.is-open { display: flex; }
 .user-menu a {
@@ -259,7 +270,7 @@ b, strong { font-weight: 600; }
 
 /* ---------- Kartu "Lanjutkan belajar" ---------- */
 .resume {
-  background: var(--red); border-radius: 20px; padding: 24px; min-height: 234px;
+  background: var(--red); border: 1px solid #A2463E; border-radius: 20px; padding: 24px; min-height: 234px;
   display: flex; align-items: center; gap: 12px;
 }
 .resume__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 13px; }
@@ -828,7 +839,7 @@ b, strong { font-weight: 600; }
 /* =========================================================
    LATIHAN SOAL
    ========================================================= */
-.rec-banner { background: var(--red); border-radius: 20px; padding: 24px; display: flex; align-items: center; gap: 26px; min-height: 144px; }
+.rec-banner { background: var(--red); border: 1px solid #A2463E; border-radius: 20px; padding: 24px; display: flex; align-items: center; gap: 26px; min-height: 144px; }
 .rec-banner__icon { width: 76px; height: 76px; border-radius: 18px; background: #8c302a; display: grid; place-items: center; flex: none; color: var(--text); }
 .rec-banner__icon .icon { width: 38px; height: 38px; stroke-width: 1.5; }
 .rec-banner__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
@@ -2193,12 +2204,83 @@ a.subj-row:hover .subj-row__top b { text-decoration: underline; }
 .naskah-nav__btns .btn-act[disabled]:hover { border-color: var(--border); }
 @media (max-width: 520px) { .naskah-nav__btns { flex-wrap: wrap; } .naskah-nav__btns .btn-act { flex: 1 1 45%; } .naskah-nav__btns [data-naskah-periksa] { flex: 1 1 100%; } }
 
+/* ---------- Semua kartu: kaca bertitik seperti kartu beranda ---------- */
+.subject,
+.chapter,
+.naskah-card,
+.panel,
+.practice,
+.stat,
+.box,
+.exlist,
+.hist,
+.form-card,
+.qlist,
+.preview__card,
+.form-box,
+.link-card,
+.board,
+.next-card,
+.today-card,
+.chart-card,
+.subj-card,
+.target-card,
+.badges,
+.lesson,
+.toc,
+.mode,
+.lab,
+.collection,
+.quiz__card,
+.tka__card,
+.tka__pick,
+.id-card,
+.streak-card,
+.tip-card,
+.summary-card,
+.goal,
+.complete,
+.advice,
+.week-summary,
+.cari-item {
+  background-color: rgba(28, 31, 16, .66);
+  background-image:
+    radial-gradient(95% 130% at 106% -12%, rgba(122, 30, 30, .34), rgba(122, 30, 30, 0) 62%),
+    var(--dots);
+  background-size: auto, var(--dots-size);
+  border-color: rgba(122, 30, 30, .34);
+  box-shadow: inset 0 1px 0 rgba(237, 232, 204, .04);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+}
+/* Kepala bab ikut tembus pandang, bukan blok padat */
+.chapter__head { background-color: rgba(35, 38, 21, .58); background-image: none; }
+.subject:hover { border-color: var(--c); box-shadow: inset 0 1px 0 rgba(237, 232, 204, .05), 0 16px 30px rgba(0, 0, 0, .35); }
+
 /* Tanpa backdrop-filter: naikkan kepekatan supaya teks tetap terbaca */
 @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
-  .sidebar { background-color: rgba(28, 31, 16, .93); }
+  .sidebar, .topbar { background-color: rgba(28, 31, 16, .93); }
+  .user-menu { background-color: var(--surface-1); }
+  .subject, .chapter, .naskah-card, .panel, .practice, .stat, .box, .exlist, .hist,
+  .form-card, .qlist, .preview__card, .form-box, .link-card, .board, .next-card,
+  .today-card, .chart-card, .subj-card, .target-card, .badges, .lesson, .toc,
+  .mode, .lab, .collection, .quiz__card, .tka__card, .tka__pick, .id-card,
+  .streak-card, .tip-card, .summary-card, .goal, .complete, .advice,
+  .week-summary, .cari-item { background-color: var(--surface-1); }
 }
 
 /* Kontras tinggi: matikan tekstur dan transparansi */
 @media (prefers-contrast: more) {
-  .sidebar { background-image: none; background-color: var(--surface-1); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .sidebar, .topbar { background-image: none; background-color: var(--surface-1); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .user-menu { background: var(--surface-1); }
+  .subject, .chapter, .naskah-card, .panel, .practice, .stat, .box, .exlist, .hist,
+  .form-card, .qlist, .preview__card, .form-box, .link-card, .board, .next-card,
+  .today-card, .chart-card, .subj-card, .target-card, .badges, .lesson, .toc,
+  .mode, .lab, .collection, .quiz__card, .tka__card, .tka__pick, .id-card,
+  .streak-card, .tip-card, .summary-card, .goal, .complete, .advice,
+  .week-summary, .cari-item {
+    background-image: none; background-color: var(--surface-1);
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+  }
+  .chapter__head { background-color: var(--surface-2); }
 }

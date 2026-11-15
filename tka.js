@@ -1,9 +1,9 @@
 /* =========================================================
    tka.js — mesin Simulasi TKA
-   Bisa dipilih per mapel: Bahasa Indonesia 30 soal atau Matematika
-   25 soal, diambil dari Bank Soal. Tanpa pilihan, keduanya digabung
-   jadi 55 soal (30 lalu 25). Kalau koleksinya kurang, soal cadangan
-   bergaya TKA dibuat di sini supaya jumlahnya tetap penuh.
+   Memakai naskah Pre-Test TKA sekolah (soal-tka.js): 30 soal Bahasa
+   Indonesia lalu 25 soal Matematika, digabung jadi satu naskah 55 soal
+   dan tidak diacak. Kalau naskah belum termuat, soal disusun dari Bank
+   Soal ditambah soal cadangan bergaya TKA agar jumlahnya tetap penuh.
 
    Batas waktu memakai jam asli (akhir = mulai + 70 menit), bukan
    hitungan detik di layar. Menutup halaman tidak menghentikannya.
@@ -165,8 +165,45 @@
     }, q));
   }
 
+  /* ---------- Naskah Pre-Test TKA sekolah ----------
+     Dua naskah (Literasi + Numerasi) digabung menjadi satu set, urut
+     seperti aslinya: nomor 1–30 Bahasa Indonesia, 31–55 Matematika. */
+  const NASKAH_PRETEST = ['pretest-ind', 'pretest-mtk'];
+
+  function susunNaskah(pilihan) {
+    const mentah = window.SOAL_TKA || [];
+    const daftar = Array.isArray(mentah) ? mentah : Object.keys(mentah).map(k => mentah[k]);
+    const hasil = [];
+    NASKAH_PRETEST.forEach(id => {
+      const set = daftar.filter(s => s && s.id === id)[0];
+      if (!set || !Array.isArray(set.soal)) return;
+      const mapel = set.subject === 'mtk' ? 'mtk' : 'ind';
+      if (pilihan && pilihan !== 'semua' && pilihan !== mapel) return;
+      set.soal.forEach(q => {
+        hasil.push({
+          id: id + '-' + q.n,
+          subject: mapel,
+          bab: set.nama || '',
+          title: 'Soal ' + q.n,
+          level: '',
+          type: q.type,
+          stimulus: q.stimulus || '',
+          question: q.question,
+          options: q.options ? q.options.slice() : null,
+          answer: Array.isArray(q.answer) ? q.answer.slice() : q.answer,
+          cols: q.cols ? q.cols.slice() : null,
+          rows: q.rows ? q.rows.map(r => ({ t: r.t, a: r.a })) : null,
+          explain: q.explain || ''
+        });
+      });
+    });
+    return hasil;
+  }
+
   /* ---------- Menyusun satu set soal ---------- */
   function susunSoal(pilihan) {
+    const naskah = susunNaskah(pilihan);
+    if (naskah.length) return naskah;
     const bank = window.SOAL || [];
     const semua = [];
 
